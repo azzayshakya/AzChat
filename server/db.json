@@ -1,0 +1,27 @@
+{
+  "users": [
+    {
+      "id": "f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "username": "amanshakya",
+      "name": "amanshakya",
+      "email": "aman@gmail.com",
+      "passwordHash": "$2a$10$ZFXAalj9dER4h1ob.TBWBOXq2wIat3.MIPxdDsmTNfdEd3j1cbxe.",
+      "role": "user",
+      "isOnline": true,
+      "lastSeen": null,
+      "createdAt": "2026-05-13T16:00:13.118Z"
+    },
+    {
+      "id": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "username": "ajayshakya",
+      "name": "ajayshakya",
+      "email": "ajayshakya7376@gmail.com",
+      "passwordHash": "$2a$10$jYfEkDFttdP4iYSZQkAoY.07e3twec5PSLl.SS3vxHezihbc1oSDu",
+      "role": "user",
+      "isOnline": true,
+      "lastSeen": null,
+      "createdAt": "2026-05-13T16:00:39.002Z"
+    }
+  ],
+  "userQueries": []
+}

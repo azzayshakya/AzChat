@@ -1,0 +1,20 @@
+import axios from "axios";
+import { io } from "socket.io-client";
+
+const BASE = import.meta.env.VITE_API_URL;
+export const api = axios.create({ baseURL: BASE + "/api" });
+api.interceptors.request.use((config) => {
+  const token = JSON.parse(localStorage.getItem("chat_token"));
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+let socket;
+export function getSocket() {
+  if (!socket)
+    socket = io(BASE || window.location.origin, { transports: ["websocket"] });
+  return socket;
+}

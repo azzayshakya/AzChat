@@ -1,10 +1,10 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 
-const { readDB, writeDB } = require("../models/db");
+const { readDB, writeDB } = require('../models/db');
 
-const { generateToken } = require("../utils/jwt");
+const { generateToken } = require('../utils/jwt');
 
-const { validateRegisterData } = require("../utils/validateAuth");
+const { validateRegisterData } = require('../utils/validateAuth');
 
 // Store invalidated tokens in memory
 const blacklistedTokens = [];
@@ -37,22 +37,19 @@ async function register(req, res, next) {
     // Check username exists
     if (db.users.find((u) => u.username === username)) {
       return res.status(400).json({
-        error: "Username already taken",
+        error: 'Username already taken',
       });
     }
 
     // Check email exists
     if (db.users.find((u) => u.email === email)) {
       return res.status(400).json({
-        error: "Email already registered",
+        error: 'Email already registered',
       });
     }
 
     // Hash password
-    const hash = await bcrypt.hash(
-      password,
-      Number(process.env.BCRYPT_SALT_ROUNDS) || 10,
-    );
+    const hash = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT_ROUNDS) || 10);
 
     // Create user object
     const user = {
@@ -67,7 +64,7 @@ async function register(req, res, next) {
 
       passwordHash: hash,
 
-      role: process.env.DEFAULT_USER_ROLE || "user",
+      role: process.env.DEFAULT_USER_ROLE || 'user',
 
       isOnline: false,
 
@@ -117,7 +114,7 @@ async function login(req, res, next) {
     // Required fields
     if (!identity || !password) {
       return res.status(400).json({
-        error: "Identity and password are required",
+        error: 'Identity and password are required',
       });
     }
 
@@ -127,13 +124,11 @@ async function login(req, res, next) {
     const db = readDB();
 
     // Find user
-    const user = db.users.find(
-      (u) => u.username === identity || u.email === identity,
-    );
+    const user = db.users.find((u) => u.username === identity || u.email === identity);
 
     if (!user) {
       return res.status(401).json({
-        error: "User not found",
+        error: 'User not found',
       });
     }
 
@@ -142,7 +137,7 @@ async function login(req, res, next) {
 
     if (!ok) {
       return res.status(401).json({
-        error: "Wrong password",
+        error: 'Wrong password',
       });
     }
 
@@ -185,7 +180,7 @@ function logout(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
 
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.split(' ')[1];
 
     // Invalidate token
     blacklistedTokens.push(token);
@@ -205,7 +200,7 @@ function logout(req, res, next) {
     }
 
     res.json({
-      message: "Logout successful",
+      message: 'Logout successful',
     });
   } catch (error) {
     next(error);

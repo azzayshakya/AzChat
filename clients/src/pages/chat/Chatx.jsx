@@ -119,7 +119,7 @@ export default function Chatx() {
     setSearching(true);
     searchTimer.current = setTimeout(async () => {
       try {
-        const { data } = await api.get(`/users/search?q=${val}&exclude=${user.id}`);
+        const { data } = await api.get(`/users/search?q=${val}`);
         setSearchResults(data);
       } finally {
         setSearching(false);

@@ -1,24 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  Input,
-  Button,
-  Avatar,
-  Spin,
-  Badge,
-  Empty,
-  message as antMsg,
-} from "antd";
-import {
-  SendOutlined,
-  SearchOutlined,
-  WifiOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { useAuth } from "../AuthContext.jsx";
-import { useNavigate } from "react-router-dom";
-import { api, getSocket } from "../api";
-import Navbar from "../components/Navbar.jsx";
-import { useNotification } from "../hooks/useNotification";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Input, Button, Avatar, Spin, Badge, Empty, message as antMsg } from 'antd';
+import { SendOutlined, SearchOutlined, WifiOutlined, UserOutlined } from '@ant-design/icons';
+import { useAuth } from '../AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
+import { api, getSocket } from '../api';
+import Navbar from '../components/Navbar.jsx';
+import { useNotification } from '../hooks/useNotification';
 
 export default function Chat() {
   const { user, logout, checkAdmin } = useAuth();
@@ -27,10 +14,10 @@ export default function Chat() {
 
   const [contacts, setContacts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const [searchQ, setSearchQ] = useState("");
+  const [searchQ, setSearchQ] = useState('');
   const [selected, setSelected] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const [loadingContacts, setLoadingContacts] = useState(true);
   const [loadingMsgs, setLoadingMsgs] = useState(false);
   const [sending, setSending] = useState(false);
@@ -43,11 +30,11 @@ export default function Chat() {
 
   const { notify } = useNotification();
 
-  const isAdmin = user?.role === "admin";
+  const isAdmin = user?.role === 'admin';
   useEffect(() => {
     if (!socket || !user?.id) return;
 
-    const onConnect = () => socket.emit("register", user.id);
+    const onConnect = () => socket.emit('register', user.id);
     const onDisconnect = () => {};
     const onOnlineUsers = (users) => setOnlineUsers(users);
 
@@ -58,13 +45,11 @@ export default function Chat() {
       // ✅ notify is now actually called here
       if (msg.from !== user.id) {
         const senderName =
-          contacts.find((c) => c.id === msg.from)?.username ||
-          current?.username ||
-          "Someone";
+          contacts.find((c) => c.id === msg.from)?.username || current?.username || 'Someone';
 
         notify({
           title: `💬 ${senderName}`,
-          body: msg.text.length > 60 ? msg.text.slice(0, 60) + "…" : msg.text,
+          body: msg.text.length > 60 ? msg.text.slice(0, 60) + '…' : msg.text,
         });
       }
 
@@ -79,25 +64,25 @@ export default function Chat() {
       });
     };
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("online_users", onOnlineUsers);
-    socket.on("new_message", onNewMessage);
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('online_users', onOnlineUsers);
+    socket.on('new_message', onNewMessage);
 
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("online_users", onOnlineUsers);
-      socket.off("new_message", onNewMessage);
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('online_users', onOnlineUsers);
+      socket.off('new_message', onNewMessage);
     };
   }, [socket, user.id, notify]); // ✅ add notify to deps
 
   const fetchContacts = useCallback(async () => {
     try {
-      const { data } = await api.get(`/contacts/${user.id}`);
+      const { data } = await api.get(`/contacts`);
       setContacts(data);
     } catch (err) {
-      console.error("Contacts error:", err);
+      console.error('Contacts error:', err);
     } finally {
       setLoadingContacts(false);
     }
@@ -107,23 +92,23 @@ export default function Chat() {
     fetchContacts();
   }, [fetchContacts]);
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   // ── NEW: mark messages read & compute firstUnreadIndex ───────────────
   const markAsRead = useCallback(
     async (partnerId) => {
       try {
-        await api.patch("/messages/read", {
+        await api.patch('/messages/read', {
           userId: user.id,
           fromId: partnerId,
         });
         fetchContacts(); // clear the badge
       } catch (err) {
-        console.error("Mark read error:", err);
+        console.error('Mark read error:', err);
       }
     },
-    [user.id, fetchContacts],
+    [user.id, fetchContacts]
   );
 
   const loadMessages = async (partner) => {
@@ -136,7 +121,7 @@ export default function Chat() {
 
       // Find where unread messages begin (messages FROM partner, unread)
       const firstUnread = data.findIndex(
-        (m) => m.from === partner.id && m.to === user.id && !m.isRead,
+        (m) => m.from === partner.id && m.to === user.id && !m.isRead
       );
       setFirstUnreadIndex(firstUnread >= 0 ? firstUnread : null);
       setMessages(data);
@@ -146,7 +131,7 @@ export default function Chat() {
         markAsRead(partner.id);
       }
     } catch {
-      antMsg.error("Failed to load messages");
+      antMsg.error('Failed to load messages');
     } finally {
       setLoadingMsgs(false);
     }
@@ -162,9 +147,7 @@ export default function Chat() {
     setSearching(true);
     searchTimer.current = setTimeout(async () => {
       try {
-        const { data } = await api.get(
-          `/users/search?q=${val}&exclude=${user.id}`,
-        );
+        const { data } = await api.get(`/users/search?q=${val}&exclude=${user.id}`);
         setSearchResults(data);
       } finally {
         setSearching(false);
@@ -174,12 +157,12 @@ export default function Chat() {
 
   const sendMessage = () => {
     if (!text.trim() || !selected) return;
-    socket.emit("send_message", {
+    socket.emit('send_message', {
       from: user.id,
       to: selected.id,
       text: text.trim(),
     });
-    setText("");
+    setText('');
     // clear unread divider after we send something — we're clearly "here"
     setFirstUnreadIndex(null);
   };
@@ -205,47 +188,42 @@ export default function Chat() {
       <Navbar />
       <div
         style={{
-          display: "flex",
-          height: "93vh",
-          background: "#0d0d1a",
-          fontFamily: "system-ui",
+          display: 'flex',
+          height: '93vh',
+          background: '#0d0d1a',
+          fontFamily: 'system-ui',
         }}
       >
         {/* ── LEFT PANEL ─────────────────────────────────────────── */}
         <div
           style={{
             width: 300,
-            borderRight: "1px solid #1e1e3a",
-            display: "flex",
-            flexDirection: "column",
-            background: "#10101e",
+            borderRight: '1px solid #1e1e3a',
+            display: 'flex',
+            flexDirection: 'column',
+            background: '#10101e',
           }}
         >
           {/* Header */}
           <div
             style={{
-              padding: "16px 16px 12px",
-              borderBottom: "1px solid #1e1e3a",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
+              padding: '16px 16px 12px',
+              borderBottom: '1px solid #1e1e3a',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <Avatar
-                style={{ background: "#667eea" }}
-                icon={<UserOutlined />}
-              />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <Avatar style={{ background: '#667eea' }} icon={<UserOutlined />} />
               <div>
-                <div style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>
-                  {user.username}
-                </div>
+                <div style={{ color: '#fff', fontWeight: 600, fontSize: 13 }}>{user.username}</div>
                 <div
                   style={{
-                    color: "#667eea",
+                    color: '#667eea',
                     fontSize: 11,
-                    display: "flex",
-                    alignItems: "center",
+                    display: 'flex',
+                    alignItems: 'center',
                     gap: 4,
                   }}
                 >
@@ -256,22 +234,18 @@ export default function Chat() {
           </div>
 
           {/* Search */}
-          <div style={{ padding: "12px 12px 8px" }}>
+          <div style={{ padding: '12px 12px 8px' }}>
             <Input
               prefix={
-                searching ? (
-                  <Spin size="small" />
-                ) : (
-                  <SearchOutlined style={{ color: "#555" }} />
-                )
+                searching ? <Spin size="small" /> : <SearchOutlined style={{ color: '#555' }} />
               }
               placeholder="Search users..."
               value={searchQ}
               onChange={(e) => handleSearch(e.target.value)}
               style={{
-                background: "#1a1a2e",
-                border: "1px solid #2a2a4a",
-                color: "#fff",
+                background: '#1a1a2e',
+                border: '1px solid #2a2a4a',
+                color: '#fff',
                 borderRadius: 8,
               }}
               allowClear
@@ -279,16 +253,16 @@ export default function Chat() {
           </div>
 
           {/* Contact list */}
-          <div style={{ flex: 1, overflowY: "auto" }}>
+          <div style={{ flex: 1, overflowY: 'auto' }}>
             {loadingContacts && !searchQ ? (
-              <div style={{ textAlign: "center", paddingTop: 40 }}>
+              <div style={{ textAlign: 'center', paddingTop: 40 }}>
                 <Spin />
               </div>
             ) : displayList.length === 0 ? (
               <Empty
                 description={
-                  <span style={{ color: "#555" }}>
-                    {searchQ ? "No users found" : "No chats yet"}
+                  <span style={{ color: '#555' }}>
+                    {searchQ ? 'No users found' : 'No chats yet'}
                   </span>
                 }
                 style={{ paddingTop: 40 }}
@@ -299,54 +273,45 @@ export default function Chat() {
                 return (
                   <div
                     key={u.id}
-                    className={
-                      u.role === "admin" ? "animated-admin-border" : ""
-                    }
+                    className={u.role === 'admin' ? 'animated-admin-border' : ''}
                     onClick={() => {
                       loadMessages(u);
 
-                      setSearchQ("");
+                      setSearchQ('');
 
                       setSearchResults([]);
                     }}
                     style={{
-                      padding: "12px 16px",
+                      padding: '12px 16px',
 
-                      cursor: "pointer",
+                      cursor: 'pointer',
 
-                      display: "flex",
+                      display: 'flex',
 
-                      alignItems: "center",
+                      alignItems: 'center',
 
                       gap: 12,
 
-                      background:
-                        selected?.id === u.id ? "#1e1e3a" : "transparent",
+                      background: selected?.id === u.id ? '#1e1e3a' : 'transparent',
 
                       borderLeft:
-                        selected?.id === u.id
-                          ? "3px solid #667eea"
-                          : "3px solid transparent",
+                        selected?.id === u.id ? '3px solid #667eea' : '3px solid transparent',
 
-                      transition: "all 0.15s",
+                      transition: 'all 0.15s',
                     }}
                   >
                     {/* ── Online dot badge ── */}
-                    <Badge
-                      dot
-                      color={isOnline(u.id) ? "#52c41a" : "#555"}
-                      offset={[-2, 30]}
-                    >
-                      <Avatar style={{ background: "#667eea", flexShrink: 0 }}>
+                    <Badge dot color={isOnline(u.id) ? '#52c41a' : '#555'} offset={[-2, 30]}>
+                      <Avatar style={{ background: '#667eea', flexShrink: 0 }}>
                         {u.username[0].toUpperCase()}
                       </Avatar>
                     </Badge>
 
-                    <div style={{ overflow: "hidden", flex: 1 }}>
+                    <div style={{ overflow: 'hidden', flex: 1 }}>
                       <div
                         style={{
                           // ── NEW: bold + brighter color when unread ──────
-                          color: hasUnread ? "#c4b5fd" : "#fff",
+                          color: hasUnread ? '#c4b5fd' : '#fff',
                           fontWeight: hasUnread ? 700 : 500,
                           fontSize: 13,
                         }}
@@ -357,12 +322,12 @@ export default function Chat() {
                         <div
                           style={{
                             // ── NEW: brighter preview for unread ───────────
-                            color: hasUnread ? "#a78bfa" : "#666",
+                            color: hasUnread ? '#a78bfa' : '#666',
                             fontWeight: hasUnread ? 500 : 400,
                             fontSize: 11,
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
                           }}
                         >
                           {u.lastMessage}
@@ -374,21 +339,21 @@ export default function Chat() {
                     {hasUnread && (
                       <div
                         style={{
-                          background: "#667eea",
-                          color: "#fff",
+                          background: '#667eea',
+                          color: '#fff',
                           borderRadius: 10,
                           minWidth: 20,
                           height: 20,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
                           fontSize: 11,
                           fontWeight: 700,
-                          padding: "0 6px",
+                          padding: '0 6px',
                           flexShrink: 0,
                         }}
                       >
-                        {u.unreadCount > 99 ? "99+" : u.unreadCount}
+                        {u.unreadCount > 99 ? '99+' : u.unreadCount}
                       </div>
                     )}
                   </div>
@@ -399,22 +364,20 @@ export default function Chat() {
         </div>
 
         {/* ── RIGHT PANEL ────────────────────────────────────────── */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           {!selected ? (
             <div
               style={{
                 flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#333",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#333',
               }}
             >
-              <div style={{ textAlign: "center" }}>
+              <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 48 }}>💬</div>
-                <div style={{ marginTop: 12, fontSize: 15 }}>
-                  Select a user to start chatting
-                </div>
+                <div style={{ marginTop: 12, fontSize: 15 }}>Select a user to start chatting</div>
               </div>
             </div>
           ) : (
@@ -422,34 +385,28 @@ export default function Chat() {
               {/* Chat header */}
               <div
                 style={{
-                  padding: "14px 20px",
-                  borderBottom: "1px solid #1e1e3a",
-                  display: "flex",
-                  alignItems: "center",
+                  padding: '14px 20px',
+                  borderBottom: '1px solid #1e1e3a',
+                  display: 'flex',
+                  alignItems: 'center',
                   gap: 12,
-                  background: "#10101e",
+                  background: '#10101e',
                 }}
               >
-                <Badge
-                  dot
-                  color={isOnline(selected.id) ? "#52c41a" : "#555"}
-                  offset={[-2, 30]}
-                >
-                  <Avatar style={{ background: "#667eea" }}>
+                <Badge dot color={isOnline(selected.id) ? '#52c41a' : '#555'} offset={[-2, 30]}>
+                  <Avatar style={{ background: '#667eea' }}>
                     {selected.username[0].toUpperCase()}
                   </Avatar>
                 </Badge>
                 <div>
-                  <div style={{ color: "#fff", fontWeight: 600 }}>
-                    {selected.username}
-                  </div>
+                  <div style={{ color: '#fff', fontWeight: 600 }}>{selected.username}</div>
                   <div
                     style={{
-                      color: isOnline(selected.id) ? "#52c41a" : "#666",
+                      color: isOnline(selected.id) ? '#52c41a' : '#666',
                       fontSize: 11,
                     }}
                   >
-                    {isOnline(selected.id) ? "Online" : "Offline"}
+                    {isOnline(selected.id) ? 'Online' : 'Offline'}
                   </div>
                 </div>
               </div>
@@ -459,10 +416,10 @@ export default function Chat() {
                 // className={selected.role === "admin" ? "admin-chat-bg" : ""}
                 style={{
                   flex: 1,
-                  overflowY: "auto",
-                  padding: "20px",
-                  display: "flex",
-                  flexDirection: "column",
+                  overflowY: 'auto',
+                  padding: '20px',
+                  display: 'flex',
+                  flexDirection: 'column',
                   gap: 8,
                 }}
               >
@@ -474,14 +431,14 @@ export default function Chat() {
                 )} */}
 
                 {loadingMsgs ? (
-                  <div style={{ textAlign: "center", paddingTop: 60 }}>
+                  <div style={{ textAlign: 'center', paddingTop: 60 }}>
                     <Spin size="large" tip="Loading messages..." />
                   </div>
                 ) : messages.length === 0 ? (
                   <div
                     style={{
-                      textAlign: "center",
-                      color: "#444",
+                      textAlign: 'center',
+                      color: '#444',
                       marginTop: 60,
                     }}
                   >
@@ -492,38 +449,36 @@ export default function Chat() {
                     const mine = msg.from === user.id;
 
                     // ── NEW: insert "New messages" divider ─────────────
-                    const showDivider =
-                      firstUnreadIndex !== null && index === firstUnreadIndex;
+                    const showDivider = firstUnreadIndex !== null && index === firstUnreadIndex;
 
                     return (
                       <React.Fragment key={msg.id}>
                         {showDivider && (
                           <div
                             style={{
-                              display: "flex",
-                              alignItems: "center",
+                              display: 'flex',
+                              alignItems: 'center',
                               gap: 12,
-                              margin: "8px 0",
+                              margin: '8px 0',
                             }}
                           >
                             <div
                               style={{
                                 flex: 1,
                                 height: 1,
-                                background:
-                                  "linear-gradient(to right, transparent, #667eea)",
+                                background: 'linear-gradient(to right, transparent, #667eea)',
                               }}
                             />
                             <div
                               style={{
-                                background: "#667eea22",
-                                border: "1px solid #667eea66",
+                                background: '#667eea22',
+                                border: '1px solid #667eea66',
                                 borderRadius: 12,
-                                padding: "3px 12px",
-                                color: "#a78bfa",
+                                padding: '3px 12px',
+                                color: '#a78bfa',
                                 fontSize: 11,
                                 fontWeight: 600,
-                                whiteSpace: "nowrap",
+                                whiteSpace: 'nowrap',
                               }}
                             >
                               New messages
@@ -532,8 +487,7 @@ export default function Chat() {
                               style={{
                                 flex: 1,
                                 height: 1,
-                                background:
-                                  "linear-gradient(to left, transparent, #667eea)",
+                                background: 'linear-gradient(to left, transparent, #667eea)',
                               }}
                             />
                           </div>
@@ -541,38 +495,36 @@ export default function Chat() {
 
                         <div
                           style={{
-                            display: "flex",
-                            justifyContent: mine ? "flex-end" : "flex-start",
+                            display: 'flex',
+                            justifyContent: mine ? 'flex-end' : 'flex-start',
                           }}
                         >
                           <div
                             style={{
-                              maxWidth: "65%",
-                              padding: "9px 14px",
-                              borderRadius: mine
-                                ? "16px 16px 4px 16px"
-                                : "16px 16px 16px 4px",
+                              maxWidth: '65%',
+                              padding: '9px 14px',
+                              borderRadius: mine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
                               background: mine
-                                ? "linear-gradient(135deg, #667eea, #764ba2)"
-                                : "#1e1e3a",
-                              color: "#fff",
+                                ? 'linear-gradient(135deg, #667eea, #764ba2)'
+                                : '#1e1e3a',
+                              color: '#fff',
                               fontSize: 13,
                               lineHeight: 1.5,
-                              boxShadow: "0 2px 8px #0004",
+                              boxShadow: '0 2px 8px #0004',
                             }}
                           >
                             <div>{msg.text}</div>
                             <div
                               style={{
                                 fontSize: 10,
-                                color: mine ? "#ccc" : "#666",
+                                color: mine ? '#ccc' : '#666',
                                 marginTop: 4,
-                                textAlign: "right",
+                                textAlign: 'right',
                               }}
                             >
                               {new Date(msg.createdAt).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
+                                hour: '2-digit',
+                                minute: '2-digit',
                               })}
                             </div>
                           </div>
@@ -587,11 +539,11 @@ export default function Chat() {
               {/* Input */}
               <div
                 style={{
-                  padding: "14px 20px",
-                  borderTop: "1px solid #1e1e3a",
-                  display: "flex",
+                  padding: '14px 20px',
+                  borderTop: '1px solid #1e1e3a',
+                  display: 'flex',
                   gap: 10,
-                  background: "#10101e",
+                  background: '#10101e',
                 }}
               >
                 <Input
@@ -600,9 +552,9 @@ export default function Chat() {
                   onPressEnter={sendMessage}
                   placeholder={`Message ${selected.username}...`}
                   style={{
-                    background: "#1a1a2e",
-                    border: "1px solid #2a2a4a",
-                    color: "#fff",
+                    background: '#1a1a2e',
+                    border: '1px solid #2a2a4a',
+                    color: '#fff',
                     borderRadius: 10,
                     height: 44,
                   }}
@@ -613,12 +565,12 @@ export default function Chat() {
                   loading={sending}
                   disabled={!text.trim()}
                   style={{
-                    background: "linear-gradient(135deg, #667eea, #764ba2)",
-                    border: "none",
+                    background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                    border: 'none',
                     height: 44,
                     width: 44,
                     borderRadius: 10,
-                    color: "#fff",
+                    color: '#fff',
                   }}
                 />
               </div>

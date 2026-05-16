@@ -36,7 +36,11 @@ function getContacts(req, res) {
 
   const db = readDB();
 
-  // Get partner ids
+  // Safety fallback
+  db.messages = db.messages || [];
+
+  db.users = db.users || [];
+
   const partnerIds = [
     ...new Set(
       db.messages

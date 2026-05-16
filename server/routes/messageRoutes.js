@@ -8,9 +8,9 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.use(authMiddleware);
 
 // Get messages
-router.get('/:otherUserId', getMessages);
+router.get('/messages/:otherUserId', getMessages);
 
 // Mark seen
-router.patch('/read', markRead);
+router.patch('/messages/read', markRead);
 
 module.exports = router;

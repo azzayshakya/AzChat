@@ -94,8 +94,8 @@ export default function Chatx() {
 
   const fetchContacts = useCallback(async () => {
     try {
-      const { data } = await api.get(`/contacts/${user.id}`);
-      setContacts(data);
+      const { data } = await api.get(`/contacts`);
+      setContacts(data.data);
     } catch (err) {
       console.error('Contacts error:', err);
     } finally {

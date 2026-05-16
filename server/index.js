@@ -30,7 +30,7 @@ app.use('/api', authRoutes);
 
 app.use('/api', userRoutes);
 
-app.use('/api/messages', messageRoutes);
+app.use('/api', messageRoutes);
 
 app.use('/api/admin', adminRoutes(getOnlineUsers));
 

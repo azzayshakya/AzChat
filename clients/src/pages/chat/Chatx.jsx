@@ -15,7 +15,6 @@ import MessageList from './components/MessageList.jsx';
 export default function Chatx() {
   const { user } = useAuth();
   const nav = useNavigate();
-  const socket = getSocket();
 
   const [contacts, setContacts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -34,21 +33,41 @@ export default function Chatx() {
 
   const selectedRef = useRef(null);
   const searchTimer = useRef(null);
+  const socketRef = useRef(null);
 
   const { notify } = useNotification();
 
+  const fetchContacts = useCallback(async () => {
+    try {
+      const { data } = await api.get(`/contacts`);
+      setContacts(data.data);
+    } catch (err) {
+      console.error('Contacts error:', err);
+    } finally {
+      setLoadingContacts(false);
+    }
+  }, [user.id]);
+  // Create socket only once
   useEffect(() => {
-    if (!socket || !user?.id) return;
+    socketRef.current = getSocket();
 
-    const onConnect = () => socket.emit('register', user.id);
-    const onOnlineUsers = (users) => setOnlineUsers(users);
+    return () => {
+      socketRef.current?.off();
+    };
+  }, []);
+  useEffect(() => {
+    if (!socketRef.current || !user?.id) return;
+
+    const onOnlineUsers = (users) => {
+      setOnlineUsers(users);
+    };
 
     const onNewMessage = (msg) => {
       fetchContacts();
 
       const current = selectedRef.current;
 
-      // Show notification only for incoming messages
+      // Incoming message notification
       if (msg.senderId !== user.id) {
         const senderName =
           contacts.find((c) => c.id === msg.senderId)?.username || current?.username || 'Someone';
@@ -62,11 +81,11 @@ export default function Chatx() {
       setMessages((prev) => {
         if (!current) return prev;
 
-        const isCurrentChat =
-          (msg.senderId === current.id && msg.receiverId === user.id) ||
-          (msg.senderId === user.id && msg.receiverId === current.id);
+        const isCurrentChat = msg.chatId === [user.id, current.id].sort().join('_');
 
-        if (!isCurrentChat) return prev;
+        if (!isCurrentChat) {
+          return prev;
+        }
 
         // Prevent duplicates
         if (prev.some((m) => m.id === msg.id)) {
@@ -77,31 +96,44 @@ export default function Chatx() {
       });
     };
 
-    socket.on('connect', onConnect);
-    socket.on('online_users', onOnlineUsers);
-    socket.on('new_message', onNewMessage);
+    // Seen status updates
+    const onMessagesSeen = ({ chatId, seenBy }) => {
+      const current = selectedRef.current;
+
+      if (!current) return;
+
+      const currentChatId = [user.id, current.id].sort().join('_');
+
+      if (chatId !== currentChatId) {
+        return;
+      }
+
+      setMessages((prev) =>
+        prev.map((m) => ({
+          ...m,
+          status: m.receiverId === seenBy ? 'seen' : m.status,
+        }))
+      );
+    };
+
+    socketRef.current.on('online_users', onOnlineUsers);
+
+    socketRef.current.on('new_message', onNewMessage);
+
+    socketRef.current.on('messages_seen', onMessagesSeen);
 
     return () => {
-      socket.off('connect', onConnect);
-      socket.off('online_users', onOnlineUsers);
-      socket.off('new_message', onNewMessage);
+      socketRef.current.off('online_users', onOnlineUsers);
+
+      socketRef.current.off('new_message', onNewMessage);
+
+      socketRef.current.off('messages_seen', onMessagesSeen);
     };
-  }, [socket, user?.id, notify]);
+  }, [socketRef.current, user?.id, notify, contacts, fetchContacts]);
 
   useEffect(() => {
     selectedRef.current = selected;
   }, [selected]);
-
-  const fetchContacts = useCallback(async () => {
-    try {
-      const { data } = await api.get(`/contacts`);
-      setContacts(data.data);
-    } catch (err) {
-      console.error('Contacts error:', err);
-    } finally {
-      setLoadingContacts(false);
-    }
-  }, [user.id]);
 
   useEffect(() => {
     fetchContacts();
@@ -177,8 +209,13 @@ export default function Chatx() {
   };
 
   const sendMessage = () => {
-    if (!text.trim() || !selected) return;
-    socket.emit(
+    if (!text.trim() || !selected || sending) {
+      return;
+    }
+
+    setSending(true);
+
+    socketRef.current.emit(
       'send_message',
       {
         receiverId: selected.id,
@@ -186,15 +223,19 @@ export default function Chatx() {
         text: text.trim(),
       },
       (response) => {
-        if (!response.ok) {
-          console.error(response.error);
+        setSending(false);
+
+        if (!response?.ok) {
+          antMsg.error(response?.error || 'Failed to send');
+          return;
         }
       }
     );
+
     setText('');
+
     setFirstUnreadIndex(null);
   };
-
   const isOnline = (id) => onlineUsers.includes(id);
 
   const handleSelectContact = (contact) => {

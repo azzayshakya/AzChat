@@ -8,8 +8,13 @@ function getMessages(req, res) {
 
   const db = readDB();
 
+  // Safety fallback
+  db.messages = db.messages || [];
+
+  // Generate direct chat id
   const chatId = [currentUserId, otherUserId].sort().join('_');
 
+  // Get messages
   const msgs = db.messages.filter((m) => m.chatId === chatId);
 
   // Sort messages
@@ -28,15 +33,11 @@ function markRead(req, res) {
 
   const db = readDB();
 
-  const chatId = [currentUserId, fromUserId].sort().join('_');
+  // Safety fallback
+  db.messages = db.messages || [];
 
   db.messages = db.messages.map((m) => {
-    if (
-      m.chatId === chatId &&
-      m.senderId === fromUserId &&
-      m.receiverId === currentUserId &&
-      m.status !== 'seen'
-    ) {
+    if (m.senderId === fromUserId && m.receiverId === currentUserId && m.status !== 'seen') {
       return {
         ...m,
 

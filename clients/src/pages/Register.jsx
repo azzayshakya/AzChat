@@ -1,49 +1,44 @@
-import React, { useState } from "react";
-import { Form, Input, Button, message, Typography, Spin } from "antd";
-import { useNavigate, Link } from "react-router-dom";
-import { api } from "../api";
-import { useAuth } from "../AuthContext.jsx";
-import Navbar from "../components/Navbar.jsx";
+import React, { useState } from 'react';
+import { Form, Input, Button, message, Typography, Spin } from 'antd';
+import { useNavigate, Link } from 'react-router-dom';
+import { api } from '../api';
+import { useAuth } from '../AuthContext.jsx';
+import Navbar from '../components/Navbar.jsx';
 
 const { Title, Text } = Typography;
 
 export default function Register() {
   const [loading, setLoading] = useState(false);
-  const [usernameStatus, setUsernameStatus] = useState("");
-  const [emailStatus, setEmailStatus] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState('');
+  const [emailStatus, setEmailStatus] = useState('');
   const { login } = useAuth();
   const nav = useNavigate();
 
   const checkUsername = async (_, value) => {
-    if (!value || value.length < 3) return Promise.reject("Min 3 characters");
-    setUsernameStatus("validating");
+    if (!value || value.length < 3) return Promise.reject('Min 3 characters');
+    setUsernameStatus('validating');
     const { data } = await api.get(`/check-username/${value}`);
-    setUsernameStatus(data.available ? "success" : "error");
-    return data.available
-      ? Promise.resolve()
-      : Promise.reject("Username taken");
+    setUsernameStatus(data.available ? 'success' : 'error');
+    return data.available ? Promise.resolve() : Promise.reject('Username taken');
   };
 
   const checkEmail = async (_, value) => {
-    if (!value || !/\S+@\S+\.\S+/.test(value))
-      return Promise.reject("Invalid email");
-    setEmailStatus("validating");
+    if (!value || !/\S+@\S+\.\S+/.test(value)) return Promise.reject('Invalid email');
+    setEmailStatus('validating');
     const { data } = await api.get(`/check-email/${encodeURIComponent(value)}`);
-    setEmailStatus(data.available ? "success" : "error");
-    return data.available
-      ? Promise.resolve()
-      : Promise.reject("Email already used");
+    setEmailStatus(data.available ? 'success' : 'error');
+    return data.available ? Promise.resolve() : Promise.reject('Email already used');
   };
 
   const onFinish = async (vals) => {
     setLoading(true);
     try {
-      const { data } = await api.post("/register", vals);
+      const { data } = await api.post('/register', vals);
       login(data.data);
-      message.success("Account created!");
-      nav("/chat");
+      message.success('Account created!');
+      nav('/chat');
     } catch (e) {
-      message.error(e.response?.data?.error || "Registration failed");
+      message.error(e.response?.data?.error || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -54,10 +49,7 @@ export default function Register() {
       <Navbar />
       <div style={pageStyle}>
         <div style={cardStyle}>
-          <Title
-            level={3}
-            style={{ color: "#fff", textAlign: "center", marginBottom: 32 }}
-          >
+          <Title level={3} style={{ color: '#fff', textAlign: 'center', marginBottom: 32 }}>
             Create Account
           </Title>
           <Spin spinning={loading}>
@@ -79,31 +71,23 @@ export default function Register() {
                 <Input placeholder="Ex. user@az.com" style={inputStyle} />
               </Form.Item>
               <Form.Item name="password" rules={[{ required: true, min: 6 }]}>
-                <Input.Password
-                  placeholder="Password (min 6 chars)"
-                  style={inputStyle}
-                />
+                <Input.Password placeholder="Password (min 6 chars)" style={inputStyle} />
               </Form.Item>
-              <Button
-                htmlType="submit"
-                block
-                style={btnStyle}
-                loading={loading}
-              >
+              <Button htmlType="submit" block style={btnStyle} loading={loading}>
                 Register
               </Button>
             </Form>
           </Spin>
           <Text
             style={{
-              color: "#888",
-              display: "block",
-              textAlign: "center",
+              color: '#888',
+              display: 'block',
+              textAlign: 'center',
               marginTop: 20,
             }}
           >
-            Already have an account?{" "}
-            <Link to="/login" style={{ color: "#667eea" }}>
+            Already have an account?{' '}
+            <Link to="/login" style={{ color: '#667eea' }}>
               Login
             </Link>
           </Text>
@@ -114,32 +98,32 @@ export default function Register() {
 }
 
 const pageStyle = {
-  minHeight: "100vh",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  background: "var(--page-gradient)",
+  minHeight: '100vh',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'var(--page-gradient)',
 };
 const cardStyle = {
-  background: "var(--bg-darkest)",
+  background: 'var(--secondary-color)',
   borderRadius: 16,
-  padding: "40px 36px",
+  padding: '40px 36px',
   width: 380,
-  boxShadow: "0 20px 60px #0008",
-  border: "1px solid #333",
+  boxShadow: '0 20px 60px #0008',
+  border: '1px solid #333',
 };
 const inputStyle = {
-  background: "#12122a",
-  border: "1px solid #333",
-  color: "#fff",
+  background: '#12122a',
+  border: '1px solid #333',
+  color: '#fff',
   borderRadius: 8,
 };
 const btnStyle = {
-  background: "linear-gradient(135deg, #667eea, #764ba2)",
-  border: "none",
+  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+  border: 'none',
   height: 46,
   borderRadius: 10,
-  color: "#fff",
+  color: '#fff',
   fontWeight: 600,
   fontSize: 15,
 };

@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Spin } from "antd";
-import { api } from "../../../api";
+import React, { useState } from 'react';
+import { Form, Input, Button, Spin } from 'antd';
+import { api } from '../../../api';
 
 const { TextArea } = Input;
 
 const inputStyle = {
-  background: "#12122a",
-  border: "1px solid #333",
-  color: "#fff",
+  background: '#12122a',
+  border: '1px solid #333',
+  color: '#fff',
   borderRadius: 8,
 };
 
 const labelStyle = {
-  color: "#9999bb",
+  color: '#9999bb',
   fontSize: 13,
   marginBottom: 6,
-  display: "block",
+  display: 'block',
 };
 
 export default function ContactModal({ open, onClose }) {
@@ -27,7 +27,7 @@ export default function ContactModal({ open, onClose }) {
 
   const handleSubmit = async (vals) => {
     setLoading(true);
-    await api.post("/admin/post-user-query", vals);
+    await api.post('/admin/post-user-query', vals);
     setLoading(false);
     setSent(true);
   };
@@ -43,53 +43,53 @@ export default function ContactModal({ open, onClose }) {
     <div
       onClick={handleClose}
       style={{
-        position: "fixed",
+        position: 'fixed',
         inset: 0,
-        background: "rgba(0,0,0,0.75)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        background: 'rgba(0,0,0,0.75)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         zIndex: 1000,
         padding: 24,
-        animation: "fadeIn 0.15s ease",
+        animation: 'fadeIn 0.15s ease',
       }}
     >
       {/* Card */}
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          background: "var(--bg-darkest)",
+          background: 'var(--secondary-color)',
           borderRadius: 16,
-          padding: "40px 36px",
-          width: "100%",
+          padding: '40px 36px',
+          width: '100%',
           maxWidth: 420,
-          boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-          border: "1px solid #2a2a4a",
-          animation: "slideUp 0.2s ease",
+          boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+          border: '1px solid #2a2a4a',
+          animation: 'slideUp 0.2s ease',
         }}
       >
         {sent ? (
           // ── Success state ──────────────────────────────────
-          <div style={{ textAlign: "center", padding: "16px 0" }}>
+          <div style={{ textAlign: 'center', padding: '16px 0' }}>
             <div
               style={{
                 width: 64,
                 height: 64,
-                borderRadius: "50%",
-                background: "rgba(4,255,88,0.1)",
-                border: "1px solid rgba(4,255,88,0.3)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                borderRadius: '50%',
+                background: 'rgba(4,255,88,0.1)',
+                border: '1px solid rgba(4,255,88,0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 fontSize: 28,
-                margin: "0 auto 20px",
+                margin: '0 auto 20px',
               }}
             >
               ✅
             </div>
             <h3
               style={{
-                color: "#fff",
+                color: '#fff',
                 fontWeight: 700,
                 fontSize: 18,
                 marginBottom: 10,
@@ -99,24 +99,23 @@ export default function ContactModal({ open, onClose }) {
             </h3>
             <p
               style={{
-                color: "#9999bb",
+                color: '#9999bb',
                 fontSize: 14,
                 lineHeight: 1.6,
                 marginBottom: 28,
               }}
             >
-              Thank you for reaching out. We'll get back to you as soon as
-              possible.
+              Thank you for reaching out. We'll get back to you as soon as possible.
             </p>
             <Button
               block
               onClick={handleClose}
               style={{
-                background: "linear-gradient(135deg, #667eea, #764ba2)",
-                border: "none",
+                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                border: 'none',
                 height: 46,
                 borderRadius: 10,
-                color: "#fff",
+                color: '#fff',
                 fontWeight: 600,
                 fontSize: 15,
               }}
@@ -130,7 +129,7 @@ export default function ContactModal({ open, onClose }) {
             <div style={{ marginBottom: 28 }}>
               <h3
                 style={{
-                  color: "#fff",
+                  color: '#fff',
                   fontWeight: 700,
                   fontSize: 20,
                   marginBottom: 6,
@@ -138,25 +137,18 @@ export default function ContactModal({ open, onClose }) {
               >
                 Contact Developer
               </h3>
-              <p style={{ color: "#9999bb", fontSize: 13, margin: 0 }}>
+              <p style={{ color: '#9999bb', fontSize: 13, margin: 0 }}>
                 Have a query, suggestion, or issue? Fill the form below.
               </p>
             </div>
 
             <Spin spinning={loading}>
-              <Form
-                form={form}
-                layout="vertical"
-                onFinish={handleSubmit}
-                size="large"
-              >
+              <Form form={form} layout="vertical" onFinish={handleSubmit} size="large">
                 {/* Full Name */}
                 <Form.Item
                   name="name"
                   label={<span style={labelStyle}>Full Name *</span>}
-                  rules={[
-                    { required: true, message: "Please enter your name" },
-                  ]}
+                  rules={[{ required: true, message: 'Please enter your name' }]}
                   style={{ marginBottom: 16 }}
                 >
                   <Input placeholder="Your full name" style={inputStyle} />
@@ -166,15 +158,13 @@ export default function ContactModal({ open, onClose }) {
                 <Form.Item
                   name="message"
                   label={<span style={labelStyle}>Message *</span>}
-                  rules={[
-                    { required: true, message: "Please enter a message" },
-                  ]}
+                  rules={[{ required: true, message: 'Please enter a message' }]}
                   style={{ marginBottom: 16 }}
                 >
                   <TextArea
                     rows={3}
                     placeholder="Describe your query, suggestion, or issue..."
-                    style={{ ...inputStyle, resize: "none" }}
+                    style={{ ...inputStyle, resize: 'none' }}
                   />
                 </Form.Item>
 
@@ -184,10 +174,7 @@ export default function ContactModal({ open, onClose }) {
                   label={<span style={labelStyle}>Location</span>}
                   style={{ marginBottom: 16 }}
                 >
-                  <Input
-                    placeholder="Your location (optional)"
-                    style={inputStyle}
-                  />
+                  <Input placeholder="Your location (optional)" style={inputStyle} />
                 </Form.Item>
 
                 {/* Phone */}
@@ -196,35 +183,29 @@ export default function ContactModal({ open, onClose }) {
                   label={<span style={labelStyle}>Phone Number</span>}
                   style={{ marginBottom: 16 }}
                 >
-                  <Input
-                    placeholder="Your phone number (optional)"
-                    style={inputStyle}
-                  />
+                  <Input placeholder="Your phone number (optional)" style={inputStyle} />
                 </Form.Item>
 
                 {/* Email */}
                 <Form.Item
                   name="email"
                   label={<span style={labelStyle}>Email</span>}
-                  rules={[{ type: "email", message: "Enter a valid email" }]}
+                  rules={[{ type: 'email', message: 'Enter a valid email' }]}
                   style={{ marginBottom: 24 }}
                 >
-                  <Input
-                    placeholder="Your email (optional)"
-                    style={inputStyle}
-                  />
+                  <Input placeholder="Your email (optional)" style={inputStyle} />
                 </Form.Item>
 
-                <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ display: 'flex', gap: 10 }}>
                   <Button
                     block
                     onClick={handleClose}
                     style={{
-                      background: "transparent",
-                      border: "1px solid #333",
+                      background: 'transparent',
+                      border: '1px solid #333',
                       height: 46,
                       borderRadius: 10,
-                      color: "#9999bb",
+                      color: '#9999bb',
                       fontWeight: 600,
                     }}
                   >
@@ -235,11 +216,11 @@ export default function ContactModal({ open, onClose }) {
                     block
                     loading={loading}
                     style={{
-                      background: "linear-gradient(135deg, #667eea, #764ba2)",
-                      border: "none",
+                      background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                      border: 'none',
                       height: 46,
                       borderRadius: 10,
-                      color: "#fff",
+                      color: '#fff',
                       fontWeight: 600,
                       fontSize: 15,
                     }}

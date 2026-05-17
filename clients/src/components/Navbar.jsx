@@ -1,6 +1,6 @@
-import React from "react";
-import { Button, Typography, Row, Col, Card, Tag, Badge, Popover } from "antd";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { Button, Typography, Row, Col, Card, Tag, Badge, Popover } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import {
   MessageOutlined,
   WifiOutlined,
@@ -12,9 +12,9 @@ import {
   BulbOutlined,
   GithubOutlined,
   BugOutlined,
-} from "@ant-design/icons";
-import { useAuth } from "../AuthContext";
-import UserProfile from "./UserProfile";
+} from '@ant-design/icons';
+import { useAuth } from '../AuthContext';
+import UserProfile from './UserProfile';
 
 const { Title, Text } = Typography;
 export default function Navbar() {
@@ -24,105 +24,112 @@ export default function Navbar() {
   return (
     <nav
       style={{
-        position: "sticky",
+        position: 'sticky',
         top: 0,
         zIndex: 100,
-        background: "var(--bg-darkest)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        borderBottom: "1px solid #1e1e3a",
-        padding: "0 32px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
+        background: 'var(--secondary-color)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderBottom: '1px solid #1e1e3a',
+        padding: '0 32px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         height: 64,
       }}
     >
       {/* Logo */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div
           style={{
             width: 36,
             height: 36,
             borderRadius: 10,
-            background: "linear-gradient(135deg, #667eea, #764ba2)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            background: 'linear-gradient(135deg, #667eea, #764ba2)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
             fontSize: 18,
           }}
         >
-          <MessageOutlined style={{ color: "#fff" }} />
+          <img
+            src="public/AzChatLogo.png"
+            alt=""
+            height={36}
+            width={36}
+            style={{ borderRadius: 10 }}
+          />
+          {/* <MessageOutlined style={{ color: '#fff' }} /> */}
         </div>
         <span
           style={{
             fontWeight: 800,
             fontSize: 18,
-            color: "#fff",
+            color: '#fff',
             letterSpacing: 0.5,
           }}
         >
-          AZ<span style={{ color: "#667eea" }}>Chat</span>
+          AZ<span style={{ color: '#667eea' }}>Chat</span>
         </span>
       </div>
 
       {/* Nav links */}
       {!user ? (
-        <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           <li
-            onClick={() => nav("/home")}
+            onClick={() => nav('/home')}
             style={{
-              listStyle: "none",
-              cursor: "pointer",
-              color: "#FFF",
-              fontSize: "14px",
-              fontWeight: "500",
-              transition: "all 0.3s ease",
+              listStyle: 'none',
+              cursor: 'pointer',
+              color: '#FFF',
+              fontSize: '14px',
+              fontWeight: '500',
+              transition: 'all 0.3s ease',
             }}
             onMouseEnter={(e) => {
-              e.target.style.color = "#667eea";
+              e.target.style.color = '#667eea';
             }}
             onMouseLeave={(e) => {
-              e.target.style.color = "#FFF";
+              e.target.style.color = '#FFF';
             }}
           >
             Home
           </li>
           <li
-            onClick={() => nav("/about")}
+            onClick={() => nav('/about')}
             style={{
-              listStyle: "none",
-              cursor: "pointer",
-              color: "#FFF",
-              fontSize: "14px",
-              fontWeight: "500",
-              transition: "all 0.3s ease",
+              listStyle: 'none',
+              cursor: 'pointer',
+              color: '#FFF',
+              fontSize: '14px',
+              fontWeight: '500',
+              transition: 'all 0.3s ease',
             }}
             onMouseEnter={(e) => {
-              e.target.style.color = "#667eea";
+              e.target.style.color = '#667eea';
             }}
             onMouseLeave={(e) => {
-              e.target.style.color = "#FFF";
+              e.target.style.color = '#FFF';
             }}
           >
             About
           </li>
         </div>
       ) : (
-        ""
+        ''
       )}
 
       {/* Auth buttons */}
       {!user ? (
-        <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ display: 'flex', gap: 10 }}>
           <Button
-            onClick={() => nav("/login")}
+            onClick={() => nav('/login')}
             style={{
               height: 36,
               borderRadius: 10,
-              border: "1.5px solid #667eea",
-              color: "#667eea",
-              background: "transparent",
+              border: '1.5px solid #667eea',
+              color: '#667eea',
+              background: 'transparent',
               fontWeight: 600,
               fontSize: 13,
             }}
@@ -131,12 +138,12 @@ export default function Navbar() {
           </Button>
           <Button
             type="primary"
-            onClick={() => nav("/register")}
+            onClick={() => nav('/register')}
             style={{
               height: 36,
               borderRadius: 10,
-              background: "linear-gradient(135deg, #667eea, #764ba2)",
-              border: "none",
+              background: 'linear-gradient(135deg, #667eea, #764ba2)',
+              border: 'none',
               fontWeight: 600,
               fontSize: 13,
             }}
@@ -145,150 +152,146 @@ export default function Navbar() {
           </Button>
         </div>
       ) : (
-        <div style={{ display: "flex", alignItems: "center", gap: 28 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
           <li
-            onClick={() => nav("/home")}
+            onClick={() => nav('/home')}
             style={{
-              listStyle: "none",
-              cursor: "pointer",
-              color: "#FFF",
-              fontSize: "14px",
-              fontWeight: "500",
-              transition: "all 0.3s ease",
+              listStyle: 'none',
+              cursor: 'pointer',
+              color: '#FFF',
+              fontSize: '14px',
+              fontWeight: '500',
+              transition: 'all 0.3s ease',
             }}
             onMouseEnter={(e) => {
-              e.target.style.color = "#667eea";
+              e.target.style.color = '#667eea';
             }}
             onMouseLeave={(e) => {
-              e.target.style.color = "#FFF";
+              e.target.style.color = '#FFF';
             }}
           >
             Home
           </li>
           <li
-            onClick={() => nav("/about")}
+            onClick={() => nav('/about')}
             style={{
-              listStyle: "none",
-              cursor: "pointer",
-              color: "#FFF",
-              fontSize: "14px",
-              fontWeight: "500",
-              transition: "all 0.3s ease",
+              listStyle: 'none',
+              cursor: 'pointer',
+              color: '#FFF',
+              fontSize: '14px',
+              fontWeight: '500',
+              transition: 'all 0.3s ease',
             }}
             onMouseEnter={(e) => {
-              e.target.style.color = "#667eea";
+              e.target.style.color = '#667eea';
             }}
             onMouseLeave={(e) => {
-              e.target.style.color = "#FFF";
+              e.target.style.color = '#FFF';
             }}
           >
             About
           </li>
           <li
-            onClick={() => nav("/chat")}
+            onClick={() => nav('/chat')}
             style={{
-              listStyle: "none",
-              cursor: "pointer",
-              color: "#FFF",
-              fontSize: "14px",
-              fontWeight: "500",
-              transition: "all 0.3s ease",
+              listStyle: 'none',
+              cursor: 'pointer',
+              color: '#FFF',
+              fontSize: '14px',
+              fontWeight: '500',
+              transition: 'all 0.3s ease',
             }}
             onMouseEnter={(e) => {
-              e.target.style.color = "#667eea";
+              e.target.style.color = '#667eea';
             }}
             onMouseLeave={(e) => {
-              e.target.style.color = "#FFF";
+              e.target.style.color = '#FFF';
             }}
           >
             Chat
           </li>
-          <li style={{ listStyle: "none" }}>
+          <li style={{ listStyle: 'none' }}>
             <Popover
               content={<UserProfile user={user} logout={logout} />}
               trigger="click"
               placement="bottomRight"
               overlayInnerStyle={{
                 padding: 0,
-                background: "transparent",
+                background: 'transparent',
               }}
             >
               <div
                 style={{
-                  cursor: "pointer",
+                  cursor: 'pointer',
 
-                  display: "flex",
+                  display: 'flex',
 
-                  alignItems: "center",
+                  alignItems: 'center',
 
-                  gap: "10px",
+                  gap: '10px',
 
-                  padding: "10px 18px",
+                  padding: '10px 18px',
 
-                  borderRadius: "14px",
+                  borderRadius: '14px',
 
                   background:
-                    "linear-gradient(135deg, rgba(102,126,234,0.18), rgba(118,75,162,0.18))",
+                    'linear-gradient(135deg, rgba(102,126,234,0.18), rgba(118,75,162,0.18))',
 
-                  border: "1px solid rgba(167,139,250,0.25)",
+                  border: '1px solid rgba(167,139,250,0.25)',
 
-                  color: "var(--text-white)",
+                  color: 'var(--text-white)',
 
-                  fontSize: "14px",
+                  fontSize: '14px',
 
-                  fontWeight: "600",
+                  fontWeight: '600',
 
-                  backdropFilter: "blur(12px)",
+                  backdropFilter: 'blur(12px)',
 
-                  boxShadow: "0 4px 20px rgba(102,126,234,0.15)",
+                  boxShadow: '0 4px 20px rgba(102,126,234,0.15)',
 
-                  transition: "all 0.25s ease",
+                  transition: 'all 0.25s ease',
 
-                  position: "relative",
+                  position: 'relative',
 
-                  overflow: "hidden",
+                  overflow: 'hidden',
                 }}
                 onMouseEnter={(e) => {
                   // e.currentTarget.style.transform =
                   //   "translateY(-2px) scale(1.02)";
 
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 28px rgba(102,126,234,0.35)";
+                  e.currentTarget.style.boxShadow = '0 8px 28px rgba(102,126,234,0.35)';
 
-                  e.currentTarget.style.border =
-                    "1px solid rgba(167,139,250,0.45)";
+                  e.currentTarget.style.border = '1px solid rgba(167,139,250,0.45)';
                 }}
                 onMouseLeave={(e) => {
                   // e.currentTarget.style.transform = "translateY(0) scale(1)";
 
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 20px rgba(102,126,234,0.15)";
+                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(102,126,234,0.15)';
 
-                  e.currentTarget.style.border =
-                    "1px solid rgba(167,139,250,0.25)";
+                  e.currentTarget.style.border = '1px solid rgba(167,139,250,0.25)';
                 }}
               >
                 {/* Glow Effect */}
                 <div
                   style={{
-                    position: "absolute",
+                    position: 'absolute',
 
                     inset: 0,
 
                     background:
-                      "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+                      'linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)',
 
-                    transform: "translateX(-100%)",
+                    transform: 'translateX(-100%)',
 
-                    animation: "profileShine 3s infinite",
+                    animation: 'profileShine 3s infinite',
                   }}
                 />
 
                 <UserOutlined
                   style={{
-                    fontSize: "18px",
+                    fontSize: '18px',
 
-                    color: "var(--accent-light)",
+                    color: 'var(--accent-light)',
 
                     zIndex: 1,
                   }}

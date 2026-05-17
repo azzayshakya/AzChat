@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import AboutHero from "./components/AboutHero";
-import Navbar from "../../components/Navbar";
-import AboutFeatures from "./components/AboutFeaturs";
-import AboutUsagePolicy from "./components/Aboutusagepolicy";
-import AboutDeveloper from "./components/Aboutdeveloper";
-import { Footer } from "../../components/Footer";
-import ContactModal from "./components/Contactmodal";
+import React, { useState } from 'react';
+import AboutHero from './components/AboutHero';
+import Navbar from '../../components/Navbar';
+import AboutFeatures from './components/AboutFeaturs';
+import AboutUsagePolicy from './components/Aboutusagepolicy';
+import AboutDeveloper from './components/Aboutdeveloper';
+import { Footer } from '../../components/Footer';
+import ContactModal from './components/Contactmodal';
 export default function About() {
   const [contactOpen, setContactOpen] = useState(false);
 
@@ -13,21 +13,11 @@ export default function About() {
     <>
       <Navbar />
 
-      <div
-        style={{ background: "var(--main-bg-gradient)", minHeight: "100vh" }}
-      >
-        {/* Hero */}
+      <div style={{ background: 'var(--page-gradient)', minHeight: '100vh' }}>
         <AboutHero />
         <AboutDeveloper onContactClick={() => setContactOpen(true)} />
-        {/* Features grid */}
         <AboutFeatures />
-
-        {/* Do's & Don'ts */}
         <AboutUsagePolicy />
-
-        {/* Developer card */}
-
-        {/* Footer strip */}
         <Footer />
       </div>
 

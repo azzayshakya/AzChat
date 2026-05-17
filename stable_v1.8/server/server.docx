@@ -1,0 +1,40 @@
+db function :
+
+
+1.read db 
+2.write db
+
+auth routes :
+
+1.api/register
+2. api/login
+3. /api/check-email/:email
+4./api/check-username/:username
+
+message and user routes
+
+4./api/users/search
+5./api/contacts/:userId
+6./api/messages/read
+7./api/messages/:userId/:otherId
+
+
+socket event
+
+ 1.send_message
+
+
+
+typing_start
+typing_stop
+message_seen
+message_delivered
+group_created
+group_joined
+group_left
+user_online
+user_offline
+reaction_added
+message_deleted
+message_edited
+call_started

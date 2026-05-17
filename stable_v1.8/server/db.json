@@ -1,0 +1,183 @@
+{
+  "users": [
+    {
+      "id": "f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "username": "amanshakya",
+      "name": "amanshakya",
+      "email": "aman@gmail.com",
+      "passwordHash": "$2a$10$ZFXAalj9dER4h1ob.TBWBOXq2wIat3.MIPxdDsmTNfdEd3j1cbxe.",
+      "role": "user",
+      "isOnline": true,
+      "lastSeen": null,
+      "createdAt": "2026-05-13T16:00:13.118Z"
+    },
+    {
+      "id": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "username": "ajayshakya",
+      "name": "ajayshakya",
+      "email": "ajayshakya7376@gmail.com",
+      "passwordHash": "$2a$10$jYfEkDFttdP4iYSZQkAoY.07e3twec5PSLl.SS3vxHezihbc1oSDu",
+      "role": "user",
+      "isOnline": true,
+      "lastSeen": "2026-05-17T04:33:53.331Z",
+      "createdAt": "2026-05-13T16:00:39.002Z"
+    },
+    {
+      "id": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "username": "azzzz",
+      "name": "azzzz",
+      "email": "ajay@mail.com",
+      "passwordHash": "$2a$10$4GdqQ0cwCtP0aDB0WgsFNOO6AJv/tiLC4HulIakjyM54Kql8atqfG",
+      "role": "user",
+      "isOnline": true,
+      "lastSeen": "2026-05-17T05:00:57.077Z",
+      "createdAt": "2026-05-16T16:45:54.603Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "25e87cfd-f2d7-4c6b-ab05-1782a870bf41",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "hyy",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:32.070Z",
+      "createdAt": "2026-05-16T18:00:43.662Z"
+    },
+    {
+      "id": "e90f5087-8c22-4e80-b583-d618a1f7f7e1",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "halo",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:32.070Z",
+      "createdAt": "2026-05-16T18:00:48.271Z"
+    },
+    {
+      "id": "75be55b1-1d05-4b81-a232-a4c5a86af633",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "kaisi ho bhai",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:32.070Z",
+      "createdAt": "2026-05-16T18:00:53.694Z"
+    },
+    {
+      "id": "043cefed-7222-41d3-8e19-250e9bde9c31",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "yes",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:32.070Z",
+      "createdAt": "2026-05-16T19:23:24.038Z"
+    },
+    {
+      "id": "cfaadbae-2275-42a0-be58-9ff1b11fadd2",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "bolo",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:32.070Z",
+      "createdAt": "2026-05-16T19:23:26.146Z"
+    },
+    {
+      "id": "aa3af6e2-59e2-457f-8866-afa4121ba753",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "na",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:32.070Z",
+      "createdAt": "2026-05-16T19:23:27.544Z"
+    },
+    {
+      "id": "395988eb-75cd-400b-84ac-30f7079e48fe",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "yoyo",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:32.070Z",
+      "createdAt": "2026-05-16T19:23:29.543Z"
+    },
+    {
+      "id": "ad4c0009-f9c2-4773-b3f8-8fc11fd3cbf6",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "yoo",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:41.247Z",
+      "createdAt": "2026-05-16T19:24:35.999Z"
+    },
+    {
+      "id": "3807c3eb-5c72-4b88-9b3e-d15038717b7c",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "boll",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:41.247Z",
+      "createdAt": "2026-05-16T19:24:38.223Z"
+    },
+    {
+      "id": "5cf07b97-e371-48e0-803b-6e88041dc8cf",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "receiverId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "text": "bsdk",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:24:48.935Z",
+      "createdAt": "2026-05-16T19:24:46.440Z"
+    },
+    {
+      "id": "dadb32de-527f-4e2f-829e-18b0f001cade",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_d39501e9-074c-418e-9c19-54008e4502bd",
+      "senderId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "receiverId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "text": "boll",
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "seenAt": "2026-05-16T19:25:20.220Z",
+      "createdAt": "2026-05-16T19:25:14.567Z"
+    }
+  ],
+  "userQueries": []
+}

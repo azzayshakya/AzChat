@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { message as antMsg } from 'antd';
 
-import { useNavigate } from 'react-router-dom';
-
 import { useAuth } from '../../AuthContext.jsx';
 import { api, getSocket } from '../../api.js';
 import Navbar from '../../components/Navbar.jsx';
@@ -14,7 +12,6 @@ import MessageList from './components/MessageList.jsx';
 
 export default function Chatx() {
   const { user } = useAuth();
-  const nav = useNavigate();
 
   const [contacts, setContacts] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -246,11 +243,11 @@ export default function Chatx() {
 
   return (
     <>
-      <Navbar />
       <div
         style={{
           display: 'flex',
-          height: '93vh',
+          height: '100%',
+          overflow: 'hidden',
           background: '#0d0d1a',
           fontFamily: 'system-ui',
         }}

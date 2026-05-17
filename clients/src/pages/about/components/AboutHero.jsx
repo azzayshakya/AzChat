@@ -3,7 +3,6 @@ import React from 'react';
 export default function AboutHero() {
   return (
     <section style={{ padding: '80px 24px 64px', textAlign: 'center' }}>
-      {/* Badge */}
       <div className="fade-up" style={{ marginBottom: 24 }}>
         <span
           style={{
@@ -34,7 +33,6 @@ export default function AboutHero() {
         </span>
       </div>
 
-      {/* Title */}
       <h1
         className="fade-up-2"
         style={{
@@ -65,15 +63,6 @@ export default function AboutHero() {
         A secure, real-time messaging platform designed exclusively for teams on local and wide-area
         networks — no internet required.
       </p>
-
-      {/* <p
-        className="fade-up-3"
-        style={{ fontSize: 13, color: "var(--text-dim)", marginTop: 8 }}
-      >
-        Developed by{" "}
-        <span style={{ color: "#a78bfa", fontWeight: 600 }}>Ajay Shakya</span>{" "}
-        for Sneha Gupta Ma'am's Team
-      </p> */}
     </section>
   );
 }

@@ -13,7 +13,13 @@ export default function About() {
     <>
       <Navbar />
 
-      <div style={{ background: 'var(--page-gradient)', minHeight: '100vh' }}>
+      <div
+        style={{
+          background: 'var(--page-gradient)',
+          height: '100%',
+          overflowY: 'auto',
+        }}
+      >
         <AboutHero />
         <AboutDeveloper onContactClick={() => setContactOpen(true)} />
         <AboutFeatures />

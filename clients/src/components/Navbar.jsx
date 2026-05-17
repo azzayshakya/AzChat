@@ -1,22 +1,10 @@
 import React from 'react';
-import { Button, Typography, Row, Col, Card, Tag, Badge, Popover } from 'antd';
+import { Button, Popover } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import {
-  MessageOutlined,
-  WifiOutlined,
-  ThunderboltOutlined,
-  SafetyOutlined,
-  UserOutlined,
-  TeamOutlined,
-  GlobalOutlined,
-  BulbOutlined,
-  GithubOutlined,
-  BugOutlined,
-} from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../AuthContext';
 import UserProfile from './UserProfile';
 
-const { Title, Text } = Typography;
 export default function Navbar() {
   const nav = useNavigate();
   const { user, logout } = useAuth();

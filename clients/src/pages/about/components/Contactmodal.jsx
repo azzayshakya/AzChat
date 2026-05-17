@@ -39,7 +39,6 @@ export default function ContactModal({ open, onClose }) {
   };
 
   return (
-    // Backdrop
     <div
       onClick={handleClose}
       style={{
@@ -54,7 +53,6 @@ export default function ContactModal({ open, onClose }) {
         animation: 'fadeIn 0.15s ease',
       }}
     >
-      {/* Card */}
       <div
         onClick={(e) => e.stopPropagation()}
         style={{

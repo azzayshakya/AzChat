@@ -14,7 +14,12 @@ const authRateLimiter = rateLimit({
 
   legacyHeaders: false,
 });
+const uploadRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  message: { error: 'Too many file uploads. Please slow down.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-module.exports = {
-  authRateLimiter,
-};
+module.exports = { authRateLimiter, uploadRateLimiter };

@@ -149,7 +149,8 @@ export default function Chatx() {
     searchTimer.current = setTimeout(async () => {
       try {
         const { data } = await api.get(`/users/search?q=${val}`);
-        setSearchResults(data);
+
+        setSearchResults(data.data);
       } finally {
         setSearching(false);
       }
@@ -234,7 +235,6 @@ export default function Chatx() {
     setFirstUnreadIndex(null);
   };
   const isOnline = (id) => onlineUsers.includes(id);
-
   const handleSelectContact = (contact) => {
     loadMessages(contact);
     setSearchQ('');

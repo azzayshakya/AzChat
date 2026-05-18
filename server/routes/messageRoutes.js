@@ -1,16 +1,23 @@
 const router = require('express').Router();
-
-const { getMessages, markRead } = require('../controllers/messageController');
-
+const {
+  getMessages,
+  getGroupMessages,
+  markRead,
+  deleteMessage,
+  uploadFileMessage,
+} = require('../controllers/messageController');
 const authMiddleware = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
+const { uploadRateLimiter } = require('../middleware/rateLimitMiddleware');
 
-// Protect routes
 router.use(authMiddleware);
 
-// Get messages
-router.get('/messages/:otherUserId', getMessages);
+router.get('/messages/:otherUserId', getMessages); // GET /api/messages/:otherUserId
+router.get('/groups/:groupId/messages', getGroupMessages); // GET /api/groups/:groupId/messages
+router.patch('/messages/read', markRead); // PATCH /api/messages/read
+router.delete('/messages/:messageId', deleteMessage); // DELETE /api/messages/:messageId
 
-// Mark seen
-router.patch('/messages/read', markRead);
+// File upload - single file field named "file"
+router.post('/messages/file', uploadRateLimiter, upload.single('file'), uploadFileMessage); // POST /api/messages/file
 
 module.exports = router;

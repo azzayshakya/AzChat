@@ -82,6 +82,7 @@ function getContacts(req, res) {
         id: u.id,
         username: u.username,
         name: u.name,
+        role: u.role,
         isOnline: u.isOnline,
         lastSeen: u.lastSeen,
         lastMessage,

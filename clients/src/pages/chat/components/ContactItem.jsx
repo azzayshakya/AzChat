@@ -1,18 +1,9 @@
 import React from 'react';
 import { Avatar, Badge } from 'antd';
 
-/**
- * ContactItem
- * Renders a single row in the contacts/search-results list.
- *
- * Props:
- *  - contact      {object}  User object with { id, username, role, lastMessage, lastAt, unreadCount }
- *  - isSelected   {boolean} Whether this contact is the active chat
- *  - isOnline     {boolean} Green dot when true
- *  - onClick      {fn}      Called when the row is clicked
- */
 export default function ContactItem({ contact, isSelected, isOnline, onClick }) {
   const hasUnread = contact.unreadCount > 0;
+  console.log('hy', contact);
 
   return (
     <div
@@ -31,21 +22,31 @@ export default function ContactItem({ contact, isSelected, isOnline, onClick }) 
     >
       {/* Online status dot */}
       <Badge dot color={isOnline ? '#52c41a' : '#555'} offset={[-2, 30]}>
-        <Avatar style={{ background: '#667eea', flexShrink: 0 }}>
-          {contact.username[0].toUpperCase()}
-        </Avatar>
+        {contact.role === 'admin' ? (
+          <img
+            src="/developer_profile.jpg"
+            height={'30px'}
+            width={'30px'}
+            style={{ borderRadius: '50%' }}
+          />
+        ) : (
+          <Avatar style={{ background: '#667eea', flexShrink: 0 }}>
+            {contact.username[0].toUpperCase()}
+          </Avatar>
+        )}
       </Badge>
 
       {/* Name + last message preview */}
       <div style={{ overflow: 'hidden', flex: 1 }}>
         <div
+          className={contact.role === 'admin' ? 'admin_text_color_main' : ''}
           style={{
             color: hasUnread ? '#c4b5fd' : '#fff',
             fontWeight: hasUnread ? 700 : 500,
             fontSize: 13,
           }}
         >
-          {contact.username}
+          {contact.role === 'admin' ? `${contact.username} ( admin )` : `${contact.username}`}
         </div>
 
         {contact.lastMessage && (

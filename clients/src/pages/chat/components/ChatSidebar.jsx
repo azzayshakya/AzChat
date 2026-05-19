@@ -13,6 +13,7 @@ import {
 import ContactItem from './ContactItem.jsx';
 import CreateGroupModal from './CreateGroupModal.jsx';
 import { features } from '../../../utils/features.js';
+import { api } from '../../../api.js';
 
 export default function ChatSidebar({
   currentUser,
@@ -74,7 +75,7 @@ export default function ChatSidebar({
     cursor: 'pointer',
     fontSize: 12,
     fontWeight: 600,
-    color: active ? '#a78bfa' : '#555',
+    color: active ? '#a78bfa' : 'var(--text-highlight)',
     borderBottom: active ? '2px solid #667eea' : '2px solid transparent',
     transition: 'all 0.15s',
   });
@@ -100,9 +101,21 @@ export default function ChatSidebar({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Avatar style={{ background: '#667eea' }} icon={<UserOutlined />} />
+          {currentUser.role === 'admin' ? (
+            <img
+              src="/developer_profile.jpg"
+              height={'30px'}
+              width={'30px'}
+              style={{ borderRadius: '50%' }}
+            />
+          ) : (
+            <Avatar style={{ background: '#667eea' }} icon={<UserOutlined />} />
+          )}
           <div>
-            <div style={{ color: '#fff', fontWeight: 600, fontSize: 13 }}>
+            <div
+              className={currentUser.role === 'admin' ? 'admin_text_color_main' : ''}
+              style={{ color: '#fff', fontWeight: 600, fontSize: 13 }}
+            >
               {currentUser.username}
             </div>
             <div
@@ -118,7 +131,6 @@ export default function ChatSidebar({
             </div>
           </div>
         </div>
-        {/* Create group button */}
         {features.groupChat && (
           <Button
             icon={<PlusOutlined />}
@@ -135,7 +147,6 @@ export default function ChatSidebar({
         )}
       </div>
 
-      {/* Tabs */}
       {features.groupChat && (
         <div style={{ display: 'flex', borderBottom: '1px solid #1e1e3a' }}>
           <div style={tabStyle(tab === 'chats')} onClick={() => setTab('chats')}>
@@ -147,12 +158,16 @@ export default function ChatSidebar({
         </div>
       )}
 
-      {/* Search — only on chats tab */}
       {tab === 'chats' && (
         <div style={{ padding: '12px 12px 8px' }}>
           <Input
+            className="search-input"
             prefix={
-              searching ? <Spin size="small" /> : <SearchOutlined style={{ color: '#555' }} />
+              searching ? (
+                <Spin size="small" />
+              ) : (
+                <SearchOutlined style={{ color: 'var(--text-highlight)' }} />
+              )
             }
             placeholder="Search users..."
             value={searchQ}
@@ -168,7 +183,6 @@ export default function ChatSidebar({
         </div>
       )}
 
-      {/* List */}
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {tab === 'chats' ? (
           loadingContacts && !searchQ ? (
@@ -178,7 +192,9 @@ export default function ChatSidebar({
           ) : sortedContacts.length === 0 ? (
             <Empty
               description={
-                <span style={{ color: '#555' }}>{searchQ ? 'No users found' : 'No chats yet'}</span>
+                <span style={{ color: 'var(--text-highlight)' }}>
+                  {searchQ ? 'No users found' : 'No chats yet'}
+                </span>
               }
               style={{ paddingTop: 40 }}
             />
@@ -224,8 +240,7 @@ export default function ChatSidebar({
               );
             })
           )
-        ) : /* Groups tab */
-        loadingGroups ? (
+        ) : loadingGroups ? (
           <div style={{ textAlign: 'center', paddingTop: 40 }}>
             <Spin />
           </div>

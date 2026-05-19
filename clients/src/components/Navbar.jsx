@@ -272,18 +272,27 @@ export default function Navbar() {
                     transform: 'translateX(-100%)',
 
                     animation: 'profileShine 3s infinite',
+                    overflow: 'hidden',
                   }}
                 />
+                {user.role === 'admin' ? (
+                  <img
+                    src="/developer_profile.jpg"
+                    height={'20px'}
+                    width={'20px'}
+                    style={{ borderRadius: '50%' }}
+                  />
+                ) : (
+                  <UserOutlined
+                    style={{
+                      fontSize: '18px',
 
-                <UserOutlined
-                  style={{
-                    fontSize: '18px',
+                      color: 'var(--accent-light)',
 
-                    color: 'var(--accent-light)',
-
-                    zIndex: 1,
-                  }}
-                />
+                      zIndex: 1,
+                    }}
+                  />
+                )}
 
                 <span style={{ zIndex: 1 }}>Profile</span>
               </div>

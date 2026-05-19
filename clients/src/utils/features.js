@@ -1,6 +1,3 @@
-// utils/features.js
-// Control features via .env — all default to TRUE if env var is missing
-
 const flag = (key, fallback = true) => {
   const val = import.meta.env[key];
   if (val === undefined || val === '') return fallback;

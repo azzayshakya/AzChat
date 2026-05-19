@@ -12,15 +12,13 @@ import { features } from '../../utils/features.js';
 export default function Chatx() {
   const { user } = useAuth();
 
-  // ── State ──────────────────────────────────────────────────────────────────
   const [contacts, setContacts] = useState([]);
   const [groups, setGroups] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchQ, setSearchQ] = useState('');
 
-  // selected can be a contact OR a group — use selectedType to know which
-  const [selected, setSelected] = useState(null); // { id, username } | group object
-  const [selectedType, setSelectedType] = useState(null); // 'direct' | 'group'
+  const [selected, setSelected] = useState(null);
+  const [selectedType, setSelectedType] = useState(null);
 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
@@ -38,7 +36,6 @@ export default function Chatx() {
   const searchTimer = useRef(null);
   const socketRef = useRef(null);
 
-  // ── Data fetching ──────────────────────────────────────────────────────────
   const fetchContacts = useCallback(async () => {
     try {
       const { data } = await api.get('/contacts');
@@ -150,7 +147,6 @@ export default function Chatx() {
     selectedTypeRef.current = selectedType;
   }, [selected, selectedType]);
 
-  // ── Search ─────────────────────────────────────────────────────────────────
   const handleSearch = (val) => {
     setSearchQ(val);
     clearTimeout(searchTimer.current);
@@ -171,7 +167,6 @@ export default function Chatx() {
     }, 350);
   };
 
-  // ── Select direct contact ──────────────────────────────────────────────────
   const handleSelectContact = async (partner) => {
     setSelected(partner);
     setSelectedType('direct');
@@ -196,8 +191,6 @@ export default function Chatx() {
       setLoadingMsgs(false);
     }
   };
-
-  // ── Select group ───────────────────────────────────────────────────────────
   const handleSelectGroup = async (group) => {
     setSelected(group);
     setSelectedType('group');
@@ -205,7 +198,6 @@ export default function Chatx() {
     setMessages([]);
     setFirstUnreadIndex(null);
 
-    // Join group socket room
     socketRef.current?.emit('join_group_room', { groupId: group.id });
 
     try {
@@ -218,7 +210,6 @@ export default function Chatx() {
     }
   };
 
-  // ── Send message ───────────────────────────────────────────────────────────
   const sendMessage = () => {
     if (!text.trim() || !selected || sending) return;
     setSending(true);
@@ -246,7 +237,6 @@ export default function Chatx() {
     setFirstUnreadIndex(null);
   };
 
-  // ── Handlers ───────────────────────────────────────────────────────────────
   const handleMessageDeleted = (messageId, deleteFor) => {
     setMessages((prev) =>
       deleteFor === 'everyone'
@@ -269,7 +259,6 @@ export default function Chatx() {
 
   const isOnline = (id) => onlineUsers.includes(id);
 
-  // ── Render ─────────────────────────────────────────────────────────────────
   const isGroupSelected = selectedType === 'group';
 
   return (

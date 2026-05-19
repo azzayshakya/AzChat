@@ -3,6 +3,7 @@ import { UserOutlined, MailOutlined, SettingOutlined, LogoutOutlined } from '@an
 import { Divider, Space } from 'antd';
 
 const UserProfile = ({ user, logout }) => {
+  console.log('user ', user);
   return (
     <div
       style={{
@@ -33,9 +34,14 @@ const UserProfile = ({ user, logout }) => {
             fontSize: '32px',
             color: 'var(--text-white)',
             boxShadow: '0 0 15px var(--primary-color)',
+            overflow: 'hidden',
           }}
         >
-          <UserOutlined />
+          {user.role === 'admin' ? (
+            <img src="/developer_profile.jpg" height={'70px'} width={'70px'} />
+          ) : (
+            <UserOutlined />
+          )}
         </div>
       </div>
 

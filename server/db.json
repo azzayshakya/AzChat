@@ -19,7 +19,7 @@
       "passwordHash": "$2a$10$jYfEkDFttdP4iYSZQkAoY.07e3twec5PSLl.SS3vxHezihbc1oSDu",
       "role": "user",
       "isOnline": true,
-      "lastSeen": "2026-05-19T06:02:43.713Z",
+      "lastSeen": "2026-05-19T07:57:20.827Z",
       "createdAt": "2026-05-13T16:00:39.002Z"
     },
     {
@@ -30,7 +30,7 @@
       "passwordHash": "$2a$10$4GdqQ0cwCtP0aDB0WgsFNOO6AJv/tiLC4HulIakjyM54Kql8atqfG",
       "role": "user",
       "isOnline": true,
-      "lastSeen": "2026-05-19T06:02:06.345Z",
+      "lastSeen": "2026-05-19T07:54:40.869Z",
       "createdAt": "2026-05-16T16:45:54.603Z"
     }
   ],
@@ -429,9 +429,111 @@
       "deletedForUsers": [],
       "seenAt": null,
       "createdAt": "2026-05-19T06:03:17.135Z"
+    },
+    {
+      "id": "fc9fa7b9-61d7-421a-ab7d-e0daeee3a19d",
+      "chatId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "chatType": "group",
+      "senderId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "receiverId": null,
+      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "text": "hyyy",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-19T07:56:18.200Z"
+    },
+    {
+      "id": "d8559884-828f-44c7-a17e-7893ba957098",
+      "chatId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "chatType": "group",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": null,
+      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "text": "bolll",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-19T07:56:22.113Z"
+    },
+    {
+      "id": "018c575f-9bcb-4c72-9b6b-24c4aa805dfb",
+      "chatId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "chatType": "group",
+      "senderId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "receiverId": null,
+      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "text": "hnnn",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-19T07:56:30.299Z"
+    },
+    {
+      "id": "dd9781d1-4ebf-4da1-b467-18a91fd74850",
+      "chatId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "chatType": "group",
+      "senderId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "receiverId": null,
+      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "text": "bhakkk",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-19T07:56:36.140Z"
     }
   ],
-  "groups": [],
-  "groupMembers": [],
+  "groups": [
+    {
+      "id": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "name": "ajju",
+      "description": "",
+      "ownerId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "createdAt": "2026-05-19T07:54:57.842Z"
+    }
+  ],
+  "groupMembers": [
+    {
+      "id": "f28b2f17-170d-49d1-8646-85e62c8c72de",
+      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "userId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "role": "owner",
+      "joinedAt": "2026-05-19T07:54:57.842Z"
+    },
+    {
+      "id": "45ee3193-963e-49ca-88a8-d66aef523007",
+      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "userId": "f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "role": "admin",
+      "joinedAt": "2026-05-19T07:55:32.333Z"
+    },
+    {
+      "id": "ce735045-8490-4078-b6e6-85c651976075",
+      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "userId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "role": "admin",
+      "joinedAt": "2026-05-19T07:57:00.521Z"
+    }
+  ],
   "userQueries": []
 }

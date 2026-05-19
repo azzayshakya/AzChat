@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Dropdown, Modal, message as antMsg } from 'antd';
 import { DeleteOutlined, CheckOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { features } from '../../../utils/features';
-import { api } from '../../../api';
+import { features } from '../../../utils/features.js';
+import { api } from '../../../api.js';
 
-export default function MessageBubble({ message, isMine, onDeleted }) {
+export default function MessageBubble({ message, isMine, onDeleted, isGroup, groupMembers }) {
   const [deleting, setDeleting] = useState(false);
 
-  // Don't render if deleted for everyone
+  // Deleted for everyone stub
   if (message.deletedFor === 'everyone') {
     return (
       <div style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start' }}>
@@ -48,17 +48,15 @@ export default function MessageBubble({ message, isMine, onDeleted }) {
     });
   };
 
-  // Build dropdown menu only for own messages
   const menuItems = [];
-  if (isMine && features.deleteOwnMessage) {
+  if (isMine && features.deleteOwnMessage)
     menuItems.push({
       key: 'me',
       label: 'Delete for me',
       icon: <DeleteOutlined />,
       onClick: () => handleDelete('me'),
     });
-  }
-  if (isMine && features.deleteForEveryone) {
+  if (isMine && features.deleteForEveryone)
     menuItems.push({
       key: 'everyone',
       label: 'Delete for everyone',
@@ -66,23 +64,28 @@ export default function MessageBubble({ message, isMine, onDeleted }) {
       danger: true,
       onClick: () => handleDelete('everyone'),
     });
-  }
 
   const seenIcon = () => {
-    if (!features.messageSeenStatus || !isMine) return null;
+    if (!features.messageSeenStatus || !isMine || isGroup) return null;
     if (message.status === 'seen')
       return <CheckCircleOutlined style={{ color: '#a78bfa', fontSize: 10 }} />;
-    if (message.status === 'delivered')
-      return <CheckOutlined style={{ color: '#888', fontSize: 10 }} />;
-    return <CheckOutlined style={{ color: '#555', fontSize: 10 }} />;
+    return (
+      <CheckOutlined
+        style={{ color: message.status === 'delivered' ? '#888' : '#555', fontSize: 10 }}
+      />
+    );
   };
 
+  // Sender name in group — shown above bubble for others' messages
+  const senderName =
+    isGroup && !isMine
+      ? groupMembers?.find((m) => m.id === message.senderId)?.username || 'Unknown'
+      : null;
+
   const renderContent = () => {
-    // File message
     if (message.file) {
       const { category, url, name } = message.file;
       const fullUrl = `${import.meta.env.VITE_API_URL}${url}`;
-
       if (category === 'image') {
         return (
           <div>
@@ -98,7 +101,6 @@ export default function MessageBubble({ message, isMine, onDeleted }) {
           </div>
         );
       }
-      // All other file types — download link
       return (
         <div>
           <a
@@ -126,33 +128,57 @@ export default function MessageBubble({ message, isMine, onDeleted }) {
   const bubble = (
     <div
       style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: isMine ? 'flex-end' : 'flex-start',
         maxWidth: '65%',
-        padding: '9px 14px',
-        borderRadius: isMine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-        background: isMine ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#1e1e3a',
-        color: '#fff',
-        fontSize: 13,
-        lineHeight: 1.5,
-        boxShadow: '0 2px 8px #0004',
-        opacity: deleting ? 0.5 : 1,
-        cursor: menuItems.length ? 'context-menu' : 'default',
       }}
     >
-      {renderContent()}
+      {senderName && (
+        <div
+          style={{
+            color: '#a78bfa',
+            fontSize: 11,
+            fontWeight: 600,
+            marginBottom: 2,
+            paddingLeft: 4,
+          }}
+        >
+          {senderName}
+        </div>
+      )}
       <div
         style={{
-          fontSize: 10,
-          color: isMine ? '#ccc' : '#666',
-          marginTop: 4,
-          textAlign: 'right',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          gap: 4,
-          alignItems: 'center',
+          padding: '9px 14px',
+          borderRadius: isMine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+          background: isMine ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#1e1e3a',
+          color: '#fff',
+          fontSize: 13,
+          lineHeight: 1.5,
+          boxShadow: '0 2px 8px #0004',
+          opacity: deleting ? 0.5 : 1,
+          cursor: menuItems.length ? 'context-menu' : 'default',
         }}
       >
-        {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        {seenIcon()}
+        {renderContent()}
+        <div
+          style={{
+            fontSize: 10,
+            color: isMine ? '#ccc' : '#666',
+            marginTop: 4,
+            textAlign: 'right',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: 4,
+            alignItems: 'center',
+          }}
+        >
+          {new Date(message.createdAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+          {seenIcon()}
+        </div>
       </div>
     </div>
   );

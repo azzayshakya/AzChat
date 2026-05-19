@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Spin } from 'antd';
-import MessageBubble from './MessageBubble';
-import UnreadDivider from './UnreadDivider';
+import MessageBubble from './MessageBubble.jsx';
+import UnreadDivider from './UnreadDivider.jsx';
 
 export default function MessageList({
   messages,
@@ -9,6 +9,8 @@ export default function MessageList({
   loadingMsgs,
   firstUnreadIndex,
   onMessageDeleted,
+  isGroup,
+  groupMembers,
 }) {
   const bottomRef = useRef(null);
 
@@ -35,7 +37,7 @@ export default function MessageList({
           color: '#444',
         }}
       >
-        No messages yet. Say hello! 👋
+        {isGroup ? 'No messages yet. Start the conversation! 👋' : 'No messages yet. Say hello! 👋'}
       </div>
     );
   }
@@ -58,6 +60,8 @@ export default function MessageList({
             message={msg}
             isMine={msg.senderId === currentUserId}
             onDeleted={onMessageDeleted}
+            isGroup={isGroup}
+            groupMembers={groupMembers}
           />
         </React.Fragment>
       ))}

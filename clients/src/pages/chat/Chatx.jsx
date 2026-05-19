@@ -4,21 +4,29 @@ import { useAuth } from '../../AuthContext.jsx';
 import { api, getSocket } from '../../api.js';
 import ChatSidebar from './components/ChatSidebar.jsx';
 import ChatHeader from './components/ChatHeader.jsx';
+import GroupHeader from './components/GroupHeader.jsx';
 import MessageInput from './components/MessageInput.jsx';
 import MessageList from './components/MessageList.jsx';
-import { features } from '../../utils/features';
+import { features } from '../../utils/features.js';
 
 export default function Chatx() {
   const { user } = useAuth();
 
+  // ── State ──────────────────────────────────────────────────────────────────
   const [contacts, setContacts] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchQ, setSearchQ] = useState('');
-  const [selected, setSelected] = useState(null);
+
+  // selected can be a contact OR a group — use selectedType to know which
+  const [selected, setSelected] = useState(null); // { id, username } | group object
+  const [selectedType, setSelectedType] = useState(null); // 'direct' | 'group'
+
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
 
   const [loadingContacts, setLoadingContacts] = useState(true);
+  const [loadingGroups, setLoadingGroups] = useState(true);
   const [loadingMsgs, setLoadingMsgs] = useState(false);
   const [sending, setSending] = useState(false);
   const [searching, setSearching] = useState(false);
@@ -26,10 +34,11 @@ export default function Chatx() {
   const [firstUnreadIndex, setFirstUnreadIndex] = useState(null);
 
   const selectedRef = useRef(null);
+  const selectedTypeRef = useRef(null);
   const searchTimer = useRef(null);
   const socketRef = useRef(null);
 
-  // ── Contacts ──────────────────────────────────────────────────────────────
+  // ── Data fetching ──────────────────────────────────────────────────────────
   const fetchContacts = useCallback(async () => {
     try {
       const { data } = await api.get('/contacts');
@@ -41,11 +50,27 @@ export default function Chatx() {
     }
   }, []);
 
+  const fetchGroups = useCallback(async () => {
+    if (!features.groupChat) {
+      setLoadingGroups(false);
+      return;
+    }
+    try {
+      const { data } = await api.get('/groups');
+      setGroups(data.data || []);
+    } catch {
+      antMsg.error('Failed to load groups');
+    } finally {
+      setLoadingGroups(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchContacts();
-  }, [fetchContacts]);
+    fetchGroups();
+  }, [fetchContacts, fetchGroups]);
 
-  // ── Socket ────────────────────────────────────────────────────────────────
+  // ── Socket ─────────────────────────────────────────────────────────────────
   useEffect(() => {
     socketRef.current = getSocket();
     return () => {
@@ -59,13 +84,26 @@ export default function Chatx() {
 
     socket.on('online_users', setOnlineUsers);
 
+    // Direct message
     socket.on('new_message', (msg) => {
       fetchContacts();
       setMessages((prev) => {
         const current = selectedRef.current;
-        if (!current) return prev;
+        const type = selectedTypeRef.current;
+        if (!current || type !== 'direct') return prev;
         const isCurrentChat = msg.chatId === [user.id, current.id].sort().join('_');
         if (!isCurrentChat || prev.some((m) => m.id === msg.id)) return prev;
+        return [...prev, msg];
+      });
+    });
+
+    // Group message
+    socket.on('new_group_message', (msg) => {
+      setMessages((prev) => {
+        const current = selectedRef.current;
+        const type = selectedTypeRef.current;
+        if (!current || type !== 'group') return prev;
+        if (msg.chatId !== current.id || prev.some((m) => m.id === msg.id)) return prev;
         return [...prev, msg];
       });
     });
@@ -81,7 +119,6 @@ export default function Chatx() {
       });
     }
 
-    // Sync real-time deletes from other sessions
     socket.on('message_deleted', ({ messageId, deletedFor }) => {
       setMessages((prev) =>
         prev.map((m) =>
@@ -94,19 +131,26 @@ export default function Chatx() {
       );
     });
 
+    socket.on('message_edited', (updated) => {
+      setMessages((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+    });
+
     return () => {
       socket.off('online_users');
       socket.off('new_message');
+      socket.off('new_group_message');
       socket.off('messages_seen');
       socket.off('message_deleted');
+      socket.off('message_edited');
     };
   }, [user?.id, fetchContacts]);
 
   useEffect(() => {
     selectedRef.current = selected;
-  }, [selected]);
+    selectedTypeRef.current = selectedType;
+  }, [selected, selectedType]);
 
-  // ── Search ────────────────────────────────────────────────────────────────
+  // ── Search ─────────────────────────────────────────────────────────────────
   const handleSearch = (val) => {
     setSearchQ(val);
     clearTimeout(searchTimer.current);
@@ -127,12 +171,15 @@ export default function Chatx() {
     }, 350);
   };
 
-  // ── Load messages ─────────────────────────────────────────────────────────
-  const loadMessages = async (partner) => {
+  // ── Select direct contact ──────────────────────────────────────────────────
+  const handleSelectContact = async (partner) => {
     setSelected(partner);
+    setSelectedType('direct');
     setLoadingMsgs(true);
     setMessages([]);
     setFirstUnreadIndex(null);
+    setSearchQ('');
+    setSearchResults([]);
     try {
       const { data } = await api.get(`/messages/${partner.id}`);
       const msgs = data.data || [];
@@ -150,23 +197,56 @@ export default function Chatx() {
     }
   };
 
-  // ── Send message ──────────────────────────────────────────────────────────
+  // ── Select group ───────────────────────────────────────────────────────────
+  const handleSelectGroup = async (group) => {
+    setSelected(group);
+    setSelectedType('group');
+    setLoadingMsgs(true);
+    setMessages([]);
+    setFirstUnreadIndex(null);
+
+    // Join group socket room
+    socketRef.current?.emit('join_group_room', { groupId: group.id });
+
+    try {
+      const { data } = await api.get(`/groups/${group.id}/messages`);
+      setMessages(data.data || []);
+    } catch {
+      antMsg.error('Failed to load group messages');
+    } finally {
+      setLoadingMsgs(false);
+    }
+  };
+
+  // ── Send message ───────────────────────────────────────────────────────────
   const sendMessage = () => {
     if (!text.trim() || !selected || sending) return;
     setSending(true);
-    socketRef.current.emit(
-      'send_message',
-      { receiverId: selected.id, text: text.trim() },
-      (res) => {
-        setSending(false);
-        if (!res?.ok) antMsg.error(res?.error || 'Failed to send');
-      }
-    );
+
+    if (selectedType === 'group') {
+      socketRef.current.emit(
+        'send_group_message',
+        { groupId: selected.id, text: text.trim() },
+        (res) => {
+          setSending(false);
+          if (!res?.ok) antMsg.error(res?.error || 'Failed to send');
+        }
+      );
+    } else {
+      socketRef.current.emit(
+        'send_message',
+        { receiverId: selected.id, text: text.trim() },
+        (res) => {
+          setSending(false);
+          if (!res?.ok) antMsg.error(res?.error || 'Failed to send');
+        }
+      );
+    }
     setText('');
     setFirstUnreadIndex(null);
   };
 
-  // ── Message deleted locally ───────────────────────────────────────────────
+  // ── Handlers ───────────────────────────────────────────────────────────────
   const handleMessageDeleted = (messageId, deleteFor) => {
     setMessages((prev) =>
       deleteFor === 'everyone'
@@ -177,13 +257,20 @@ export default function Chatx() {
     );
   };
 
-  // ── File sent ─────────────────────────────────────────────────────────────
   const handleFileSent = (msg) => {
     setMessages((prev) => [...prev, msg]);
     fetchContacts();
   };
 
+  const handleGroupUpdated = (updatedGroup) => {
+    setGroups((prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g)));
+    if (selected?.id === updatedGroup.id) setSelected(updatedGroup);
+  };
+
   const isOnline = (id) => onlineUsers.includes(id);
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+  const isGroupSelected = selectedType === 'group';
 
   return (
     <div
@@ -199,18 +286,19 @@ export default function Chatx() {
         currentUser={user}
         contacts={contacts}
         setContacts={setContacts}
+        groups={groups}
+        setGroups={setGroups}
         searchResults={searchResults}
         searchQ={searchQ}
         onSearch={handleSearch}
         searching={searching}
         loadingContacts={loadingContacts}
+        loadingGroups={loadingGroups}
         selectedId={selected?.id}
+        selectedType={selectedType}
         onlineUsers={onlineUsers}
-        onSelectContact={(c) => {
-          loadMessages(c);
-          setSearchQ('');
-          setSearchResults([]);
-        }}
+        onSelectContact={handleSelectContact}
+        onSelectGroup={handleSelectGroup}
       />
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -226,27 +314,41 @@ export default function Chatx() {
           >
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontSize: 48 }}>💬</div>
-              <div style={{ marginTop: 12, fontSize: 15 }}>Select a user to start chatting</div>
+              <div style={{ marginTop: 12, fontSize: 15 }}>Select a chat or group to start</div>
             </div>
           </div>
         ) : (
           <>
-            <ChatHeader contact={selected} isOnline={isOnline(selected.id)} />
+            {isGroupSelected ? (
+              <GroupHeader
+                group={selected}
+                currentUserId={user.id}
+                onGroupUpdated={handleGroupUpdated}
+              />
+            ) : (
+              <ChatHeader contact={selected} isOnline={isOnline(selected.id)} />
+            )}
+
             <MessageList
               messages={messages}
               currentUserId={user.id}
               loadingMsgs={loadingMsgs}
               firstUnreadIndex={firstUnreadIndex}
               onMessageDeleted={handleMessageDeleted}
+              isGroup={isGroupSelected}
+              groupMembers={isGroupSelected ? selected.members : null}
             />
+
             <MessageInput
               value={text}
               onChange={setText}
               onSend={sendMessage}
               sending={sending}
-              placeholder={`Message ${selected.username}...`}
+              placeholder={
+                isGroupSelected ? `Message ${selected.name}...` : `Message ${selected.username}...`
+              }
               selectedId={selected.id}
-              isGroup={false}
+              isGroup={isGroupSelected}
               onFileSent={handleFileSent}
             />
           </>

@@ -1,11 +1,21 @@
 import React from 'react';
-import { Input, Spin, Empty, Avatar } from 'antd';
-import { SearchOutlined, WifiOutlined, UserOutlined } from '@ant-design/icons';
+import { Input, Spin, Empty, Avatar, Dropdown, message as antMsg } from 'antd';
+import {
+  SearchOutlined,
+  WifiOutlined,
+  UserOutlined,
+  DeleteOutlined,
+  EllipsisOutlined,
+} from '@ant-design/icons';
 import ContactItem from './ContactItem';
+
+import { features } from '../../../utils/features';
+import { api } from '../../../api';
 
 export default function ChatSidebar({
   currentUser,
   contacts,
+  setContacts,
   searchResults,
   searchQ,
   onSearch,
@@ -18,12 +28,22 @@ export default function ChatSidebar({
   const displayList = searchQ
     ? searchResults
     : [...contacts].sort((a, b) => {
-        const tA = a.lastAt ? new Date(a.lastAt).getTime() : 0;
-        const tB = b.lastAt ? new Date(b.lastAt).getTime() : 0;
+        const tA = a.lastMessage ? new Date(a.lastMessage.createdAt).getTime() : 0;
+        const tB = b.lastMessage ? new Date(b.lastMessage.createdAt).getTime() : 0;
         return tB - tA;
       });
 
   const isOnline = (id) => onlineUsers.includes(id);
+
+  const handleDeleteContact = async (contactId) => {
+    try {
+      await api.delete(`/contacts/${contactId}`);
+      setContacts((prev) => prev.filter((c) => c.id !== contactId));
+      antMsg.success('Chat cleared');
+    } catch {
+      antMsg.error('Failed to clear chat');
+    }
+  };
 
   return (
     <div
@@ -35,7 +55,7 @@ export default function ChatSidebar({
         background: '#10101e',
       }}
     >
-      {/* ── Current-user header ── */}
+      {/* Current user header */}
       <div
         style={{
           padding: '16px 16px 12px',
@@ -66,7 +86,7 @@ export default function ChatSidebar({
         </div>
       </div>
 
-      {/* ── Search bar ── */}
+      {/* Search */}
       <div style={{ padding: '12px 12px 8px' }}>
         <Input
           prefix={searching ? <Spin size="small" /> : <SearchOutlined style={{ color: '#555' }} />}
@@ -83,7 +103,7 @@ export default function ChatSidebar({
         />
       </div>
 
-      {/* ── Contact list ── */}
+      {/* List */}
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {loadingContacts && !searchQ ? (
           <div style={{ textAlign: 'center', paddingTop: 40 }}>
@@ -97,15 +117,42 @@ export default function ChatSidebar({
             style={{ paddingTop: 40 }}
           />
         ) : (
-          displayList.map((contact) => (
-            <ContactItem
-              key={contact.id}
-              contact={contact}
-              isSelected={selectedId === contact.id}
-              isOnline={isOnline(contact.id)}
-              onClick={() => onSelectContact(contact)}
-            />
-          ))
+          displayList.map((contact) => {
+            const menuItems = [];
+            if (features.deleteContact && !searchQ) {
+              menuItems.push({
+                key: 'delete',
+                label: 'Clear chat',
+                icon: <DeleteOutlined />,
+                danger: true,
+                onClick: () => handleDeleteContact(contact.id),
+              });
+            }
+
+            return (
+              <div
+                key={contact.id}
+                style={{ position: 'relative', display: 'flex', alignItems: 'center' }}
+              >
+                <div style={{ flex: 1 }}>
+                  <ContactItem
+                    contact={contact}
+                    isSelected={selectedId === contact.id}
+                    isOnline={isOnline(contact.id)}
+                    onClick={() => onSelectContact(contact)}
+                  />
+                </div>
+                {menuItems.length > 0 && (
+                  <Dropdown menu={{ items: menuItems }} trigger={['click']}>
+                    <EllipsisOutlined
+                      onClick={(e) => e.stopPropagation()}
+                      style={{ color: '#555', padding: '0 10px', cursor: 'pointer', fontSize: 16 }}
+                    />
+                  </Dropdown>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
     </div>

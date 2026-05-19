@@ -3,29 +3,22 @@ import { Spin } from 'antd';
 import MessageBubble from './MessageBubble';
 import UnreadDivider from './UnreadDivider';
 
-/**
- * MessageList
- * Scrollable container for all messages in the active conversation.
- * Automatically scrolls to the bottom whenever messages change.
- * Inserts an <UnreadDivider /> above the first unread message.
- *
- * Props:
- *  - messages         {array}       Array of message objects
- *  - currentUserId    {string}      ID of the logged-in user
- *  - loadingMsgs      {boolean}     Show loading spinner while fetching
- *  - firstUnreadIndex {number|null} Index at which to insert the divider
- */
-export default function MessageList({ messages, currentUserId, loadingMsgs, firstUnreadIndex }) {
+export default function MessageList({
+  messages,
+  currentUserId,
+  loadingMsgs,
+  firstUnreadIndex,
+  onMessageDeleted,
+}) {
   const bottomRef = useRef(null);
 
-  // Auto-scroll to newest message
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   if (loadingMsgs) {
     return (
-      <div style={{ textAlign: 'center', paddingTop: 60 }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <Spin size="large" tip="Loading messages..." />
       </div>
     );
@@ -33,7 +26,15 @@ export default function MessageList({ messages, currentUserId, loadingMsgs, firs
 
   if (messages.length === 0) {
     return (
-      <div style={{ textAlign: 'center', color: '#444', marginTop: 60 }}>
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#444',
+        }}
+      >
         No messages yet. Say hello! 👋
       </div>
     );
@@ -52,14 +53,14 @@ export default function MessageList({ messages, currentUserId, loadingMsgs, firs
     >
       {messages.map((msg, index) => (
         <React.Fragment key={msg.id}>
-          {/* Insert divider just before the first unread message */}
           {firstUnreadIndex !== null && index === firstUnreadIndex && <UnreadDivider />}
-
-          <MessageBubble message={msg} isMine={msg.senderId === currentUserId} />
+          <MessageBubble
+            message={msg}
+            isMine={msg.senderId === currentUserId}
+            onDeleted={onMessageDeleted}
+          />
         </React.Fragment>
       ))}
-
-      {/* Invisible anchor used for auto-scroll */}
       <div ref={bottomRef} />
     </div>
   );

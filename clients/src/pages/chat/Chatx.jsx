@@ -301,7 +301,7 @@ export default function Chatx() {
               color: '#333',
             }}
           >
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: 'center', color: 'var(--text-highlight)' }}>
               <div style={{ fontSize: 48 }}>💬</div>
               <div style={{ marginTop: 12, fontSize: 15 }}>Select a chat or group to start</div>
             </div>

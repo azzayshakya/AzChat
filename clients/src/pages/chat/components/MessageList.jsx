@@ -18,6 +18,16 @@ export default function MessageList({
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Detect if current message belongs to a new day
+  const isNewDay = (currentMsg, prevMsg) => {
+    if (!prevMsg) return true;
+
+    const currentDate = new Date(currentMsg.createdAt).toDateString();
+    const prevDate = new Date(prevMsg.createdAt).toDateString();
+
+    return currentDate !== prevDate;
+  };
+
   if (loadingMsgs) {
     return (
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -34,7 +44,7 @@ export default function MessageList({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#444',
+          color: 'var(--text-highlight)',
         }}
       >
         {isGroup ? 'No messages yet. Start the conversation! 👋' : 'No messages yet. Say hello! 👋'}
@@ -53,18 +63,58 @@ export default function MessageList({
         gap: 8,
       }}
     >
-      {messages.map((msg, index) => (
-        <React.Fragment key={msg.id}>
-          {firstUnreadIndex !== null && index === firstUnreadIndex && <UnreadDivider />}
-          <MessageBubble
-            message={msg}
-            isMine={msg.senderId === currentUserId}
-            onDeleted={onMessageDeleted}
-            isGroup={isGroup}
-            groupMembers={groupMembers}
-          />
-        </React.Fragment>
-      ))}
+      {messages.map((msg, index) => {
+        const showDateDivider = isNewDay(msg, messages[index - 1]);
+
+        return (
+          <React.Fragment key={msg.id}>
+            {/* Date Divider */}
+            {showDateDivider && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  margin: '14px 0 10px',
+                }}
+              >
+                <div
+                  style={{
+                    background: '#1a1a2e',
+                    color: 'var(--text-muted)',
+                    fontSize: 11,
+                    padding: '6px 14px',
+                    borderRadius: 999,
+                    border: '1px solid #2a2a4a',
+                    boxShadow: '0 2px 8px #0003',
+                    fontWeight: 500,
+                    letterSpacing: 0.2,
+                  }}
+                >
+                  {new Date(msg.createdAt).toLocaleDateString([], {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Unread Divider */}
+            {firstUnreadIndex !== null && index === firstUnreadIndex && <UnreadDivider />}
+
+            {/* Message */}
+            <MessageBubble
+              message={msg}
+              isMine={msg.senderId === currentUserId}
+              onDeleted={onMessageDeleted}
+              isGroup={isGroup}
+              groupMembers={groupMembers}
+            />
+          </React.Fragment>
+        );
+      })}
+
       <div ref={bottomRef} />
     </div>
   );

@@ -19,7 +19,7 @@
       "passwordHash": "$2a$10$jYfEkDFttdP4iYSZQkAoY.07e3twec5PSLl.SS3vxHezihbc1oSDu",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-05-20T09:35:04.941Z",
+      "lastSeen": "2026-05-20T15:32:23.668Z",
       "createdAt": "2026-05-13T16:00:39.002Z"
     },
     {
@@ -968,20 +968,6 @@
       "joinedAt": "2026-05-19T07:54:57.842Z"
     },
     {
-      "id": "45ee3193-963e-49ca-88a8-d66aef523007",
-      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
-      "userId": "f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
-      "role": "admin",
-      "joinedAt": "2026-05-19T07:55:32.333Z"
-    },
-    {
-      "id": "ce735045-8490-4078-b6e6-85c651976075",
-      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
-      "userId": "d39501e9-074c-418e-9c19-54008e4502bd",
-      "role": "admin",
-      "joinedAt": "2026-05-19T07:57:00.521Z"
-    },
-    {
       "id": "b617e837-e20b-4b84-b950-002d260021c0",
       "groupId": "0aed749d-6906-4fc7-a6b5-b068ba73d32e",
       "userId": "7c5dc02b-3af6-44c8-a24e-03ce6e7dc206",
@@ -994,6 +980,13 @@
       "userId": "d39501e9-074c-418e-9c19-54008e4502bd",
       "role": "owner",
       "joinedAt": "2026-05-20T09:30:49.893Z"
+    },
+    {
+      "id": "f9177c0a-79c4-4fe7-bb4f-a0a480d82770",
+      "groupId": "b0999c96-37a1-4cd0-9a68-cb35d130435a",
+      "userId": "f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "role": "member",
+      "joinedAt": "2026-05-20T15:00:56.815Z"
     }
   ],
   "userQueries": []

@@ -103,7 +103,14 @@ body {
 
   transform: translateY(-3px);
 }
-
+.ant-input::placeholder {
+  color: var(--text-highlight) !important;
+  opacity: 1;
+}
+.icon_color_light .anticon {
+  color: var(--text-highlight) !important;
+  opacity: 1;
+}
 /* ============================= */
 /* ANIMATED ADMIN BORDER */
 /* ============================= */

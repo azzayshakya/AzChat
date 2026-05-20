@@ -104,6 +104,7 @@ export default function GroupMembersModal({ open, onClose, group, currentUserId,
         content: { background: '#10101e', border: '1px solid #1e1e3a' },
         header: { background: '#10101e', borderBottom: '1px solid #1e1e3a' },
       }}
+      className="icon_color_light"
     >
       {/* Add member search — admin/owner only */}
       {isAdmin && (

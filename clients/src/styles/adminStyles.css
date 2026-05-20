@@ -1,3 +1,56 @@
 .admin_text_color_main {
   color: rgb(249, 84, 24) !important;
 }
+
+/* ANIMATED ADMIN BORDER */
+/* 
+.animated-admin-border {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.animated-admin-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 1.5px;
+  background: linear-gradient(var(--angle, 0deg), #667eea, #a78bfa, #ff6ed8, #764ba2, #667eea);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rotateBorder 2.5s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotateBorder {
+  to {
+    --angle: 360deg;
+  }
+}
+
+@supports not (background: paint(something)) {
+  .animated-admin-border::before {
+    background: linear-gradient(135deg, #667eea, #a78bfa, #ff6ed8, #764ba2);
+    animation: rotateBorderFallback 2.5s linear infinite;
+  }
+  @keyframes rotateBorderFallback {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      filter: hue-rotate(360deg);
+    }
+  }
+} */

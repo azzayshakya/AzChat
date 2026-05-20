@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$ZFXAalj9dER4h1ob.TBWBOXq2wIat3.MIPxdDsmTNfdEd3j1cbxe.",
       "role": "user",
       "isOnline": true,
-      "lastSeen": null,
+      "lastSeen": "2026-05-20T16:31:52.717Z",
       "createdAt": "2026-05-13T16:00:13.118Z"
     },
     {
@@ -19,7 +19,7 @@
       "passwordHash": "$2a$10$jYfEkDFttdP4iYSZQkAoY.07e3twec5PSLl.SS3vxHezihbc1oSDu",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-05-20T16:14:06.021Z",
+      "lastSeen": "2026-05-20T16:33:33.843Z",
       "createdAt": "2026-05-13T16:00:39.002Z"
     },
     {
@@ -1091,6 +1091,57 @@
       "deletedForUsers": [],
       "seenAt": null,
       "createdAt": "2026-05-20T16:17:30.194Z"
+    },
+    {
+      "id": "54bfd91b-5a03-4cac-ad56-629a77057f6e",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "chatType": "direct",
+      "senderId": "f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "receiverId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "text": "ghalo",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-20T16:23:47.523Z"
+    },
+    {
+      "id": "ef3f0531-89f8-49ad-9baa-6461ec59efb0",
+      "chatId": "96d38a80-fdf3-4712-9b8e-a3400516cb41_f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "chatType": "direct",
+      "senderId": "f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "receiverId": "96d38a80-fdf3-4712-9b8e-a3400516cb41",
+      "text": "boll",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-20T16:23:52.645Z"
+    },
+    {
+      "id": "f7af8aca-675e-470f-95a1-1dd74846a5ef",
+      "chatId": "d39501e9-074c-418e-9c19-54008e4502bd_f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "chatType": "direct",
+      "senderId": "f2c4d0b9-4dd3-4ce3-840a-98dd5ad10fa5",
+      "receiverId": "d39501e9-074c-418e-9c19-54008e4502bd",
+      "text": "tyooo",
+      "file": null,
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": "2026-05-20T16:35:44.082Z",
+      "createdAt": "2026-05-20T16:23:59.335Z"
     }
   ],
   "groups": [

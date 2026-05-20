@@ -81,7 +81,76 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
     isGroup && !isMine
       ? groupMembers?.find((m) => m.id === message.senderId)?.username || 'Unknown'
       : null;
+  // Add this helper inside MessageBubble (above renderContent)
+  const renderMarkdown = (text) => {
+    if (!text) return null;
+    return text.split('\n').map((line, li) => {
+      // Task: [ ] or [x]
+      if (/^\[( |x)\] /.test(line)) {
+        const done = line[1] === 'x';
+        return (
+          <div key={li} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <input
+              type="checkbox"
+              defaultChecked={done}
+              readOnly
+              style={{ accentColor: '#a78bfa' }}
+            />
+            <span
+              style={{ textDecoration: done ? 'line-through' : 'none', opacity: done ? 0.6 : 1 }}
+            >
+              {formatInline(line.slice(4))}
+            </span>
+          </div>
+        );
+      }
+      // Bullet
+      if (line.startsWith('• ')) {
+        return (
+          <div key={li} style={{ paddingLeft: 4 }}>
+            • {formatInline(line.slice(2))}
+          </div>
+        );
+      }
+      return <div key={li}>{formatInline(line) || <br />}</div>;
+    });
+  };
 
+  const formatInline = (text) => {
+    // Bold **text**, italic _text_, code `text`
+    const parts = [];
+    const re = /(\*\*(.+?)\*\*|_(.+?)_|`(.+?)`)/g;
+    let last = 0,
+      m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) parts.push(text.slice(last, m.index));
+      if (m[0].startsWith('**')) parts.push(<strong key={m.index}>{m[2]}</strong>);
+      else if (m[0].startsWith('_')) parts.push(<em key={m.index}>{m[3]}</em>);
+      else
+        parts.push(
+          <code
+            key={m.index}
+            style={{
+              background: '#0006',
+              borderRadius: 3,
+              padding: '1px 4px',
+              fontFamily: 'monospace',
+              fontSize: 12,
+            }}
+          >
+            {m[4]}
+          </code>
+        );
+      last = m.index + m[0].length;
+    }
+    if (last < text.length) parts.push(text.slice(last));
+    return parts;
+  };
+
+  // Then in renderContent(), replace:
+  // return <div>{message.text}</div>;
+  // with:
+  // return <div>{renderMarkdown(message.text)}</div>;
   const renderContent = () => {
     if (message.file) {
       const { category, url, name } = message.file;
@@ -122,7 +191,7 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
         </div>
       );
     }
-    return <div>{message.text}</div>;
+    return <div>{renderMarkdown(message.text)}</div>;
   };
 
   const bubble = (

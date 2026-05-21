@@ -82,7 +82,7 @@ export default function MessageInput({
   const handleKeyDown = useCallback(
     (e) => {
       // Enter → new line (not send)
-      if (e.key === "Enter" && !e.shiftKey) {
+      if (e.key === "Enter" && e.ctrlKey) {
         e.preventDefault();
         const el = textareaRef.current;
         const pos = el.selectionStart;
@@ -92,7 +92,7 @@ export default function MessageInput({
         return;
       }
       // Ctrl+Enter → send
-      if (e.key === "Enter" && e.ctrlKey) {
+      if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         onSend();
         setActiveFormats([]);

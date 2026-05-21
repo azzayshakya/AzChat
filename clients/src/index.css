@@ -4,6 +4,8 @@
   --secondary-color-light: #1a1540;
   --accent-light: #a78bfa;
 
+  --dark-bg: #0d0d1a;
+
   --page-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
   --main-bg-gradient: linear-gradient(
     160deg,

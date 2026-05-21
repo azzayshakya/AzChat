@@ -292,8 +292,7 @@ export default function Chatx() {
         display: "flex",
         height: "100%",
         overflow: "hidden",
-        background: "#0d0d1a",
-        fontFamily: "system-ui",
+        background: "var(--dark-bg)",
       }}
     >
       <ChatSidebar

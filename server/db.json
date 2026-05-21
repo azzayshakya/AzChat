@@ -7,8 +7,8 @@
       "email": "ajayshakya7376@gmail.com",
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
-      "isOnline": true,
-      "lastSeen": "2026-05-21T10:17:20.796Z",
+      "isOnline": false,
+      "lastSeen": "2026-05-21T13:52:41.108Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -18,8 +18,8 @@
       "email": "eram@gmail.com",
       "passwordHash": "$2a$10$krQNp6/cNUkDQN00xQRWxe.Xy5PZKhTcyQqa1i8UgYfq7sIvSlxb2",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-05-21T10:17:20.598Z",
+      "isOnline": false,
+      "lastSeen": "2026-05-21T11:40:00.275Z",
       "createdAt": "2026-05-21T05:46:11.465Z"
     },
     {
@@ -29,8 +29,8 @@
       "email": "lelouchlamperouge1997@outlook.com",
       "passwordHash": "$2a$10$buOU14pIy9IIA02EyNHRN.hdkpaP4I9B6uakVYVY4rAaaMPY5JsEe",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-05-21T10:17:20.723Z",
+      "isOnline": false,
+      "lastSeen": "2026-05-21T13:52:41.014Z",
       "createdAt": "2026-05-21T05:48:51.828Z"
     },
     {
@@ -40,8 +40,8 @@
       "email": "user@gmail.com",
       "passwordHash": "$2a$10$uXiFLvG5Pf3HA.MFMdOnD.PiV9McTNg4nEzDTyDlSIZb8F9ZUZe7e",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-05-21T10:17:20.743Z",
+      "isOnline": false,
+      "lastSeen": "2026-05-21T12:03:59.431Z",
       "createdAt": "2026-05-21T05:54:00.634Z"
     },
     {
@@ -52,7 +52,7 @@
       "passwordHash": "$2a$10$p6/sj.yG5hMV3480wnXH6umfWLSD5dSgySjlasTEo9fMVWfDN1FRe",
       "role": "user",
       "isOnline": false,
-      "lastSeen": "2026-05-21T05:57:42.201Z",
+      "lastSeen": "2026-05-21T11:56:26.792Z",
       "createdAt": "2026-05-21T05:56:52.103Z"
     },
     {
@@ -62,8 +62,8 @@
       "email": "depak@gmail.com",
       "passwordHash": "$2a$10$jl0axkJSvolKgZCfRPk15uk4kGClhtpEEQ630DMfOzJzxyMQ/kzuC",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-05-21T10:17:20.648Z",
+      "isOnline": false,
+      "lastSeen": "2026-05-21T13:52:41.083Z",
       "createdAt": "2026-05-21T06:05:27.265Z"
     },
     {
@@ -84,8 +84,8 @@
       "email": "hannibal@ail.com",
       "passwordHash": "$2a$10$iG/JmJDeTcQIW..rbHfHHe4UuwfLNVw9b40mDTcxepC.zlyYdss56",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-05-21T10:17:20.627Z",
+      "isOnline": false,
+      "lastSeen": "2026-05-21T13:52:41.044Z",
       "createdAt": "2026-05-21T06:29:29.676Z"
     },
     {
@@ -106,8 +106,8 @@
       "email": "sujaybansal@bel.co.in",
       "passwordHash": "$2a$10$fOOOEANnUBCuh0Kpe/wOlOk6YZZTWgGAb4m3Uzd8o62SxFIuu9KYi",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": null,
+      "isOnline": false,
+      "lastSeen": "2026-05-21T11:24:08.508Z",
       "createdAt": "2026-05-21T08:22:34.243Z"
     },
     {
@@ -117,8 +117,8 @@
       "email": "umangprakash@crl.com",
       "passwordHash": "$2a$10$v/Zy1H7JPFYKgY0Anwr6he78Be3.aQ/qCoHIEVOgA6FzOL7tTl4be",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-05-21T10:10:39.463Z",
+      "isOnline": false,
+      "lastSeen": "2026-05-21T12:45:14.774Z",
       "createdAt": "2026-05-21T08:24:29.952Z"
     },
     {
@@ -128,8 +128,8 @@
       "email": "belcrl@gmail.com",
       "passwordHash": "$2a$10$g9kapffNz9YkpuhCJu8/i.xblRjPMY/c8b1MFRvCaWWeTp0jfbmDa",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-05-21T10:17:20.869Z",
+      "isOnline": false,
+      "lastSeen": "2026-05-21T13:52:41.035Z",
       "createdAt": "2026-05-21T09:06:36.796Z"
     }
   ],
@@ -972,13 +972,13 @@
       "chatType": "direct",
       "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
       "receiverId": "3f761a1d-112d-404f-be08-2351c1e08596",
-      "text": "bsdk",
+      "text": null,
       "file": null,
       "status": "seen",
       "isRead": true,
       "editedAt": null,
-      "deletedAt": null,
-      "deletedFor": null,
+      "deletedAt": "2026-05-21T12:14:07.150Z",
+      "deletedFor": "everyone",
       "deletedForUsers": [],
       "seenAt": "2026-05-21T08:00:10.326Z",
       "createdAt": "2026-05-21T06:38:21.295Z"
@@ -1760,6 +1760,75 @@
       "deletedForUsers": [],
       "seenAt": null,
       "createdAt": "2026-05-21T10:09:09.408Z"
+    },
+    {
+      "id": "4c436aa9-6851-4f76-b913-c018c4d9bafd",
+      "chatId": "0918d7df-234a-4147-8f4c-ddf2f0fa4041_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "0918d7df-234a-4147-8f4c-ddf2f0fa4041",
+      "text": "sun",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-21T10:21:34.297Z"
+    },
+    {
+      "id": "24c20820-657a-4526-978a-b2b0d83ef2bb",
+      "chatId": "71057af1-9259-42be-b8fb-01272fc32c81_b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d",
+      "chatType": "direct",
+      "senderId": "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d",
+      "receiverId": "71057af1-9259-42be-b8fb-01272fc32c81",
+      "text": "?",
+      "file": null,
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": "2026-05-21T10:45:30.752Z",
+      "createdAt": "2026-05-21T10:39:48.202Z"
+    },
+    {
+      "id": "f6bf4c56-d3b4-4029-84fe-f33a9dcaf7db",
+      "chatId": "71057af1-9259-42be-b8fb-01272fc32c81_b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d",
+      "chatType": "direct",
+      "senderId": "71057af1-9259-42be-b8fb-01272fc32c81",
+      "receiverId": "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d",
+      "text": "kya",
+      "file": null,
+      "status": "delivered",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-21T10:45:38.522Z"
+    },
+    {
+      "id": "005b5b87-6078-4ecd-9fe3-e1d5eaea7824",
+      "chatId": "47fd79b7-f341-4509-9459-17f06b40bc84",
+      "chatType": "group",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": null,
+      "groupId": "47fd79b7-f341-4509-9459-17f06b40bc84",
+      "text": "hlo",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-21T12:13:23.174Z"
     }
   ],
   "groups": [

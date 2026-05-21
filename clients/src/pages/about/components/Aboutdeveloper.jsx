@@ -77,7 +77,7 @@ export default function AboutDeveloper({ onContactClick }) {
               marginBottom: 6,
             }}
           >
-            Ajay Shakya
+            A*** *****a
           </h3>
           <p
             style={{
@@ -92,10 +92,6 @@ export default function AboutDeveloper({ onContactClick }) {
             environments where personal phones aren't permitted and internet access may be
             restricted.
           </p>
-          {/* <p style={{ color: 'var(--text-dim)', fontSize: 13 }}>
-            Built for{' '}
-            <span style={{ color: '#a78bfa', fontWeight: 600 }}>Sneha Gupta Ma'am's Team</span>
-          </p> */}
         </div>
 
         <div style={{ flexShrink: 0 }}>

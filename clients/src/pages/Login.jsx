@@ -35,26 +35,26 @@ export default function Login() {
           <Title level={3} style={{ color: '#fff', textAlign: 'center', marginBottom: 32 }}>
             Welcome Back
           </Title>
-          <Spin spinning={loading}>
-            <Form layout="vertical" onFinish={onFinish} size="large">
-              <Form.Item
-                name="identity"
-                rules={[{ required: true, message: 'Enter username or email' }]}
-              >
-                <Input className="auth-input" placeholder="Username or Email" style={inputStyle} />
-              </Form.Item>
-              <Form.Item name="password" rules={[{ required: true }]}>
-                <Input.Password
-                  className="icon_color_light"
-                  placeholder="Password"
-                  style={inputStyle}
-                />
-              </Form.Item>
-              <Button htmlType="submit" block style={btnStyle} loading={loading}>
-                Login
-              </Button>
-            </Form>
-          </Spin>
+          {/* <Spin> */}
+          <Form layout="vertical" onFinish={onFinish} size="large" disabled={loading}>
+            <Form.Item
+              name="identity"
+              rules={[{ required: true, message: 'Enter username or email' }]}
+            >
+              <Input className="auth-input" placeholder="Username or Email" style={inputStyle} />
+            </Form.Item>
+            <Form.Item name="password" rules={[{ required: true }]}>
+              <Input.Password
+                className="icon_color_light"
+                placeholder="Password"
+                style={inputStyle}
+              />
+            </Form.Item>
+            <Button htmlType="submit" block style={btnStyle} loading={loading}>
+              Login
+            </Button>
+          </Form>
+          {/* </Spin> */}
           <Text
             style={{
               color: '#888',

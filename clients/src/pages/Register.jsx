@@ -50,36 +50,34 @@ export default function Register() {
           <Title level={3} style={{ color: '#fff', textAlign: 'center', marginBottom: 32 }}>
             Create Account
           </Title>
-          <Spin spinning={loading}>
-            <Form layout="vertical" onFinish={onFinish} size="large">
-              <Form.Item
-                name="username"
-                hasFeedback
-                validateStatus={usernameStatus}
-                rules={[{ required: true }, { validator: checkUsername }]}
-              >
-                <Input placeholder="Username" style={inputStyle} />
-              </Form.Item>
-              <Form.Item
-                name="email"
-                hasFeedback
-                validateStatus={emailStatus}
-                rules={[{ required: true }, { validator: checkEmail }]}
-              >
-                <Input placeholder="Ex. user@az.com" style={inputStyle} />
-              </Form.Item>
-              <Form.Item name="password" rules={[{ required: true, min: 6 }]}>
-                <Input.Password
-                  className="icon_color_light"
-                  placeholder="Password (min 6 chars)"
-                  style={inputStyle}
-                />
-              </Form.Item>
-              <Button htmlType="submit" block style={btnStyle} loading={loading}>
-                Register
-              </Button>
-            </Form>
-          </Spin>
+          <Form layout="vertical" onFinish={onFinish} size="large" disabled={loading}>
+            <Form.Item
+              name="username"
+              hasFeedback
+              validateStatus={usernameStatus}
+              rules={[{ required: true }, { validator: checkUsername }]}
+            >
+              <Input placeholder="Username" style={inputStyle} />
+            </Form.Item>
+            <Form.Item
+              name="email"
+              hasFeedback
+              validateStatus={emailStatus}
+              rules={[{ required: true }, { validator: checkEmail }]}
+            >
+              <Input placeholder="Ex. user@az.com" style={inputStyle} />
+            </Form.Item>
+            <Form.Item name="password" rules={[{ required: true, min: 6 }]}>
+              <Input.Password
+                className="icon_color_light"
+                placeholder="Password (min 6 chars)"
+                style={inputStyle}
+              />
+            </Form.Item>
+            <Button htmlType="submit" block style={btnStyle} loading={loading}>
+              Register
+            </Button>
+          </Form>
           <Text
             style={{
               color: '#888',

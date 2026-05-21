@@ -1,14 +1,14 @@
-import React from 'react';
+import React from "react";
 
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Home from '../pages/Home.jsx';
-import Login from '../pages/Login.jsx';
-import Register from '../pages/Register.jsx';
-import About from '../pages/about/index.jsx';
-import Chatx from '../pages/chat/Chatx.jsx';
-import Admin from '../pages/admin/Admin.jsx';
-import PublicLayout from '../layouts/PublicLayout.jsx';
-import PrivateLayout from '../layouts/PrivateLayout.jsx';
+import { Routes, Route, Navigate } from "react-router-dom";
+import Home from "../pages/Home.jsx";
+import Login from "../pages/Login.jsx";
+import Register from "../pages/Register.jsx";
+import About from "../pages/about/index.jsx";
+import Chatx from "../pages/chat/Chatx.jsx";
+import Admin from "../pages/admin/Admin.jsx";
+import PublicLayout from "../layouts/PublicLayout.jsx";
+import PrivateLayout from "../layouts/PrivateLayout.jsx";
 
 export default function AppRoutes() {
   return (

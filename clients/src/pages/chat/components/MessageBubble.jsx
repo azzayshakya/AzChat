@@ -1,24 +1,39 @@
-import React, { useState } from 'react';
-import { Dropdown, Modal, message as antMsg } from 'antd';
-import { DeleteOutlined, CheckOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { features } from '../../../utils/features.js';
-import { api } from '../../../api.js';
+import React, { useState } from "react";
+import { Dropdown, Modal, message as antMsg } from "antd";
+import {
+  DeleteOutlined,
+  CheckOutlined,
+  CheckCircleOutlined,
+} from "@ant-design/icons";
+import { features } from "../../../utils/features.js";
+import { api } from "../../../api.js";
 
-export default function MessageBubble({ message, isMine, onDeleted, isGroup, groupMembers }) {
+export default function MessageBubble({
+  message,
+  isMine,
+  onDeleted,
+  isGroup,
+  groupMembers,
+}) {
   const [deleting, setDeleting] = useState(false);
 
   // Deleted for everyone stub
-  if (message.deletedFor === 'everyone') {
+  if (message.deletedFor === "everyone") {
     return (
-      <div style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start' }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: isMine ? "flex-end" : "flex-start",
+        }}
+      >
         <div
           style={{
-            padding: '8px 14px',
+            padding: "8px 14px",
             borderRadius: 12,
-            background: '#1a1a2e',
-            color: '#555',
+            background: "#1a1a2e",
+            color: "#555",
             fontSize: 12,
-            fontStyle: 'italic',
+            fontStyle: "italic",
           }}
         >
           🚫 This message was deleted
@@ -29,10 +44,13 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
 
   const handleDelete = (deleteFor) => {
     Modal.confirm({
-      title: deleteFor === 'everyone' ? 'Delete for everyone?' : 'Delete for me?',
+      title:
+        deleteFor === "everyone" ? "Delete for everyone?" : "Delete for me?",
       content:
-        deleteFor === 'everyone' ? 'This cannot be undone.' : 'Only you will stop seeing this.',
-      okText: 'Delete',
+        deleteFor === "everyone"
+          ? "This cannot be undone."
+          : "Only you will stop seeing this.",
+      okText: "Delete",
       okButtonProps: { danger: true },
       onOk: async () => {
         setDeleting(true);
@@ -40,7 +58,7 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
           await api.delete(`/messages/${message.id}`, { data: { deleteFor } });
           onDeleted?.(message.id, deleteFor);
         } catch {
-          antMsg.error('Failed to delete message');
+          antMsg.error("Failed to delete message");
         } finally {
           setDeleting(false);
         }
@@ -51,27 +69,30 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
   const menuItems = [];
   if (isMine && features.deleteOwnMessage)
     menuItems.push({
-      key: 'me',
-      label: 'Delete for me',
+      key: "me",
+      label: "Delete for me",
       icon: <DeleteOutlined />,
-      onClick: () => handleDelete('me'),
+      onClick: () => handleDelete("me"),
     });
   if (isMine && features.deleteForEveryone)
     menuItems.push({
-      key: 'everyone',
-      label: 'Delete for everyone',
+      key: "everyone",
+      label: "Delete for everyone",
       icon: <DeleteOutlined />,
       danger: true,
-      onClick: () => handleDelete('everyone'),
+      onClick: () => handleDelete("everyone"),
     });
 
   const seenIcon = () => {
     if (!features.messageSeenStatus || !isMine || isGroup) return null;
-    if (message.status === 'seen')
-      return <CheckCircleOutlined style={{ color: '#a78bfa', fontSize: 10 }} />;
+    if (message.status === "seen")
+      return <CheckCircleOutlined style={{ color: "#a78bfa", fontSize: 10 }} />;
     return (
       <CheckOutlined
-        style={{ color: message.status === 'delivered' ? '#888' : '#555', fontSize: 10 }}
+        style={{
+          color: message.status === "delivered" ? "#888" : "#555",
+          fontSize: 10,
+        }}
       />
     );
   };
@@ -79,25 +100,32 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
   // Sender name in group — shown above bubble for others' messages
   const senderName =
     isGroup && !isMine
-      ? groupMembers?.find((m) => m.id === message.senderId)?.username || 'Unknown'
+      ? groupMembers?.find((m) => m.id === message.senderId)?.username ||
+        "Unknown"
       : null;
   // Add this helper inside MessageBubble (above renderContent)
   const renderMarkdown = (text) => {
     if (!text) return null;
-    return text.split('\n').map((line, li) => {
+    return text.split("\n").map((line, li) => {
       // Task: [ ] or [x]
       if (/^\[( |x)\] /.test(line)) {
-        const done = line[1] === 'x';
+        const done = line[1] === "x";
         return (
-          <div key={li} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div
+            key={li}
+            style={{ display: "flex", alignItems: "center", gap: 6 }}
+          >
             <input
               type="checkbox"
               defaultChecked={done}
               readOnly
-              style={{ accentColor: '#a78bfa' }}
+              style={{ accentColor: "#a78bfa" }}
             />
             <span
-              style={{ textDecoration: done ? 'line-through' : 'none', opacity: done ? 0.6 : 1 }}
+              style={{
+                textDecoration: done ? "line-through" : "none",
+                opacity: done ? 0.6 : 1,
+              }}
             >
               {formatInline(line.slice(4))}
             </span>
@@ -105,7 +133,7 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
         );
       }
       // Bullet
-      if (line.startsWith('• ')) {
+      if (line.startsWith("• ")) {
         return (
           <div key={li} style={{ paddingLeft: 4 }}>
             • {formatInline(line.slice(2))}
@@ -124,17 +152,18 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
       m;
     while ((m = re.exec(text)) !== null) {
       if (m.index > last) parts.push(text.slice(last, m.index));
-      if (m[0].startsWith('**')) parts.push(<strong key={m.index}>{m[2]}</strong>);
-      else if (m[0].startsWith('_')) parts.push(<em key={m.index}>{m[3]}</em>);
+      if (m[0].startsWith("**"))
+        parts.push(<strong key={m.index}>{m[2]}</strong>);
+      else if (m[0].startsWith("_")) parts.push(<em key={m.index}>{m[3]}</em>);
       else
         parts.push(
           <code
             key={m.index}
             style={{
-              background: '#0006',
+              background: "#0006",
               borderRadius: 3,
-              padding: '1px 4px',
-              fontFamily: 'monospace',
+              padding: "1px 4px",
+              fontFamily: "monospace",
               fontSize: 12,
             }}
           >
@@ -155,15 +184,15 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
     if (message.file) {
       const { category, url, name } = message.file;
       const fullUrl = `${import.meta.env.VITE_API_URL}${url}`;
-      if (category === 'image') {
+      if (category === "image") {
         return (
           <div>
             <img
               src={fullUrl}
               alt={name}
-              style={{ maxWidth: 220, borderRadius: 8, display: 'block' }}
+              style={{ maxWidth: 220, borderRadius: 8, display: "block" }}
               onError={(e) => {
-                e.target.style.display = 'none';
+                e.target.style.display = "none";
               }}
             />
             {message.text && <div style={{ marginTop: 4 }}>{message.text}</div>}
@@ -178,9 +207,9 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
             target="_blank"
             rel="noreferrer"
             style={{
-              color: '#a78bfa',
-              display: 'flex',
-              alignItems: 'center',
+              color: "#a78bfa",
+              display: "flex",
+              alignItems: "center",
               gap: 6,
               fontSize: 12,
             }}
@@ -197,16 +226,16 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
   const bubble = (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: isMine ? 'flex-end' : 'flex-start',
-        maxWidth: '65%',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: isMine ? "flex-end" : "flex-start",
+        maxWidth: "65%",
       }}
     >
       {senderName && (
         <div
           style={{
-            color: '#a78bfa',
+            color: "#a78bfa",
             fontSize: 11,
             fontWeight: 600,
             marginBottom: 2,
@@ -218,33 +247,35 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
       )}
       <div
         style={{
-          padding: '9px 14px',
-          borderRadius: isMine ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-          background: isMine ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#1e1e3a',
-          color: '#fff',
+          padding: "9px 14px",
+          borderRadius: isMine ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+          background: isMine
+            ? "linear-gradient(135deg, #667eea, #764ba2)"
+            : "#1e1e3a",
+          color: "#fff",
           fontSize: 13,
           lineHeight: 1.5,
-          boxShadow: '0 2px 8px #0004',
+          boxShadow: "0 2px 8px #0004",
           opacity: deleting ? 0.5 : 1,
-          cursor: menuItems.length ? 'context-menu' : 'default',
+          cursor: menuItems.length ? "context-menu" : "default",
         }}
       >
         {renderContent()}
         <div
           style={{
             fontSize: 10,
-            color: isMine ? '#ccc' : '#666',
+            color: isMine ? "#ccc" : "#666",
             marginTop: 4,
-            textAlign: 'right',
-            display: 'flex',
-            justifyContent: 'flex-end',
+            textAlign: "right",
+            display: "flex",
+            justifyContent: "flex-end",
             gap: 4,
-            alignItems: 'center',
+            alignItems: "center",
           }}
         >
           {new Date(message.createdAt).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
+            hour: "2-digit",
+            minute: "2-digit",
           })}
           {seenIcon()}
         </div>
@@ -253,9 +284,14 @@ export default function MessageBubble({ message, isMine, onDeleted, isGroup, gro
   );
 
   return (
-    <div style={{ display: 'flex', justifyContent: isMine ? 'flex-end' : 'flex-start' }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: isMine ? "flex-end" : "flex-start",
+      }}
+    >
       {menuItems.length > 0 ? (
-        <Dropdown menu={{ items: menuItems }} trigger={['contextMenu']}>
+        <Dropdown menu={{ items: menuItems }} trigger={["contextMenu"]}>
           {bubble}
         </Dropdown>
       ) : (

@@ -1,7 +1,7 @@
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
-import Navbar from '../components/Navbar';
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../AuthContext";
+import Navbar from "../components/Navbar";
 
 export default function PublicLayout() {
   const { user } = useAuth();
@@ -13,10 +13,10 @@ export default function PublicLayout() {
   return (
     <div
       style={{
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
       }}
     >
       <Navbar />
@@ -25,7 +25,7 @@ export default function PublicLayout() {
       <div
         style={{
           flex: 1,
-          overflow: 'hidden',
+          overflow: "hidden",
         }}
       >
         <Outlet />

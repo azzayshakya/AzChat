@@ -70,7 +70,7 @@ export function useNotification() {
         };
       }
     },
-    [playSound],
+    [playSound]
   );
 
   return { notify, playSound };

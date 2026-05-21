@@ -128,7 +128,7 @@ export default function Chatx() {
               m.chatId === chatId && m.receiverId === seenBy
                 ? "seen"
                 : m.status,
-          })),
+          }))
         );
       });
     }
@@ -140,14 +140,14 @@ export default function Chatx() {
             ? deletedFor === "everyone"
               ? { ...m, deletedFor: "everyone", text: null, file: null }
               : m
-            : m,
-        ),
+            : m
+        )
       );
     });
 
     socket.on("message_edited", (updated) => {
       setMessages((prev) =>
-        prev.map((m) => (m.id === updated.id ? updated : m)),
+        prev.map((m) => (m.id === updated.id ? updated : m))
       );
     });
 
@@ -198,7 +198,7 @@ export default function Chatx() {
       const { data } = await api.get(`/messages/${partner.id}`);
       const msgs = data.data || [];
       const firstUnread = msgs.findIndex(
-        (m) => m.senderId === partner.id && m.status !== "seen",
+        (m) => m.senderId === partner.id && m.status !== "seen"
       );
       setFirstUnreadIndex(firstUnread >= 0 ? firstUnread : null);
       setMessages(msgs);
@@ -242,7 +242,7 @@ export default function Chatx() {
         (res) => {
           setSending(false);
           if (!res?.ok) antMsg.error(res?.error || "Failed to send");
-        },
+        }
       );
     } else {
       socketRef.current.emit(
@@ -251,7 +251,7 @@ export default function Chatx() {
         (res) => {
           setSending(false);
           if (!res?.ok) antMsg.error(res?.error || "Failed to send");
-        },
+        }
       );
     }
     setText("");
@@ -264,9 +264,9 @@ export default function Chatx() {
         ? prev.map((m) =>
             m.id === messageId
               ? { ...m, deletedFor: "everyone", text: null, file: null }
-              : m,
+              : m
           )
-        : prev.filter((m) => m.id !== messageId),
+        : prev.filter((m) => m.id !== messageId)
     );
   };
 
@@ -277,7 +277,7 @@ export default function Chatx() {
 
   const handleGroupUpdated = (updatedGroup) => {
     setGroups((prev) =>
-      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g)),
+      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g))
     );
     if (selected?.id === updatedGroup.id) setSelected(updatedGroup);
   };

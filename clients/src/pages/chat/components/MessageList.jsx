@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { Spin } from 'antd';
-import MessageBubble from './MessageBubble.jsx';
-import UnreadDivider from './UnreadDivider.jsx';
+import React, { useEffect, useRef } from "react";
+import { Spin } from "antd";
+import MessageBubble from "./MessageBubble.jsx";
+import UnreadDivider from "./UnreadDivider.jsx";
 
 export default function MessageList({
   messages,
@@ -15,7 +15,7 @@ export default function MessageList({
   const bottomRef = useRef(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   // Detect if current message belongs to a new day
@@ -30,7 +30,14 @@ export default function MessageList({
 
   if (loadingMsgs) {
     return (
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Spin size="large" tip="Loading messages..." />
       </div>
     );
@@ -41,13 +48,15 @@ export default function MessageList({
       <div
         style={{
           flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'var(--text-highlight)',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--text-highlight)",
         }}
       >
-        {isGroup ? 'No messages yet. Start the conversation! 👋' : 'No messages yet. Say hello! 👋'}
+        {isGroup
+          ? "No messages yet. Start the conversation! 👋"
+          : "No messages yet. Say hello! 👋"}
       </div>
     );
   }
@@ -56,10 +65,10 @@ export default function MessageList({
     <div
       style={{
         flex: 1,
-        overflowY: 'auto',
-        padding: '20px',
-        display: 'flex',
-        flexDirection: 'column',
+        overflowY: "auto",
+        padding: "20px",
+        display: "flex",
+        flexDirection: "column",
         gap: 8,
       }}
     >
@@ -72,36 +81,38 @@ export default function MessageList({
             {showDateDivider && (
               <div
                 style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  margin: '14px 0 10px',
+                  display: "flex",
+                  justifyContent: "center",
+                  margin: "14px 0 10px",
                 }}
               >
                 <div
                   style={{
-                    background: '#1a1a2e',
-                    color: 'var(--text-muted)',
+                    background: "#1a1a2e",
+                    color: "var(--text-muted)",
                     fontSize: 11,
-                    padding: '6px 14px',
+                    padding: "6px 14px",
                     borderRadius: 999,
-                    border: '1px solid #2a2a4a',
-                    boxShadow: '0 2px 8px #0003',
+                    border: "1px solid #2a2a4a",
+                    boxShadow: "0 2px 8px #0003",
                     fontWeight: 500,
                     letterSpacing: 0.2,
                   }}
                 >
                   {new Date(msg.createdAt).toLocaleDateString([], {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
                   })}
                 </div>
               </div>
             )}
 
             {/* Unread Divider */}
-            {firstUnreadIndex !== null && index === firstUnreadIndex && <UnreadDivider />}
+            {firstUnreadIndex !== null && index === firstUnreadIndex && (
+              <UnreadDivider />
+            )}
 
             {/* Message */}
             <MessageBubble

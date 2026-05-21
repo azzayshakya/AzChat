@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { message as antMsg } from 'antd';
-import { useAuth } from '../../AuthContext.jsx';
-import { api, getSocket } from '../../api.js';
-import ChatSidebar from './components/ChatSidebar.jsx';
-import ChatHeader from './components/ChatHeader.jsx';
-import GroupHeader from './components/GroupHeader.jsx';
-import MessageInput from './components/MessageInput.jsx';
-import MessageList from './components/MessageList.jsx';
-import { features } from '../../utils/features.js';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { message as antMsg } from "antd";
+import { useAuth } from "../../AuthContext.jsx";
+import { api, getSocket } from "../../api.js";
+import ChatSidebar from "./components/ChatSidebar.jsx";
+import ChatHeader from "./components/ChatHeader.jsx";
+import GroupHeader from "./components/GroupHeader.jsx";
+import MessageInput from "./components/MessageInput.jsx";
+import MessageList from "./components/MessageList.jsx";
+import { features } from "../../utils/features.js";
+import { useNotification } from "../../hooks/useNotification.js";
 
 export default function Chatx() {
   const { user } = useAuth();
@@ -15,13 +16,13 @@ export default function Chatx() {
   const [contacts, setContacts] = useState([]);
   const [groups, setGroups] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const [searchQ, setSearchQ] = useState('');
+  const [searchQ, setSearchQ] = useState("");
 
   const [selected, setSelected] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
 
   const [messages, setMessages] = useState([]);
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
 
   const [loadingContacts, setLoadingContacts] = useState(true);
   const [loadingGroups, setLoadingGroups] = useState(true);
@@ -35,13 +36,13 @@ export default function Chatx() {
   const selectedTypeRef = useRef(null);
   const searchTimer = useRef(null);
   const socketRef = useRef(null);
-
+  const { notify } = useNotification();
   const fetchContacts = useCallback(async () => {
     try {
-      const { data } = await api.get('/contacts');
+      const { data } = await api.get("/contacts");
       setContacts(data.data || []);
     } catch {
-      antMsg.error('Failed to load contacts');
+      antMsg.error("Failed to load contacts");
     } finally {
       setLoadingContacts(false);
     }
@@ -53,10 +54,10 @@ export default function Chatx() {
       return;
     }
     try {
-      const { data } = await api.get('/groups');
+      const { data } = await api.get("/groups");
       setGroups(data.data || []);
     } catch {
-      antMsg.error('Failed to load groups');
+      antMsg.error("Failed to load groups");
     } finally {
       setLoadingGroups(false);
     }
@@ -79,66 +80,84 @@ export default function Chatx() {
     const socket = socketRef.current;
     if (!socket || !user?.id) return;
 
-    socket.on('online_users', setOnlineUsers);
+    socket.on("online_users", setOnlineUsers);
 
     // Direct message
-    socket.on('new_message', (msg) => {
+    socket.on("new_message", (msg) => {
       fetchContacts();
+      if (msg.senderId !== user.id) {
+        notify({
+          title: "New Message",
+          body: msg.text || "You received a file",
+        });
+      }
       setMessages((prev) => {
         const current = selectedRef.current;
         const type = selectedTypeRef.current;
-        if (!current || type !== 'direct') return prev;
-        const isCurrentChat = msg.chatId === [user.id, current.id].sort().join('_');
+        if (!current || type !== "direct") return prev;
+        const isCurrentChat =
+          msg.chatId === [user.id, current.id].sort().join("_");
         if (!isCurrentChat || prev.some((m) => m.id === msg.id)) return prev;
         return [...prev, msg];
       });
     });
 
-    // Group message
-    socket.on('new_group_message', (msg) => {
+    socket.on("new_group_message", (msg) => {
+      if (msg.senderId !== user.id) {
+        notify({
+          title: "New Group Message",
+          body: msg.text || "You received a file",
+        });
+      }
       setMessages((prev) => {
         const current = selectedRef.current;
         const type = selectedTypeRef.current;
-        if (!current || type !== 'group') return prev;
-        if (msg.chatId !== current.id || prev.some((m) => m.id === msg.id)) return prev;
+        if (!current || type !== "group") return prev;
+        if (msg.chatId !== current.id || prev.some((m) => m.id === msg.id))
+          return prev;
         return [...prev, msg];
       });
     });
 
     if (features.messageSeenStatus) {
-      socket.on('messages_seen', ({ chatId, seenBy }) => {
+      socket.on("messages_seen", ({ chatId, seenBy }) => {
         setMessages((prev) =>
           prev.map((m) => ({
             ...m,
-            status: m.chatId === chatId && m.receiverId === seenBy ? 'seen' : m.status,
-          }))
+            status:
+              m.chatId === chatId && m.receiverId === seenBy
+                ? "seen"
+                : m.status,
+          })),
         );
       });
     }
 
-    socket.on('message_deleted', ({ messageId, deletedFor }) => {
+    socket.on("message_deleted", ({ messageId, deletedFor }) => {
       setMessages((prev) =>
         prev.map((m) =>
           m.id === messageId
-            ? deletedFor === 'everyone'
-              ? { ...m, deletedFor: 'everyone', text: null, file: null }
+            ? deletedFor === "everyone"
+              ? { ...m, deletedFor: "everyone", text: null, file: null }
               : m
-            : m
-        )
+            : m,
+        ),
       );
     });
 
-    socket.on('message_edited', (updated) => {
-      setMessages((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+    socket.on("message_edited", (updated) => {
+      setMessages((prev) =>
+        prev.map((m) => (m.id === updated.id ? updated : m)),
+      );
     });
 
     return () => {
-      socket.off('online_users');
-      socket.off('new_message');
-      socket.off('new_group_message');
-      socket.off('messages_seen');
-      socket.off('message_deleted');
-      socket.off('message_edited');
+      socket.off("online_users");
+      socket.off("new_message");
+      socket.off("new_group_message");
+      socket.off("messages_seen");
+      socket.off("message_deleted");
+      socket.off("message_edited");
     };
   }, [user?.id, fetchContacts]);
 
@@ -169,42 +188,44 @@ export default function Chatx() {
 
   const handleSelectContact = async (partner) => {
     setSelected(partner);
-    setSelectedType('direct');
+    setSelectedType("direct");
     setLoadingMsgs(true);
     setMessages([]);
     setFirstUnreadIndex(null);
-    setSearchQ('');
+    setSearchQ("");
     setSearchResults([]);
     try {
       const { data } = await api.get(`/messages/${partner.id}`);
       const msgs = data.data || [];
-      const firstUnread = msgs.findIndex((m) => m.senderId === partner.id && m.status !== 'seen');
+      const firstUnread = msgs.findIndex(
+        (m) => m.senderId === partner.id && m.status !== "seen",
+      );
       setFirstUnreadIndex(firstUnread >= 0 ? firstUnread : null);
       setMessages(msgs);
       if (firstUnread >= 0) {
-        await api.patch('/messages/read', { fromUserId: partner.id });
+        await api.patch("/messages/read", { fromUserId: partner.id });
         fetchContacts();
       }
     } catch {
-      antMsg.error('Failed to load messages');
+      antMsg.error("Failed to load messages");
     } finally {
       setLoadingMsgs(false);
     }
   };
   const handleSelectGroup = async (group) => {
     setSelected(group);
-    setSelectedType('group');
+    setSelectedType("group");
     setLoadingMsgs(true);
     setMessages([]);
     setFirstUnreadIndex(null);
 
-    socketRef.current?.emit('join_group_room', { groupId: group.id });
+    socketRef.current?.emit("join_group_room", { groupId: group.id });
 
     try {
       const { data } = await api.get(`/groups/${group.id}/messages`);
       setMessages(data.data || []);
     } catch {
-      antMsg.error('Failed to load group messages');
+      antMsg.error("Failed to load group messages");
     } finally {
       setLoadingMsgs(false);
     }
@@ -214,36 +235,38 @@ export default function Chatx() {
     if (!text.trim() || !selected || sending) return;
     setSending(true);
 
-    if (selectedType === 'group') {
+    if (selectedType === "group") {
       socketRef.current.emit(
-        'send_group_message',
+        "send_group_message",
         { groupId: selected.id, text: text.trim() },
         (res) => {
           setSending(false);
-          if (!res?.ok) antMsg.error(res?.error || 'Failed to send');
-        }
+          if (!res?.ok) antMsg.error(res?.error || "Failed to send");
+        },
       );
     } else {
       socketRef.current.emit(
-        'send_message',
+        "send_message",
         { receiverId: selected.id, text: text.trim() },
         (res) => {
           setSending(false);
-          if (!res?.ok) antMsg.error(res?.error || 'Failed to send');
-        }
+          if (!res?.ok) antMsg.error(res?.error || "Failed to send");
+        },
       );
     }
-    setText('');
+    setText("");
     setFirstUnreadIndex(null);
   };
 
   const handleMessageDeleted = (messageId, deleteFor) => {
     setMessages((prev) =>
-      deleteFor === 'everyone'
+      deleteFor === "everyone"
         ? prev.map((m) =>
-            m.id === messageId ? { ...m, deletedFor: 'everyone', text: null, file: null } : m
+            m.id === messageId
+              ? { ...m, deletedFor: "everyone", text: null, file: null }
+              : m,
           )
-        : prev.filter((m) => m.id !== messageId)
+        : prev.filter((m) => m.id !== messageId),
     );
   };
 
@@ -253,22 +276,24 @@ export default function Chatx() {
   };
 
   const handleGroupUpdated = (updatedGroup) => {
-    setGroups((prev) => prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g)));
+    setGroups((prev) =>
+      prev.map((g) => (g.id === updatedGroup.id ? updatedGroup : g)),
+    );
     if (selected?.id === updatedGroup.id) setSelected(updatedGroup);
   };
 
   const isOnline = (id) => onlineUsers.includes(id);
 
-  const isGroupSelected = selectedType === 'group';
+  const isGroupSelected = selectedType === "group";
 
   return (
     <div
       style={{
-        display: 'flex',
-        height: '100%',
-        overflow: 'hidden',
-        background: '#0d0d1a',
-        fontFamily: 'system-ui',
+        display: "flex",
+        height: "100%",
+        overflow: "hidden",
+        background: "#0d0d1a",
+        fontFamily: "system-ui",
       }}
     >
       <ChatSidebar
@@ -290,20 +315,24 @@ export default function Chatx() {
         onSelectGroup={handleSelectGroup}
       />
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {!selected ? (
           <div
             style={{
               flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#333',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#333",
             }}
           >
-            <div style={{ textAlign: 'center', color: 'var(--text-highlight)' }}>
+            <div
+              style={{ textAlign: "center", color: "var(--text-highlight)" }}
+            >
               <div style={{ fontSize: 48 }}>💬</div>
-              <div style={{ marginTop: 12, fontSize: 15 }}>Select a chat or group to start</div>
+              <div style={{ marginTop: 12, fontSize: 15 }}>
+                Select a chat or group to start
+              </div>
             </div>
           </div>
         ) : (
@@ -334,7 +363,9 @@ export default function Chatx() {
               onSend={sendMessage}
               sending={sending}
               placeholder={
-                isGroupSelected ? `Message ${selected.name}...` : `Message ${selected.username}...`
+                isGroupSelected
+                  ? `Message ${selected.name}...`
+                  : `Message ${selected.username}...`
               }
               selectedId={selected.id}
               isGroup={isGroupSelected}

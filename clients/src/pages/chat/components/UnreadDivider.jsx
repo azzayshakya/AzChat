@@ -1,12 +1,5 @@
 import React from "react";
 
-/**
- * UnreadDivider
- * A decorative horizontal divider with a "New messages" label,
- * inserted above the first unread message in a conversation.
- *
- * No props required — purely presentational.
- */
 export default function UnreadDivider() {
   return (
     <div
@@ -17,7 +10,6 @@ export default function UnreadDivider() {
         margin: "8px 0",
       }}
     >
-      {/* Left gradient line */}
       <div
         style={{
           flex: 1,
@@ -26,14 +18,13 @@ export default function UnreadDivider() {
         }}
       />
 
-      {/* Label pill */}
       <div
         style={{
           background: "#667eea22",
           border: "1px solid #667eea66",
           borderRadius: 12,
           padding: "3px 12px",
-          color: "#a78bfa",
+          color: "var(--accent-light)",
           fontSize: 11,
           fontWeight: 600,
           whiteSpace: "nowrap",
@@ -42,7 +33,6 @@ export default function UnreadDivider() {
         New messages
       </div>
 
-      {/* Right gradient line */}
       <div
         style={{
           flex: 1,

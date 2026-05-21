@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": false,
-      "lastSeen": "2026-05-21T13:52:41.108Z",
+      "lastSeen": "2026-05-21T14:20:13.697Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -30,7 +30,7 @@
       "passwordHash": "$2a$10$buOU14pIy9IIA02EyNHRN.hdkpaP4I9B6uakVYVY4rAaaMPY5JsEe",
       "role": "user",
       "isOnline": false,
-      "lastSeen": "2026-05-21T13:52:41.014Z",
+      "lastSeen": "2026-05-21T14:20:13.652Z",
       "createdAt": "2026-05-21T05:48:51.828Z"
     },
     {
@@ -63,7 +63,7 @@
       "passwordHash": "$2a$10$jl0axkJSvolKgZCfRPk15uk4kGClhtpEEQ630DMfOzJzxyMQ/kzuC",
       "role": "user",
       "isOnline": false,
-      "lastSeen": "2026-05-21T13:52:41.083Z",
+      "lastSeen": "2026-05-21T14:20:13.679Z",
       "createdAt": "2026-05-21T06:05:27.265Z"
     },
     {
@@ -74,7 +74,7 @@
       "passwordHash": "$2a$10$0nonjyT2wpfAc6L3pWybxORd9UCfOpShMW0LE0SphkkrLg3KVIzR.",
       "role": "user",
       "isOnline": false,
-      "lastSeen": "2026-05-21T06:35:53.304Z",
+      "lastSeen": "2026-05-21T14:20:13.705Z",
       "createdAt": "2026-05-21T06:18:08.444Z"
     },
     {
@@ -85,7 +85,7 @@
       "passwordHash": "$2a$10$iG/JmJDeTcQIW..rbHfHHe4UuwfLNVw9b40mDTcxepC.zlyYdss56",
       "role": "user",
       "isOnline": false,
-      "lastSeen": "2026-05-21T13:52:41.044Z",
+      "lastSeen": "2026-05-21T14:20:13.639Z",
       "createdAt": "2026-05-21T06:29:29.676Z"
     },
     {
@@ -129,7 +129,7 @@
       "passwordHash": "$2a$10$g9kapffNz9YkpuhCJu8/i.xblRjPMY/c8b1MFRvCaWWeTp0jfbmDa",
       "role": "user",
       "isOnline": false,
-      "lastSeen": "2026-05-21T13:52:41.035Z",
+      "lastSeen": "2026-05-21T14:20:13.688Z",
       "createdAt": "2026-05-21T09:06:36.796Z"
     }
   ],
@@ -1829,6 +1829,23 @@
       "deletedForUsers": [],
       "seenAt": null,
       "createdAt": "2026-05-21T12:13:23.174Z"
+    },
+    {
+      "id": "cfb4fd01-1d8b-401d-a728-0fb7bdf79bed",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "receiverId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "yooo",
+      "file": null,
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": "2026-05-21T13:56:39.271Z",
+      "createdAt": "2026-05-21T13:56:35.219Z"
     }
   ],
   "groups": [

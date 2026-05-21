@@ -1,5 +1,6 @@
 import React from "react";
 import { Avatar, Badge } from "antd";
+import UserAvatar from "../UComponents/UserAvatar";
 
 export default function ChatHeader({ contact, isOnline }) {
   return (
@@ -10,18 +11,23 @@ export default function ChatHeader({ contact, isOnline }) {
         display: "flex",
         alignItems: "center",
         gap: 12,
-        background: "#10101e",
+        background: "var(--dark-bg-light)",
       }}
     >
-      <Badge dot color={isOnline ? "#52c41a" : "#555"} offset={[-2, 30]}>
-        <Avatar style={{ background: "#667eea" }}>
-          {contact.username[0].toUpperCase()}
-        </Avatar>
-      </Badge>
+      <UserAvatar
+        isOnline={isOnline}
+        showOnlineStatus={true}
+        name={contact.username}
+      />
 
       <div>
         <div style={{ color: "#fff", fontWeight: 600 }}>{contact.username}</div>
-        <div style={{ color: isOnline ? "#52c41a" : "#666", fontSize: 11 }}>
+        <div
+          style={{
+            color: isOnline ? "var(--online-status)" : "var(--offline-status)",
+            fontSize: 11,
+          }}
+        >
           {isOnline ? "Online" : "Offline"}
         </div>
       </div>

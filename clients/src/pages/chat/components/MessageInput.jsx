@@ -328,10 +328,10 @@ export default function MessageInput({
         />
       </div>
 
-      <div style={styles.hint}>
+      {/* <div style={styles.hint}>
         Ctrl+B bold · Ctrl+I italic · Ctrl+E code · Enter new line · Ctrl+Enter
         send
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -15,6 +15,12 @@ export default function Register() {
 
   const checkUsername = async (_, value) => {
     if (!value || value.length < 3) return Promise.reject("Min 3 characters");
+    if (/\s/.test(value)) {
+      return Promise.reject("Username cannot contain spaces");
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+      return Promise.reject("Only letters, numbers and underscore allowed");
+    }
     setUsernameStatus("validating");
     const { data } = await api.get(`/check-username/${value}`);
     setUsernameStatus(data.available ? "success" : "error");

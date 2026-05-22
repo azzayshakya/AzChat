@@ -309,7 +309,7 @@ export default function MessageInput({
           onSelect={saveCursor}
           onBlur={saveCursor}
           onClick={saveCursor}
-          placeholder={`${placeholder}  ·  Ctrl+Enter to send`}
+          placeholder={`${placeholder}`}
           rows={1}
           style={styles.textarea}
           onInput={(e) => {
@@ -328,10 +328,10 @@ export default function MessageInput({
         />
       </div>
 
-      {/* <div style={styles.hint}>
-        Ctrl+B bold · Ctrl+I italic · Ctrl+E code · Enter new line · Ctrl+Enter
-        send
-      </div> */}
+      <div style={styles.hint}>
+        {/* Ctrl+B bold · Ctrl+I italic · Ctrl+E code · Enter new line · Ctrl+Enter
+        send */}
+      </div>
     </div>
   );
 }

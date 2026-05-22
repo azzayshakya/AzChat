@@ -17,7 +17,6 @@ export default function MessageBubble({
 }) {
   const [deleting, setDeleting] = useState(false);
 
-  // Deleted for everyone stub
   if (message.deletedFor === "everyone") {
     return (
       <div

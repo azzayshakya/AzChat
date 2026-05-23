@@ -18,6 +18,13 @@ export default function ChatHeader({ contact, isOnline }) {
         isOnline={isOnline}
         showOnlineStatus={true}
         name={contact.username}
+        image={
+          contact.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
+            ? "/default_female_profile_pic.jpg"
+            : contact.role === "admin"
+              ? "/developer_profile.jpg"
+              : "/default_male_profile_pic.jpg"
+        }
       />
 
       <div>

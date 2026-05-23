@@ -11,7 +11,7 @@ const UserAvatar = ({
   const displayName =
     typeof name === "string" && name.trim() ? name.trim() : "NA";
 
-  const firstLetter = displayName[0].toUpperCase();
+  const initials = displayName.trim().slice(0, 2).toUpperCase();
 
   const avatar = (
     <Avatar
@@ -23,7 +23,7 @@ const UserAvatar = ({
         ...avatarStyle,
       }}
     >
-      {!image && firstLetter}
+      {!image && initials}
     </Avatar>
   );
 

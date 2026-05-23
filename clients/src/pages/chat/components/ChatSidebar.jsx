@@ -22,6 +22,7 @@ import ContactItem from "./ContactItem.jsx";
 import CreateGroupModal from "./CreateGroupModal.jsx";
 import { features } from "../../../utils/features.js";
 import { api } from "../../../api.js";
+import UserAvatar from "../UComponents/UserAvatar.jsx";
 
 export default function ChatSidebar({
   currentUser,
@@ -41,7 +42,7 @@ export default function ChatSidebar({
   onSelectContact,
   onSelectGroup,
 }) {
-  const [tab, setTab] = useState("chats"); // 'chats' | 'groups'
+  const [tab, setTab] = useState("chats");
   const [showCreateGroup, setShowCreateGroup] = useState(false);
 
   const isOnline = (id) => onlineUsers.includes(id);
@@ -99,10 +100,11 @@ export default function ChatSidebar({
         borderRight: "1px solid #1e1e3a",
         display: "flex",
         flexDirection: "column",
-        background: "#10101e",
+        background: "var(--dark-bg-light)",
+        // background: "yellow",
       }}
     >
-      {/* Current user header */}
+      {/* Current Logged in user header */}
       <div
         style={{
           padding: "16px 16px 12px",
@@ -113,16 +115,19 @@ export default function ChatSidebar({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {currentUser.role === "admin" ? (
-            <img
-              src="/developer_profile.jpg"
-              height={"30px"}
-              width={"30px"}
-              style={{ borderRadius: "50%" }}
-            />
-          ) : (
-            <Avatar style={{ background: "#667eea" }} icon={<UserOutlined />} />
-          )}
+          <UserAvatar
+            isOnline={isOnline}
+            showOnlineStatus={true}
+            name={currentUser.username}
+            image={
+              currentUser.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
+                ? "/default_female_profile_pic.jpg"
+                : currentUser.role === "admin"
+                  ? "/developer_profile.jpg"
+                  : "/default_male_profile_pic.jpg"
+            }
+          />
+
           <div>
             <div
               className={
@@ -236,7 +241,10 @@ export default function ChatSidebar({
               return (
                 <div
                   key={contact.id}
-                  style={{ display: "flex", alignItems: "center" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
                 >
                   <div style={{ flex: 1 }}>
                     <ContactItem

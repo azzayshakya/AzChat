@@ -1,5 +1,7 @@
 import React from "react";
 import { Avatar, Badge } from "antd";
+import UserAvatar from "../UComponents/UserAvatar";
+import { formatMessageTime, truncateText } from "../../../utils/TimeFormater";
 
 export default function ContactItem({
   contact,
@@ -8,11 +10,13 @@ export default function ContactItem({
   onClick,
 }) {
   const hasUnread = contact.unreadCount > 0;
-  console.log("hy", contact);
-
+  console.log("hxxx", contact.lastMessage);
+  //   lastSeen
+  //
+  // "2026-05-22T12:05:46.189Z"
   return (
     <div
-      className={contact.role === "admin" ? "animated-admin-border" : ""}
+      className={contact.role === "admin" ? "" : ""}
       onClick={onClick}
       style={{
         padding: "12px 16px",
@@ -21,25 +25,26 @@ export default function ContactItem({
         alignItems: "center",
         gap: 12,
         background: isSelected ? "#1e1e3a" : "transparent",
-        borderLeft: isSelected ? "3px solid #667eea" : "3px solid transparent",
+        // borderLeft: isSelected ? "3px solid #667eea" : "3px solid transparent",
         transition: "all 0.15s",
+        // border: "2px red solid",
+        borderRadius: "15px",
+
+        // margin: "0px 12px",
       }}
     >
-      {/* Online status dot */}
-      <Badge dot color={isOnline ? "#52c41a" : "#555"} offset={[-2, 30]}>
-        {contact.role === "admin" ? (
-          <img
-            src="/developer_profile.jpg"
-            height={"30px"}
-            width={"30px"}
-            style={{ borderRadius: "50%" }}
-          />
-        ) : (
-          <Avatar style={{ background: "#667eea", flexShrink: 0 }}>
-            {contact.username[0].toUpperCase()}
-          </Avatar>
-        )}
-      </Badge>
+      <UserAvatar
+        isOnline={isOnline}
+        showOnlineStatus={true}
+        name={contact.username}
+        image={
+          contact.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
+            ? "/default_female_profile_pic.jpg"
+            : contact.role === "admin"
+              ? "/developer_profile.jpg"
+              : "/default_male_profile_pic.jpg"
+        }
+      />
 
       {/* Name + last message preview */}
       <div style={{ overflow: "hidden", flex: 1 }}>
@@ -59,15 +64,39 @@ export default function ContactItem({
         {contact.lastMessage && (
           <div
             style={{
-              color: hasUnread ? "#a78bfa" : "#666",
-              fontWeight: hasUnread ? 500 : 400,
-              fontSize: 11,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 8,
             }}
           >
-            {contact.lastMessage.text}
+            <div
+              style={{
+                color: hasUnread ? "#a78bfa" : "#666",
+                fontWeight: hasUnread ? 500 : 400,
+                fontSize: 11,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {truncateText(
+                contact.lastMessage.text || "File / Deleted message",
+                20
+              )}
+            </div>
+
+            {!isOnline && (
+              <div
+                style={{
+                  fontSize: 10,
+                  color: "#777",
+                  flexShrink: 0,
+                }}
+              >
+                {formatMessageTime(contact.lastMessage.createdAt)}
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -236,6 +236,10 @@ export default function MessageInput({
 
       {/* ── Quick emoji row — always visible ──────────────────────────────── */}
       <div style={styles.quickRow}>
+        <FormattingToolbar
+          activeFormats={activeFormats}
+          onFormat={applyFormat}
+        />
         {QUICK_EMOJIS.map((emoji) => (
           <button
             key={emoji}
@@ -252,7 +256,8 @@ export default function MessageInput({
           style={{
             ...styles.quickEmoji,
             fontSize: 14,
-            color: showEmojiPicker ? "#a78bfa" : "#555",
+            color: "var(--primary-color)",
+
             fontWeight: 700,
             letterSpacing: -1,
           }}
@@ -261,8 +266,6 @@ export default function MessageInput({
           {showEmojiPicker ? "▼" : "▲"}
         </button>
       </div>
-
-      <FormattingToolbar activeFormats={activeFormats} onFormat={applyFormat} />
 
       {/* ── Input row ─────────────────────────────────────────────────────── */}
       <div style={styles.inputRow}>

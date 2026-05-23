@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-05-22T16:56:07.012Z",
+      "lastSeen": "2026-05-22T19:32:21.048Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -74,7 +74,7 @@
       "passwordHash": "$2a$10$0nonjyT2wpfAc6L3pWybxORd9UCfOpShMW0LE0SphkkrLg3KVIzR.",
       "role": "user",
       "isOnline": true,
-      "lastSeen": "2026-05-22T16:56:07.196Z",
+      "lastSeen": "2026-05-23T19:39:49.773Z",
       "createdAt": "2026-05-21T06:18:08.444Z"
     },
     {
@@ -3137,13 +3137,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "sfsdfa\n\n\n\n\nsfsd\nsdsa\nsadas",
       "file": null,
-      "status": "delivered",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-23T19:39:51.998Z",
       "createdAt": "2026-05-22T15:24:24.826Z"
     },
     {
@@ -3163,6 +3163,78 @@
       "deletedForUsers": [],
       "seenAt": null,
       "createdAt": "2026-05-22T17:06:10.329Z"
+    },
+    {
+      "id": "6e64a05c-bc42-4a61-a8db-951c5f2a0774",
+      "chatId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "groupId": null,
+      "text": null,
+      "file": {
+        "name": "hygirl.gif",
+        "mimetype": "image/gif",
+        "category": "image",
+        "size": 3682985,
+        "url": "/uploads/images/1779560965625-059d3a5160c3.gif"
+      },
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": "2026-05-23T18:29:49.531Z",
+      "createdAt": "2026-05-23T18:29:25.654Z"
+    },
+    {
+      "id": "db0e97dc-7538-4dbd-abd5-bf2762863fb9",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "receiverId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "groupId": null,
+      "text": null,
+      "file": {
+        "name": "Frustrated Customer Service GIF.gif",
+        "mimetype": "image/gif",
+        "category": "image",
+        "size": 1027,
+        "url": "/uploads/images/1779565198829-4c5f837bd550.gif"
+      },
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": "2026-05-23T19:42:06.882Z",
+      "createdAt": "2026-05-23T19:39:58.842Z"
+    },
+    {
+      "id": "52c3f12e-63f8-4dc7-8c1f-89749091c68d",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "receiverId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "groupId": null,
+      "text": null,
+      "file": {
+        "name": "Frustrated Customer Service GIF.gif",
+        "mimetype": "image/gif",
+        "category": "image",
+        "size": 1904613,
+        "url": "/uploads/images/1779565297066-ad16b1ef73ad.gif"
+      },
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": "2026-05-23T19:42:06.882Z",
+      "createdAt": "2026-05-23T19:41:37.071Z"
     }
   ],
   "groups": [

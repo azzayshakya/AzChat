@@ -11,6 +11,7 @@ const userRoutes = require('./routes/userRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const groupRoutes = require('./routes/groupRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const statusRoutes = require('./routes/statusRoutes');
 
 const { socketHandler, getOnlineUsers } = require('./socket/socketHandler');
 
@@ -35,6 +36,7 @@ app.use('/api', authRoutes);
 app.use('/api', userRoutes);
 app.use('/api', messageRoutes);
 app.use('/api', groupRoutes);
+app.use('/api', statusRoutes);
 app.use('/api/admin', adminRoutes(getOnlineUsers));
 
 // ─── Health check ─────────────────────────────────────────────────────────────

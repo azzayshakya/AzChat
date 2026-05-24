@@ -263,7 +263,127 @@ function socketHandler(io) {
         io.to(receiverId).emit('typing_stop', { userId: currentUserId });
       }
     });
+    // ─────────────────────────────────────────────────────────────────────────────
+    // STATUS SOCKET EVENTS
+    // Drop these handlers inside the   io.on('connection', (socket) => { ... })
+    // block in your existing socketHandler.js, alongside the other socket.on(...)
+    // calls.  No other changes to socketHandler.js are needed.
+    // ─────────────────────────────────────────────────────────────────────────────
 
+    const STATUS_EXPIRY_HOURS = parseInt(process.env.STATUS_EXPIRY_HOURS) || 24;
+
+    function isExpired(createdAt) {
+      return Date.now() - new Date(createdAt).getTime() > STATUS_EXPIRY_HOURS * 3600 * 1000;
+    }
+
+    // ─── Paste these inside io.on('connection', (socket) => { ... }) ──────────────
+
+    // Broadcast a new status to all contacts of the poster
+    socket.on('status_posted', ({ statusId }) => {
+      try {
+        const db = readDB();
+        if (!db.statuses) return;
+
+        const status = db.statuses.find((s) => s.id === statusId);
+        if (!status || isExpired(status.createdAt)) return;
+
+        const poster = db.users.find((u) => u.id === currentUserId);
+
+        // Find everyone who has chatted with this user
+        const contactIds = new Set();
+        (db.messages || []).forEach((m) => {
+          if (m.chatType !== 'direct') return;
+          if (m.senderId === currentUserId) contactIds.add(m.receiverId);
+          if (m.receiverId === currentUserId) contactIds.add(m.senderId);
+        });
+
+        // Emit to each contact's personal room
+        contactIds.forEach((contactId) => {
+          io.to(contactId).emit('new_status', {
+            status,
+            user: poster
+              ? {
+                  id: poster.id,
+                  username: poster.username,
+                  name: poster.name,
+                  isOnline: poster.isOnline,
+                }
+              : { id: currentUserId },
+          });
+        });
+      } catch (err) {
+        console.error('[status_posted]', err);
+      }
+    });
+
+    // Notify status owner in real-time when someone views their status
+    socket.on('status_viewed', ({ statusId }) => {
+      try {
+        const db = readDB();
+        if (!db.statuses) return;
+
+        const idx = db.statuses.findIndex((s) => s.id === statusId);
+        if (idx === -1) return;
+
+        const status = db.statuses[idx];
+        if (isExpired(status.createdAt)) return;
+        if (status.userId === currentUserId) return; // owner viewing own — ignore
+
+        const alreadyViewed = status.viewers.some((v) => v.userId === currentUserId);
+        if (!alreadyViewed) {
+          db.statuses[idx].viewers.push({
+            userId: currentUserId,
+            viewedAt: new Date().toISOString(),
+          });
+          writeDB(db);
+        }
+
+        const viewer = db.users.find((u) => u.id === currentUserId);
+
+        // Notify the status owner
+        io.to(status.userId).emit('status_seen', {
+          statusId,
+          viewer: viewer
+            ? {
+                userId: viewer.id,
+                username: viewer.username,
+                name: viewer.name,
+              }
+            : { userId: currentUserId },
+          viewedAt: new Date().toISOString(),
+        });
+      } catch (err) {
+        console.error('[status_viewed]', err);
+      }
+    });
+
+    // Notify contacts when a status is deleted
+    socket.on('status_deleted', ({ statusId }) => {
+      try {
+        const db = readDB();
+        if (!db.statuses) return;
+
+        const idx = db.statuses.findIndex((s) => s.id === statusId);
+        if (idx === -1) return;
+
+        const status = db.statuses[idx];
+        if (status.userId !== currentUserId) return; // only owner can delete
+
+        // Find contacts to notify
+        const contactIds = new Set();
+        (db.messages || []).forEach((m) => {
+          if (m.chatType !== 'direct') return;
+          if (m.senderId === currentUserId) contactIds.add(m.receiverId);
+          if (m.receiverId === currentUserId) contactIds.add(m.senderId);
+        });
+
+        contactIds.forEach((contactId) => {
+          io.to(contactId).emit('status_removed', { statusId, userId: currentUserId });
+        });
+      } catch (err) {
+        console.error('[status_deleted]', err);
+      }
+    });
     // ─── Group events (join/leave notifications via socket) ───────────────────
     socket.on('join_group_room', ({ groupId }) => {
       if (isGroupMember(groupId, currentUserId)) {

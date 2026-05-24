@@ -1,163 +1,92 @@
 /**
- * StatusViewer.jsx
- * Full-screen modal overlay for viewing a status entry.
- * Features:
- *  – User info header (avatar, name, time, privacy badge, views)
- *  – Status content (text / image / both)
- *  – Left/Right navigation across multiple status items
- *  – Progress bar per item
- *  – Reply input
- *  – Delete button (owner only) with confirmation popup
- *  – Auto-advances after 5 seconds
+ * StatusUploader.jsx
+ * Modal for creating a new status.
+ * Supports: text only, image only, text + image.
+ * Privacy: public | friends
+ * Background color + text color pickers.
+ * Respects VITE_STATUS_MAX_PER_USER, VITE_STATUS_MAX_TEXT_LEN, VITE_STATUS_MAX_IMAGE_MB
  */
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Input, Spin, Modal, message as antMsg } from "antd";
+import React, { useState, useRef } from "react";
+import { Spin, message as antMsg } from "antd";
 import {
   CloseOutlined,
-  LeftOutlined,
-  RightOutlined,
-  DeleteOutlined,
-  SendOutlined,
-  EyeOutlined,
-  LockOutlined,
+  PictureOutlined,
   GlobalOutlined,
   UserOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
-import { timeAgo, timeLeft, STATUS_CONFIG } from "../statusApi.js";
+import { STATUS_CONFIG } from "../statusComponents/statusApi";
 
-const AUTO_ADVANCE_MS = 5000;
-
-const AVATAR_COLORS = [
-  "#2e2860",
-  "#163a30",
-  "#3a1c1c",
-  "#162040",
-  "#38192c",
-  "#1a3020",
-  "#382610",
+const BG_PRESETS = [
+  { bg: "#1a1540", text: "#a78bfa" },
+  { bg: "#0d1f3c", text: "#7aaee0" },
+  { bg: "#0a2a1a", text: "#4caf89" },
+  { bg: "#3a1c1c", text: "#e07070" },
+  { bg: "#38192c", text: "#d07099" },
+  { bg: "#1a1010", text: "#d4a045" },
+  { bg: "#0f0f0f", text: "#ffffff" },
+  { bg: "#1a0a3d", text: "#c4b5fd" },
 ];
-const colorFor = (id) =>
-  AVATAR_COLORS[
-    (id?.split("").reduce((a, c) => a + c.charCodeAt(0), 0) ?? 0) %
-      AVATAR_COLORS.length
-  ];
-const initials = (name) =>
-  name
-    ?.split(/[\s_]/)
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase() ?? "?";
 
-export default function StatusViewer({
-  entry,
-  startIndex = 0,
-  currentUser,
-  onClose,
-  onDelete,
-  onReply,
-  onView,
-  deleting,
-  replying,
-}) {
-  const [idx, setIdx] = useState(startIndex);
-  const [replyText, setReplyText] = useState("");
-  const [deleteConfirm, setDeleteConfirm] = useState(null); // statusId to delete
-  const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
-  const timerRef = useRef(null);
-  const progressRef = useRef(null);
-  const inputRef = useRef(null);
-  const [paused, setPaused] = useState(false);
+export default function StatusUploader({ onClose, onPost, posting, myCount }) {
+  const [text, setText] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [privacy, setPrivacy] = useState("public");
+  const [bgColor, setBgColor] = useState(BG_PRESETS[0].bg);
+  const [textColor, setTextColor] = useState(BG_PRESETS[0].text);
+  const fileRef = useRef(null);
 
-  const items = entry?.items ?? [];
-  const item = items[idx];
-  const isMine = entry?.userId === currentUser?.id || entry?.isMine;
-  const isAdmin = entry?.isAdmin;
+  const maxReached = myCount >= STATUS_CONFIG.maxPerUser;
 
-  // Mark viewed
-  useEffect(() => {
-    if (item?.id) {
-      setLoading(true);
-      const t = setTimeout(() => setLoading(false), 350);
-      onView?.(item.id, entry.userId);
-      return () => clearTimeout(t);
+  const handleImagePick = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const maxBytes = STATUS_CONFIG.maxImageMb * 1024 * 1024;
+    if (file.size > maxBytes) {
+      antMsg.error(`Image must be under ${STATUS_CONFIG.maxImageMb}MB`);
+      return;
     }
-  }, [item?.id]);
-
-  // Auto-advance + progress bar
-  useEffect(() => {
-    if (paused || loading) return;
-    setProgress(0);
-    const tick = 50;
-    const steps = AUTO_ADVANCE_MS / tick;
-    let step = 0;
-
-    progressRef.current = setInterval(() => {
-      step++;
-      setProgress((step / steps) * 100);
-    }, tick);
-
-    timerRef.current = setTimeout(() => {
-      if (idx < items.length - 1) setIdx((i) => i + 1);
-      else onClose();
-    }, AUTO_ADVANCE_MS);
-
-    return () => {
-      clearInterval(progressRef.current);
-      clearTimeout(timerRef.current);
-    };
-  }, [idx, paused, loading, items.length]);
-
-  const goNext = useCallback(() => {
-    if (idx < items.length - 1) setIdx((i) => i + 1);
-    else onClose();
-  }, [idx, items.length, onClose]);
-
-  const goPrev = useCallback(() => {
-    if (idx > 0) setIdx((i) => i - 1);
-  }, [idx]);
-
-  const handleKeyDown = useCallback(
-    (e) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") goNext();
-      if (e.key === "ArrowLeft") goPrev();
-    },
-    [onClose, goNext, goPrev]
-  );
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
-
-  const handleReply = async () => {
-    if (!replyText.trim() || replying) return;
-    const txt = replyText.trim();
-    setReplyText("");
-    await onReply?.(item.id, txt);
-    antMsg.success("Reply sent!");
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
   };
 
-  const handleDeleteConfirm = async () => {
-    if (!deleteConfirm) return;
-    await onDelete?.(deleteConfirm);
-    setDeleteConfirm(null);
-    if (items.length <= 1) onClose();
-    else if (idx >= items.length - 1) setIdx(Math.max(0, idx - 1));
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileRef.current) fileRef.current.value = "";
   };
 
-  if (!item) return null;
+  const selectPreset = (preset) => {
+    setBgColor(preset.bg);
+    setTextColor(preset.text);
+  };
 
-  const privacyIcon =
-    item.privacy === "public" ? (
-      <GlobalOutlined style={{ fontSize: 10 }} />
-    ) : (
-      <UserOutlined style={{ fontSize: 10 }} />
-    );
-  const privacyLabel = item.privacy === "public" ? "Public" : "Friends";
+  const handleSubmit = async () => {
+    if (!text.trim() && !imageFile) {
+      antMsg.warning("Add some text or an image to post a status.");
+      return;
+    }
+    if (maxReached) {
+      antMsg.error(
+        `You can only have ${STATUS_CONFIG.maxPerUser} statuses at a time. Delete one first.`
+      );
+      return;
+    }
+    const fd = new FormData();
+    if (text.trim()) fd.append("text", text.trim());
+    if (imageFile) fd.append("imageFile", imageFile);
+    fd.append("privacy", privacy);
+    fd.append("backgroundColor", bgColor);
+    fd.append("textColor", textColor);
+    try {
+      await onPost(fd);
+      antMsg.success("Status posted!");
+    } catch (err) {
+      antMsg.error(err.message || "Failed to post status");
+    }
+  };
 
   return (
     <div
@@ -165,435 +94,343 @@ export default function StatusViewer({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
     >
       <div style={modal}>
-        {/* ── Progress bars ─────────────────────────────────────────────── */}
-        <div style={{ display: "flex", gap: 4, padding: "12px 14px 0" }}>
-          {items.map((it, i) => (
-            <div
-              key={it.id}
-              style={{
-                flex: 1,
-                height: 3,
-                borderRadius: 2,
-                background: "rgba(255,255,255,0.12)",
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  height: "100%",
-                  width: i < idx ? "100%" : i === idx ? `${progress}%` : "0%",
-                  background: isAdmin
-                    ? "var(--accent-light)"
-                    : "var(--primary-color)",
-                  transition: i === idx ? "none" : "none",
-                  borderRadius: 2,
-                }}
+        {/* Header */}
+        <div style={header}>
+          <span
+            style={{
+              fontSize: 14,
+              fontWeight: 600,
+              color: "var(--text-white)",
+            }}
+          >
+            New Status
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 11, color: "var(--text-dim)" }}>
+              {myCount}/{STATUS_CONFIG.maxPerUser} used
+            </span>
+            <button onClick={onClose} style={iconBtn}>
+              <CloseOutlined
+                style={{ fontSize: 13, color: "var(--text-dim)" }}
               />
-            </div>
-          ))}
+            </button>
+          </div>
         </div>
 
-        {/* ── Top bar: user info + close ──────────────────────────────── */}
+        {/* Preview area */}
+        <div
+          style={{
+            margin: "0 14px",
+            borderRadius: 14,
+            background: bgColor,
+            minHeight: 180,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            position: "relative",
+            overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
+          {imagePreview && (
+            <>
+              <img
+                src={imagePreview}
+                alt="preview"
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: 180,
+                  objectFit: "cover",
+                  borderRadius: 12,
+                  width: "100%",
+                }}
+              />
+              <button
+                onClick={removeImage}
+                style={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  background: "rgba(0,0,0,0.6)",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: 26,
+                  height: 26,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <DeleteOutlined style={{ color: "#fff", fontSize: 12 }} />
+              </button>
+            </>
+          )}
+          {text && (
+            <div
+              style={{
+                position: imagePreview ? "absolute" : "relative",
+                bottom: imagePreview ? 10 : "auto",
+                left: imagePreview ? 10 : "auto",
+                right: imagePreview ? 10 : "auto",
+                background: imagePreview ? "rgba(0,0,0,0.55)" : "transparent",
+                color: textColor,
+                fontSize: imagePreview ? 12 : 17,
+                fontWeight: 500,
+                padding: imagePreview ? "6px 10px" : "20px 16px",
+                borderRadius: 8,
+                textAlign: "center",
+                backdropFilter: imagePreview ? "blur(3px)" : "none",
+                wordBreak: "break-word",
+                maxWidth: "90%",
+              }}
+            >
+              {text}
+            </div>
+          )}
+          {!text && !imagePreview && (
+            <span style={{ color: "rgba(255,255,255,0.2)", fontSize: 13 }}>
+              Preview
+            </span>
+          )}
+        </div>
+
+        {/* Text input */}
+        <div style={{ padding: "12px 14px 0" }}>
+          <textarea
+            value={text}
+            onChange={(e) =>
+              setText(e.target.value.slice(0, STATUS_CONFIG.maxTextLen))
+            }
+            placeholder="What's on your mind?"
+            rows={2}
+            style={{
+              width: "100%",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 10,
+              padding: "9px 12px",
+              color: "var(--text-white)",
+              fontSize: 13,
+              resize: "none",
+              outline: "none",
+              fontFamily: "inherit",
+              lineHeight: 1.5,
+            }}
+          />
+          <div
+            style={{
+              textAlign: "right",
+              fontSize: 10,
+              color: "var(--text-dim)",
+              marginTop: 3,
+            }}
+          >
+            {text.length}/{STATUS_CONFIG.maxTextLen}
+          </div>
+        </div>
+
+        {/* Color presets */}
+        <div style={{ padding: "6px 14px 0" }}>
+          <div
+            style={{
+              fontSize: 10,
+              color: "var(--text-dim)",
+              marginBottom: 7,
+              textTransform: "uppercase",
+              letterSpacing: "0.07em",
+            }}
+          >
+            Background
+          </div>
+          <div style={{ display: "flex", gap: 7, flexWrap: "wrap" }}>
+            {BG_PRESETS.map((p) => (
+              <button
+                key={p.bg}
+                onClick={() => selectPreset(p)}
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: "50%",
+                  background: p.bg,
+                  border:
+                    bgColor === p.bg
+                      ? "2px solid var(--primary-color)"
+                      : "2px solid rgba(255,255,255,0.1)",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                  transition: "border-color 0.15s",
+                }}
+                title={p.bg}
+              />
+            ))}
+            {/* Custom bg */}
+            <label
+              style={{
+                width: 26,
+                height: 26,
+                borderRadius: "50%",
+                border: "2px dashed rgba(255,255,255,0.2)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 13,
+                color: "var(--text-dim)",
+                position: "relative",
+              }}
+              title="Custom color"
+            >
+              +
+              <input
+                type="color"
+                value={bgColor}
+                onChange={(e) => setBgColor(e.target.value)}
+                style={{
+                  position: "absolute",
+                  opacity: 0,
+                  width: 0,
+                  height: 0,
+                }}
+              />
+            </label>
+          </div>
+        </div>
+
+        {/* Privacy + image upload row */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             gap: 10,
-            padding: "10px 14px 8px",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            padding: "12px 14px 0",
           }}
         >
-          {/* Avatar */}
+          {/* Privacy toggle */}
           <div
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: colorFor(entry.userId),
+              display: "flex",
+              background: "rgba(255,255,255,0.04)",
+              borderRadius: 10,
+              border: "1px solid rgba(255,255,255,0.07)",
+              overflow: "hidden",
+              flex: 1,
+            }}
+          >
+            {[
+              { val: "public", icon: <GlobalOutlined />, label: "Public" },
+              { val: "friends", icon: <UserOutlined />, label: "Friends" },
+            ].map((opt) => (
+              <button
+                key={opt.val}
+                onClick={() => setPrivacy(opt.val)}
+                style={{
+                  flex: 1,
+                  padding: "7px 0",
+                  background:
+                    privacy === opt.val
+                      ? "rgba(102,126,234,0.2)"
+                      : "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color:
+                    privacy === opt.val
+                      ? "var(--primary-color)"
+                      : "var(--text-dim)",
+                  fontSize: 11,
+                  fontWeight: privacy === opt.val ? 600 : 400,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 5,
+                  transition: "all 0.15s",
+                  fontFamily: "inherit",
+                }}
+              >
+                {opt.icon} {opt.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Image upload */}
+          <label
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: imageFile
+                ? "rgba(102,126,234,0.2)"
+                : "rgba(255,255,255,0.04)",
+              border: `1px solid ${imageFile ? "var(--primary-color)" : "rgba(255,255,255,0.08)"}`,
+              cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 13,
-              fontWeight: 700,
-              color: "#fff",
-              overflow: "hidden",
               flexShrink: 0,
-              border: isAdmin ? "2px solid var(--accent-light)" : "none",
+              transition: "all 0.15s",
             }}
+            title="Add image"
           >
-            {entry.avatar ? (
-              <img
-                src={entry.avatar}
-                alt={entry.username}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            ) : (
-              initials(isAdmin ? "AZ Chat" : entry.username)
-            )}
-          </div>
-
-          {/* Name + meta */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
+            <PictureOutlined
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                flexWrap: "wrap",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: isAdmin ? "var(--accent-light)" : "var(--text-white)",
-                }}
-              >
-                {isAdmin ? "AZChat (Admin)" : entry.username}
-                {isMine && !isAdmin && (
-                  <span
-                    style={{
-                      marginLeft: 6,
-                      fontSize: 10,
-                      color: "var(--primary-color)",
-                      fontWeight: 400,
-                    }}
-                  >
-                    (you)
-                  </span>
-                )}
-              </span>
-              {/* Privacy badge */}
-              <span
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 3,
-                  fontSize: 10,
-                  background:
-                    item.privacy === "public"
-                      ? "rgba(102,126,234,0.18)"
-                      : "rgba(167,139,250,0.18)",
-                  color:
-                    item.privacy === "public"
-                      ? "var(--primary-color)"
-                      : "var(--accent-light)",
-                  padding: "2px 6px",
-                  borderRadius: 10,
-                  border: `1px solid ${item.privacy === "public" ? "rgba(102,126,234,0.3)" : "rgba(167,139,250,0.3)"}`,
-                }}
-              >
-                {privacyIcon} {privacyLabel}
-              </span>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                marginTop: 2,
-              }}
-            >
-              <span style={{ fontSize: 10, color: "var(--text-dim)" }}>
-                {timeAgo(item.createdAt)}
-              </span>
-              <span style={{ fontSize: 10, color: "var(--text-dim)" }}>·</span>
-              <span style={{ fontSize: 10, color: "var(--text-dim)" }}>
-                {timeLeft(item.expiresAt)}
-              </span>
-              <span style={{ fontSize: 10, color: "var(--text-dim)" }}>·</span>
-              <EyeOutlined style={{ fontSize: 10, color: "var(--text-dim)" }} />
-              <span style={{ fontSize: 10, color: "var(--text-dim)" }}>
-                {item.views ?? 0}
-              </span>
-            </div>
-          </div>
-
-          {/* Delete btn (owner only) */}
-          {isMine && !isAdmin && (
-            <button
-              onClick={() => setDeleteConfirm(item.id)}
-              disabled={deleting === item.id}
-              style={iconBtn}
-              title="Delete this status"
-            >
-              {deleting === item.id ? (
-                <Spin size="small" />
-              ) : (
-                <DeleteOutlined style={{ fontSize: 14, color: "#e07070" }} />
-              )}
-            </button>
-          )}
-
-          {/* Close */}
-          <button onClick={onClose} style={iconBtn} title="Close">
-            <CloseOutlined style={{ fontSize: 14, color: "var(--text-dim)" }} />
-          </button>
-        </div>
-
-        {/* ── Status content ─────────────────────────────────────────── */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "relative",
-            minHeight: 240,
-            background: item.backgroundColor ?? "#1a1540",
-            margin: "0 14px",
-            borderRadius: 12,
-            overflow: "hidden",
-          }}
-        >
-          {loading ? (
-            <Spin size="large" />
-          ) : (
-            <>
-              {/* Image */}
-              {item.imageUrl && (
-                <img
-                  src={item.imageUrl}
-                  alt="status"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    objectFit: "contain",
-                    borderRadius: 8,
-                    opacity: loading ? 0 : 1,
-                    transition: "opacity 0.3s",
-                  }}
-                />
-              )}
-              {/* Text overlay */}
-              {item.text && (
-                <div
-                  style={{
-                    position: item.imageUrl ? "absolute" : "relative",
-                    bottom: item.imageUrl ? 16 : "auto",
-                    left: item.imageUrl ? 16 : "auto",
-                    right: item.imageUrl ? 16 : "auto",
-                    background: item.imageUrl
-                      ? "rgba(0,0,0,0.55)"
-                      : "transparent",
-                    color: item.textColor ?? "#e8e9f4",
-                    fontSize: item.imageUrl ? 13 : 20,
-                    fontWeight: item.imageUrl ? 400 : 500,
-                    lineHeight: 1.5,
-                    padding: item.imageUrl ? "8px 12px" : "24px",
-                    borderRadius: 8,
-                    textAlign: "center",
-                    backdropFilter: item.imageUrl ? "blur(4px)" : "none",
-                    maxWidth: "90%",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {item.text}
-                </div>
-              )}
-            </>
-          )}
-
-          {/* Nav zones */}
-          {idx > 0 && (
-            <button
-              onClick={goPrev}
-              style={{ ...navBtn, left: 8 }}
-              aria-label="Previous"
-            >
-              <LeftOutlined />
-            </button>
-          )}
-          {idx < items.length - 1 && (
-            <button
-              onClick={goNext}
-              style={{ ...navBtn, right: 8 }}
-              aria-label="Next"
-            >
-              <RightOutlined />
-            </button>
-          )}
-        </div>
-
-        {/* ── Replies section ────────────────────────────────────────── */}
-        {item.replies?.length > 0 && (
-          <div
-            style={{
-              maxHeight: 110,
-              overflowY: "auto",
-              margin: "8px 14px 0",
-              padding: "8px 10px",
-              background: "rgba(255,255,255,0.03)",
-              borderRadius: 10,
-              border: "1px solid rgba(255,255,255,0.05)",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 10,
-                color: "var(--text-dim)",
-                marginBottom: 6,
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-              }}
-            >
-              Replies
-            </div>
-            {item.replies.map((r) => (
-              <div
-                key={r.id}
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  marginBottom: 6,
-                  alignItems: "flex-start",
-                }}
-              >
-                <div
-                  style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: "50%",
-                    background: colorFor(r.userId),
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 9,
-                    fontWeight: 700,
-                    flexShrink: 0,
-                    color: "#fff",
-                  }}
-                >
-                  {initials(r.username)}
-                </div>
-                <div>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: "var(--text-highlight)",
-                    }}
-                  >
-                    {r.username}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      color: "var(--text-muted)",
-                      marginLeft: 6,
-                    }}
-                  >
-                    {r.text}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 9,
-                      color: "var(--text-dim)",
-                      marginLeft: 6,
-                    }}
-                  >
-                    {timeAgo(r.createdAt)}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── Reply input (hide for own statuses unless admin welcome) ── */}
-        {(!isMine || isAdmin) && (
-          <div
-            style={{
-              display: "flex",
-              gap: 8,
-              alignItems: "center",
-              padding: "10px 14px 14px",
-            }}
-          >
-            <input
-              ref={inputRef}
-              value={replyText}
-              onChange={(e) =>
-                setReplyText(e.target.value.slice(0, STATUS_CONFIG.replyMaxLen))
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleReply();
-                e.stopPropagation(); // don't trigger nav
-              }}
-              placeholder="Reply to this status…"
-              style={{
-                flex: 1,
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 10,
-                padding: "8px 12px",
-                color: "var(--text-white)",
-                fontSize: 12,
-                outline: "none",
-                fontFamily: "inherit",
+                fontSize: 16,
+                color: imageFile ? "var(--primary-color)" : "var(--text-dim)",
               }}
             />
-            <button
-              onClick={handleReply}
-              disabled={!replyText.trim() || replying}
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 9,
-                background: replyText.trim()
-                  ? "var(--primary-color)"
-                  : "rgba(255,255,255,0.05)",
-                border: "none",
-                cursor: replyText.trim() ? "pointer" : "not-allowed",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "background 0.15s",
-                flexShrink: 0,
-              }}
-            >
-              {replying ? (
-                <Spin size="small" />
-              ) : (
-                <SendOutlined style={{ color: "#fff", fontSize: 14 }} />
-              )}
-            </button>
-          </div>
-        )}
-      </div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImagePick}
+              style={{ display: "none" }}
+            />
+          </label>
+        </div>
 
-      {/* ── Delete confirmation modal ─────────────────────────────── */}
-      <Modal
-        open={!!deleteConfirm}
-        title={
-          <span style={{ color: "var(--text-white)" }}>Delete Status?</span>
-        }
-        onOk={handleDeleteConfirm}
-        onCancel={() => setDeleteConfirm(null)}
-        okText="Delete"
-        okButtonProps={{
-          danger: true,
-          loading: !!deleting,
-          style: { borderRadius: 8 },
-        }}
-        cancelButtonProps={{ style: { borderRadius: 8 } }}
-        styles={{
-          content: {
-            background: "var(--dark-bg-light)",
-            border: "1px solid rgba(255,255,255,0.08)",
-          },
-          header: { background: "transparent" },
-          mask: { backdropFilter: "blur(4px)" },
-        }}
-      >
-        <p style={{ color: "var(--text-muted)", marginTop: 8 }}>
-          This status will be permanently removed. This action cannot be undone.
-        </p>
-      </Modal>
+        {/* Post button */}
+        <div style={{ padding: "12px 14px 16px" }}>
+          <button
+            onClick={handleSubmit}
+            disabled={posting || maxReached || (!text.trim() && !imageFile)}
+            style={{
+              width: "100%",
+              padding: "10px 0",
+              borderRadius: 12,
+              background:
+                posting || maxReached || (!text.trim() && !imageFile)
+                  ? "rgba(255,255,255,0.05)"
+                  : "var(--brand-gradient)",
+              border: "none",
+              color:
+                posting || maxReached || (!text.trim() && !imageFile)
+                  ? "var(--text-dim)"
+                  : "#fff",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor:
+                posting || maxReached || (!text.trim() && !imageFile)
+                  ? "not-allowed"
+                  : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              transition: "opacity 0.15s",
+              fontFamily: "inherit",
+            }}
+          >
+            {posting ? <Spin size="small" /> : null}
+            {maxReached
+              ? `Max ${STATUS_CONFIG.maxPerUser} statuses reached`
+              : posting
+                ? "Posting…"
+                : "Post Status"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -603,7 +440,7 @@ const overlay = {
   position: "fixed",
   inset: 0,
   zIndex: 2000,
-  background: "rgba(0,0,0,0.82)",
+  background: "rgba(0,0,0,0.75)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -621,12 +458,21 @@ const modal = {
   gap: 0,
   overflow: "hidden",
   boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
-  maxHeight: "90vh",
+  maxHeight: "92vh",
+  overflowY: "auto",
+};
+
+const header = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "14px 14px 12px",
+  borderBottom: "1px solid rgba(255,255,255,0.05)",
 };
 
 const iconBtn = {
-  width: 30,
-  height: 30,
+  width: 28,
+  height: 28,
   borderRadius: 8,
   background: "rgba(255,255,255,0.04)",
   border: "1px solid rgba(255,255,255,0.06)",
@@ -634,23 +480,4 @@ const iconBtn = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  flexShrink: 0,
-};
-
-const navBtn = {
-  position: "absolute",
-  top: "50%",
-  transform: "translateY(-50%)",
-  width: 32,
-  height: 32,
-  borderRadius: "50%",
-  background: "rgba(0,0,0,0.45)",
-  border: "1px solid rgba(255,255,255,0.1)",
-  color: "#fff",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-  zIndex: 10,
-  fontSize: 13,
 };

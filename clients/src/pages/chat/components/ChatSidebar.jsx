@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Input,
   Spin,
@@ -20,9 +19,11 @@ import {
 } from "@ant-design/icons";
 import ContactItem from "./ContactItem.jsx";
 import CreateGroupModal from "./CreateGroupModal.jsx";
+import StatusBar from "../statusComponents/StatusBar.jsx";
+import { useStatus } from "../statusComponents/useStatus.js";
 import { features } from "../../../utils/features.js";
 import { api } from "../../../api.js";
-import UserAvatar from "../UComponents/UserAvatar.jsx";
+import { useState } from "react";
 
 export default function ChatSidebar({
   currentUser,
@@ -44,6 +45,20 @@ export default function ChatSidebar({
 }) {
   const [tab, setTab] = useState("chats");
   const [showCreateGroup, setShowCreateGroup] = useState(false);
+
+  // ── Status hook ──────────────────────────────────────────────────────────
+  const {
+    statuses,
+    myStatuses,
+    loading: statusLoading,
+    posting,
+    deleting,
+    replying,
+    handlePost,
+    handleDelete,
+    handleReply,
+    handleView,
+  } = useStatus(currentUser);
 
   const isOnline = (id) => onlineUsers.includes(id);
 
@@ -100,11 +115,11 @@ export default function ChatSidebar({
         borderRight: "1px solid #1e1e3a",
         display: "flex",
         flexDirection: "column",
-        background: "var(--dark-bg-light)",
-        // background: "yellow",
+        background: "#10101e",
+        overflow: "hidden",
       }}
     >
-      {/* Current Logged in user header */}
+      {/* ── Current user header ─────────────────────────────────────────── */}
       <div
         style={{
           padding: "16px 16px 12px",
@@ -112,22 +127,21 @@ export default function ChatSidebar({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          flexShrink: 0,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <UserAvatar
-            isOnline={isOnline}
-            showOnlineStatus={true}
-            name={currentUser.username}
-            image={
-              currentUser.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
-                ? "/default_female_profile_pic.jpg"
-                : currentUser.role === "admin"
-                  ? "/developer_profile.jpg"
-                  : "/default_male_profile_pic.jpg"
-            }
-          />
-
+          {currentUser.role === "admin" ? (
+            <img
+              src="/developer_profile.jpg"
+              height="30px"
+              width="30px"
+              style={{ borderRadius: "50%" }}
+              alt="admin"
+            />
+          ) : (
+            <Avatar style={{ background: "#667eea" }} icon={<UserOutlined />} />
+          )}
           <div>
             <div
               className={
@@ -166,8 +180,32 @@ export default function ChatSidebar({
         )}
       </div>
 
+      {/* ── Status bar (above search) ───────────────────────────────────── */}
+      <div style={{ flexShrink: 0 }}>
+        <StatusBar
+          statuses={statuses}
+          myStatuses={myStatuses}
+          loading={statusLoading}
+          currentUser={currentUser}
+          deleting={deleting}
+          replying={replying}
+          posting={posting}
+          onView={handleView}
+          onDelete={handleDelete}
+          onReply={handleReply}
+          onPost={handlePost}
+        />
+      </div>
+
+      {/* ── Tabs ────────────────────────────────────────────────────────── */}
       {features.groupChat && (
-        <div style={{ display: "flex", borderBottom: "1px solid #1e1e3a" }}>
+        <div
+          style={{
+            display: "flex",
+            borderBottom: "1px solid #1e1e3a",
+            flexShrink: 0,
+          }}
+        >
           <div
             style={tabStyle(tab === "chats")}
             onClick={() => setTab("chats")}
@@ -183,8 +221,9 @@ export default function ChatSidebar({
         </div>
       )}
 
+      {/* ── Search (chats tab only) ─────────────────────────────────────── */}
       {tab === "chats" && (
-        <div style={{ padding: "12px 12px 8px" }}>
+        <div style={{ padding: "12px 12px 8px", flexShrink: 0 }}>
           <Input
             className="search-input"
             prefix={
@@ -208,6 +247,7 @@ export default function ChatSidebar({
         </div>
       )}
 
+      {/* ── Contact / Group list ────────────────────────────────────────── */}
       <div style={{ flex: 1, overflowY: "auto" }}>
         {tab === "chats" ? (
           loadingContacts && !searchQ ? (
@@ -241,10 +281,7 @@ export default function ChatSidebar({
               return (
                 <div
                   key={contact.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
+                  style={{ display: "flex", alignItems: "center" }}
                 >
                   <div style={{ flex: 1 }}>
                     <ContactItem

@@ -13,9 +13,6 @@
  *   VITE_STATUS_POLL_MS        – polling interval for new statuses (default 60000)
  */
 
-import { api } from "./api.js";
-
-// ─── Env helpers ─────────────────────────────────────────────────────────────
 export const STATUS_CONFIG = {
   maxPerUser: Number(import.meta.env.VITE_STATUS_MAX_PER_USER ?? 10),
   ttlHours: Number(import.meta.env.VITE_STATUS_TTL_HOURS ?? 24),

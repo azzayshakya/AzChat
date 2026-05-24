@@ -13,7 +13,7 @@ import {
   replyToStatus,
   markStatusViewed,
   STATUS_CONFIG,
-} from "../statusApi.js";
+} from "../statusComponents/statusApi";
 
 export function useStatus(currentUser) {
   const [statuses, setStatuses] = useState([]); // all visible statuses

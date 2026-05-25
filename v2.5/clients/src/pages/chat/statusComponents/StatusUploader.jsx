@@ -76,7 +76,7 @@ export default function StatusUploader({ onClose, onPost, posting, myCount }) {
     }
     const fd = new FormData();
     if (text.trim()) fd.append("text", text.trim());
-    if (imageFile) fd.append("imageFile", imageFile);
+    if (imageFile) fd.append("file", imageFile);
     fd.append("privacy", privacy);
     fd.append("backgroundColor", bgColor);
     fd.append("textColor", textColor);

@@ -181,7 +181,7 @@ export default function ChatSidebar({
       </div>
 
       {/* ── Status bar (above search) ───────────────────────────────────── */}
-      <div style={{ flexShrink: 0 }}>
+      {/* <div style={{ flexShrink: 0 }}>
         <StatusBar
           statuses={statuses}
           myStatuses={myStatuses}
@@ -195,7 +195,7 @@ export default function ChatSidebar({
           onReply={handleReply}
           onPost={handlePost}
         />
-      </div>
+      </div> */}
 
       {/* ── Tabs ────────────────────────────────────────────────────────── */}
       {features.groupChat && (

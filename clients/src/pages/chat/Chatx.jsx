@@ -9,6 +9,7 @@ import MessageInput from "./components/MessageInput.jsx";
 import MessageList from "./components/MessageList.jsx";
 import { features } from "../../utils/features.js";
 import { useNotification } from "../../hooks/useNotification.js";
+import NoMessage from "./commonComponents/NoMessage.jsx";
 
 export default function Chatx() {
   const { user } = useAuth();
@@ -37,6 +38,7 @@ export default function Chatx() {
   const searchTimer = useRef(null);
   const socketRef = useRef(null);
   const { notify } = useNotification();
+  console.log("bae", messages);
   const fetchContacts = useCallback(async () => {
     try {
       const { data } = await api.get("/contacts");
@@ -283,7 +285,8 @@ export default function Chatx() {
   };
 
   const isOnline = (id) => onlineUsers.includes(id);
-
+  console.log("onlineUsers ", onlineUsers);
+  console.log("onlineUsers ", isOnline("13e78680-65ca-4ed3-ab02-495ad60132a3"));
   const isGroupSelected = selectedType === "group";
 
   return (
@@ -316,24 +319,7 @@ export default function Chatx() {
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {!selected ? (
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#333",
-            }}
-          >
-            <div
-              style={{ textAlign: "center", color: "var(--text-highlight)" }}
-            >
-              <div style={{ fontSize: 48 }}>💬</div>
-              <div style={{ marginTop: 12, fontSize: 15 }}>
-                Select a chat or group to start
-              </div>
-            </div>
-          </div>
+          <NoMessage />
         ) : (
           <>
             {isGroupSelected ? (
@@ -355,7 +341,6 @@ export default function Chatx() {
               isGroup={isGroupSelected}
               groupMembers={isGroupSelected ? selected.members : null}
             />
-
             <MessageInput
               value={text}
               onChange={setText}

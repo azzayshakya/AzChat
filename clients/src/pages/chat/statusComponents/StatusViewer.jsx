@@ -24,7 +24,11 @@ import {
   GlobalOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { timeAgo, timeLeft, STATUS_CONFIG } from "../statusComponents/statusApi";
+import {
+  timeAgo,
+  timeLeft,
+  STATUS_CONFIG,
+} from "../statusComponents/statusApi";
 
 const AUTO_ADVANCE_MS = 5000;
 

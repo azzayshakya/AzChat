@@ -167,7 +167,7 @@ export default function MessageInput({
   // ── File upload ────────────────────────────────────────────────────────────
   const handleFileUpload = async (file) => {
     if (!selectedId) return false;
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > 50 * 1024 * 1024) {
       antMsg.error("File too large. Max 10MB.");
       return false;
     }
@@ -235,11 +235,15 @@ export default function MessageInput({
       )}
 
       {/* ── Quick emoji row — always visible ──────────────────────────────── */}
+<<<<<<< HEAD:clients/src/pages/chat/components/MessageInput.jsx
       <div style={styles.quickRow}>
         <FormattingToolbar
           activeFormats={activeFormats}
           onFormat={applyFormat}
         />
+=======
+      {/* <div style={styles.quickRow}>
+>>>>>>> ec76945 (new updates):statble_v2.0.0/clients/src/pages/chat/components/MessageInput.jsx
         {QUICK_EMOJIS.map((emoji) => (
           <button
             key={emoji}
@@ -250,7 +254,6 @@ export default function MessageInput({
             {emoji}
           </button>
         ))}
-        {/* Emoji "more" button at end of quick row */}
         <button
           onClick={toggleEmoji}
           style={{
@@ -265,7 +268,7 @@ export default function MessageInput({
         >
           {showEmojiPicker ? "▼" : "▲"}
         </button>
-      </div>
+      </div> */}
 
       {/* ── Input row ─────────────────────────────────────────────────────── */}
       <div style={styles.inputRow}>
@@ -285,7 +288,7 @@ export default function MessageInput({
         )}
 
         {/* GIF button */}
-        <Button
+        {/* <Button
           onClick={toggleGif}
           disabled={uploading}
           style={{
@@ -301,10 +304,10 @@ export default function MessageInput({
           }}
         >
           GIF
-        </Button>
+        </Button> */}
 
         {/* Textarea */}
-        <textarea
+        <textarea 
           ref={textareaRef}
           value={value}
           onChange={(e) => onChange(e.target.value)}

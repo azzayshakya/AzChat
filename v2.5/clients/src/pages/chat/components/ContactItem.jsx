@@ -1,20 +1,8 @@
 import React from "react";
 import UserAvatar from "../UComponents/UserAvatar";
 import { formatMessageTime, truncateText } from "../../../utils/TimeFormater";
-
-function previewText(msg) {
-  if (!msg) return null;
-  if (msg.deletedFor === "everyone") return "🚫 Message deleted";
-  if (msg.file) {
-    const cat = msg.file.category;
-    if (cat === "image") return "📷 Photo";
-    if (cat === "video") return "🎥 Video";
-    if (cat === "audio") return "🎵 Audio";
-    return `📎 ${msg.file.name || "File"}`;
-  }
-  const truncMsg = truncateText(msg.text || "File / Deleted message", 20);
-  return truncMsg || null;
-}
+import { getMessagePreview } from "../../../utils/messagePreview";
+import { getProfileImage } from "../../../utils/getProfileImage";
 
 export default function ContactItem({
   contact,
@@ -23,7 +11,7 @@ export default function ContactItem({
   onClick,
 }) {
   const hasUnread = contact.unreadCount > 0;
-  const preview = previewText(contact.lastMessage);
+  const preview = getMessagePreview(contact.lastMessage);
 
   return (
     <div
@@ -54,15 +42,7 @@ export default function ContactItem({
           size={36}
           isOnline={isOnline}
           showOnlineStatus={true}
-          image={
-            contact.id === "653c1ea1-acb8-46b3-918e-8416c8936584"
-              ? "/default_female_profile_pic.jpg"
-              : contact.id === "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d"
-                ? "/default_female_profile_pic.jpg"
-                : contact.role === "admin"
-                  ? "/developer_profile.jpg"
-                  : "/default_male_profile_pic.jpg"
-          }
+          image={getProfileImage(contact)}
         />
       </div>
 

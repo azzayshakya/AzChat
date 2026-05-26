@@ -40,9 +40,11 @@ export default function ContactItem({
         image={
           contact.id === "653c1ea1-acb8-46b3-918e-8416c8936584"
             ? "/default_female_profile_pic.jpg"
-            : contact.role === "admin"
-              ? "/developer_profile.jpg"
-              : "/default_male_profile_pic.jpg"
+            : contact.id === "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d"
+              ? "/default_female_profile_pic.jpg"
+              : contact.role === "admin"
+                ? "/developer_profile.jpg"
+                : "/default_male_profile_pic.jpg"
         }
       />
 

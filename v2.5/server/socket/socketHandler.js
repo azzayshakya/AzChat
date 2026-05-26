@@ -64,8 +64,8 @@ function socketHandler(io) {
     socket.on('send_message', ({ receiverId, text }, callback) => {
       try {
         if (!text?.trim()) return callback?.({ ok: false, error: 'Message required' });
-        if (text.length > 2000)
-          return callback?.({ ok: false, error: 'Message too long (max 2000 chars)' });
+        // if (text.length > 2000)
+        //   return callback?.({ ok: false, error: 'Message too long (max 2000 chars)' });
         if (!receiverId) return callback?.({ ok: false, error: 'receiverId required' });
 
         const db = readDB();

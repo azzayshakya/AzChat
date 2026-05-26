@@ -21,9 +21,11 @@ export default function ChatHeader({ contact, isOnline }) {
         image={
           contact.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
             ? "/default_female_profile_pic.jpg"
-            : contact.role === "admin"
-              ? "/developer_profile.jpg"
-              : "/default_male_profile_pic.jpg"
+            : contact.id === "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d"
+              ? "/default_female_profile_pic.jpg"
+              : contact.role === "admin"
+                ? "/developer_profile.jpg"
+                : "/default_male_profile_pic.jpg"
         }
       />
 

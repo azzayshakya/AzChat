@@ -38,7 +38,6 @@ export default function Chatx() {
   const searchTimer = useRef(null);
   const socketRef = useRef(null);
   const { notify } = useNotification();
-  console.log("bae", messages);
   const fetchContacts = useCallback(async () => {
     try {
       const { data } = await api.get("/contacts");

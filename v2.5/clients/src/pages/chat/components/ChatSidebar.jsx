@@ -134,6 +134,7 @@ export default function ChatSidebar({
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <UserAvatar
             name={currentUser.username}
+            size={40}
             image={
               currentUser.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
                 ? "/default_female_profile_pic.jpg"
@@ -149,7 +150,7 @@ export default function ChatSidebar({
               className={
                 currentUser.role === "admin" ? "admin_text_color_main" : ""
               }
-              style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}
+              style={{ color: "#fff", fontWeight: 600, fontSize: "1rem" }}
             >
               {currentUser.username}
             </div>
@@ -199,31 +200,52 @@ export default function ChatSidebar({
         />
       </div> */}
 
-      {/* ── Tabs ────────────────────────────────────────────────────────── */}
       {features.groupChat && (
         <div
           style={{
             display: "flex",
-            borderBottom: "1px solid #1e1e3a",
-            flexShrink: 0,
+            margin: "10px 12px 8px",
+            background: "rgba(255,255,255,0.04)",
+            borderRadius: 10,
+            padding: 3,
+            gap: 3,
+            border: "1px solid rgba(255,255,255,0.06)",
           }}
         >
-          <div
-            style={tabStyle(tab === "chats")}
-            onClick={() => setTab("chats")}
-          >
-            <MessageOutlined style={{ marginRight: 4 }} /> Chats
-          </div>
-          <div
-            style={tabStyle(tab === "groups")}
-            onClick={() => setTab("groups")}
-          >
-            <TeamOutlined style={{ marginRight: 4 }} /> Groups
-          </div>
+          {[
+            { key: "chats", icon: <MessageOutlined />, label: "Chats" },
+            { key: "groups", icon: <TeamOutlined />, label: "Groups" },
+          ].map(({ key, icon, label }) => (
+            <button
+              key={key}
+              onClick={() => setTab(key)}
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 5,
+                padding: "6px 0",
+                borderRadius: 8,
+                fontSize: 12,
+                fontWeight: tab === key ? 600 : 400,
+                cursor: "pointer",
+                border: "none",
+                fontFamily: "inherit",
+                transition: "all 0.15s",
+
+                background:
+                  tab === key ? "var(--primary-color)" : "transparent",
+                color: tab === key ? "white" : "var(--text-muted)",
+                boxShadow: tab === key ? "0 1px 4px rgba(0,0,0,0.3)" : "none",
+              }}
+            >
+              {icon} {label}
+            </button>
+          ))}
         </div>
       )}
 
-      {/* ── Search (chats tab only) ─────────────────────────────────────── */}
       {tab === "chats" && (
         <div style={{ padding: "12px 12px 8px", flexShrink: 0 }}>
           <Input
@@ -249,7 +271,6 @@ export default function ChatSidebar({
         </div>
       )}
 
-      {/* ── Contact / Group list ────────────────────────────────────────── */}
       <div style={{ flex: 1, overflowY: "auto" }}>
         {tab === "chats" ? (
           loadingContacts && !searchQ ? (

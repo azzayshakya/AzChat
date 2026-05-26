@@ -18,6 +18,7 @@ export default function ChatHeader({ contact, isOnline }) {
         isOnline={isOnline}
         showOnlineStatus={true}
         name={contact.username}
+        size={40}
         image={
           contact.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
             ? "/default_female_profile_pic.jpg"
@@ -30,7 +31,12 @@ export default function ChatHeader({ contact, isOnline }) {
       />
 
       <div>
-        <div style={{ color: "#fff", fontWeight: 600 }}>{contact.username}</div>
+        <div
+          style={{ color: "#fff", fontWeight: 600, fontSize: "1rem" }}
+          className={contact.role === "admin" ? "admin_text_color_main" : ""}
+        >
+          {contact.username}
+        </div>
         <div
           style={{
             color: isOnline ? "var(--online-status)" : "var(--offline-status)",

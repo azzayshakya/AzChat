@@ -24,6 +24,7 @@ import { useStatus } from "../statusComponents/useStatus.js";
 import { features } from "../../../utils/features.js";
 import { api } from "../../../api.js";
 import { useState } from "react";
+import UserAvatar from "../UComponents/UserAvatar.jsx";
 
 export default function ChatSidebar({
   currentUser,
@@ -131,17 +132,16 @@ export default function ChatSidebar({
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {currentUser.role === "admin" ? (
-            <img
-              src="/developer_profile.jpg"
-              height="30px"
-              width="30px"
-              style={{ borderRadius: "50%" }}
-              alt="admin"
-            />
-          ) : (
-            <Avatar style={{ background: "#667eea" }} icon={<UserOutlined />} />
-          )}
+          <UserAvatar
+            name={currentUser.username}
+            image={
+              currentUser.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
+                ? "/default_female_profile_pic.jpg"
+                : currentUser.role === "admin"
+                  ? "/developer_profile.jpg"
+                  : "/default_male_profile_pic.jpg"
+            }
+          />
           <div>
             <div
               className={

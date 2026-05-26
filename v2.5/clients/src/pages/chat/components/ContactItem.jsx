@@ -38,7 +38,7 @@ export default function ContactItem({
         showOnlineStatus={true}
         name={contact.username}
         image={
-          contact.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
+          contact.id === "653c1ea1-acb8-46b3-918e-8416c8936584"
             ? "/default_female_profile_pic.jpg"
             : contact.role === "admin"
               ? "/developer_profile.jpg"

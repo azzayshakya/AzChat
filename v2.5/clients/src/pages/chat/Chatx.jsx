@@ -284,8 +284,6 @@ export default function Chatx() {
   };
 
   const isOnline = (id) => onlineUsers.includes(id);
-  console.log("onlineUsers ", onlineUsers);
-  console.log("onlineUsers ", isOnline("13e78680-65ca-4ed3-ab02-495ad60132a3"));
   const isGroupSelected = selectedType === "group";
 
   return (

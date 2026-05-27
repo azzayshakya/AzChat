@@ -24,7 +24,7 @@ import { features } from "../../../utils/features.js";
 import { api } from "../../../api.js";
 import { useState } from "react";
 import UserAvatar from "../commonComponents/UserAvatar.jsx";
-import CreateGroupModal from "../models/Creategroupmodal.jsx";
+import CreateGroupModal from "../modals/Creategroupmodal.jsx";
 
 export default function ChatSidebar({
   currentUser,

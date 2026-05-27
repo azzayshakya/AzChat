@@ -3,11 +3,11 @@ import { Spin } from "antd";
 
 import { api } from "../../api";
 import { theme } from "../../theme";
-import ConfirmModal from "./components/ConfirmModel";
 import Tabs from "./components/Tabs";
 import Navbar from "../../components/Navbar";
 import StatCard from "./components/StatCard";
 import RangeFilter from "./components/RangeFilter";
+import ConfirmModal from "./components/ConfirmModel";
 
 // ── Helpers ──────────────────────────────────────────────────
 

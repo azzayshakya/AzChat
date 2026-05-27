@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Spin } from "antd";
-import UnreadDivider from "./UnreadDivider.jsx";
+import UnreadDivider from "../commonComponents/UnreadDivider.jsx";
 import { isNewDayMsg } from "../../../utils/isNewDayMsg.js";
 import DateDividerForChat from "../commonComponents/DateDividerForChat.jsx";
 import RenderState from "../commonComponents/RenderState.jsx";

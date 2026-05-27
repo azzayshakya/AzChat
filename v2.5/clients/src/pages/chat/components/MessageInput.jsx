@@ -1,8 +1,3 @@
-/**
- * MessageInput.jsx
- * Layout-only component. All state & logic lives in useMessageInput.
- */
-
 import React from "react";
 import { Button, Upload } from "antd";
 import {
@@ -12,16 +7,64 @@ import {
 } from "@ant-design/icons";
 import { features } from "../../../utils/features";
 import { QUICK_EMOJIS } from "../../../data/emojiData";
-import FormattingToolbar from "./FormattingToolbar";
-import GifPicker from "./GifPicker";
-import EmojiPicker from "./EmojiPicker";
+import FormattingToolbar from "../inputComponents/FormattingToolbar";
+import GifPicker from "../inputComponents/GifPicker";
+import EmojiPicker from "../inputComponents/EmojiPicker";
 import { useMessageInput } from "../../../hooks/useMessageInput";
-// import { useMessageInput } from "../hooks/useMessageInput";
+function QuickBar({
+  activeFormats,
+  onFormat,
+  onInsertEmoji,
+  showEmojiPicker,
+  onToggleEmoji,
+}) {
+  return (
+    <div style={styles.quickRow}>
+      <FormattingToolbar activeFormats={activeFormats} onFormat={onFormat} />
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Component
-// ─────────────────────────────────────────────────────────────────────────────
+      {QUICK_EMOJIS.map((emoji) => (
+        <button
+          key={emoji}
+          onClick={() => onInsertEmoji(emoji)}
+          style={styles.quickEmoji}
+          title={emoji}
+        >
+          {emoji}
+        </button>
+      ))}
 
+      <button
+        onClick={onToggleEmoji}
+        style={styles.emojiToggleBtn}
+        title="All emojis"
+      >
+        {showEmojiPicker ? "▼" : "▲"}
+      </button>
+    </div>
+  );
+}
+
+function GifButton({ active, disabled, onClick }) {
+  return (
+    <Button
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        ...styles.iconBtn,
+        color: active ? "#a78bfa" : "#667eea",
+        borderColor: active ? "#a78bfa" : "#2a2a4a",
+        background: active ? "#1e1040" : "#1a1a2e",
+        fontWeight: 700,
+        fontSize: 11,
+        letterSpacing: 0.5,
+        padding: "0 10px",
+        width: "auto",
+      }}
+    >
+      GIF
+    </Button>
+  );
+}
 export default function MessageInput({
   value,
   onChange,
@@ -61,17 +104,14 @@ export default function MessageInput({
 
   return (
     <div style={styles.root}>
-      {/* ── GIF Picker ──────────────────────────────────────────────────── */}
       {showGifPicker && (
         <GifPicker onSelect={handleGifSelect} onClose={toggleGif} />
       )}
 
-      {/* ── Emoji Picker ────────────────────────────────────────────────── */}
       {showEmojiPicker && (
         <EmojiPicker onSelect={insertEmoji} onClose={toggleEmoji} />
       )}
 
-      {/* ── Quick emoji + formatting toolbar row ────────────────────────── */}
       <QuickBar
         activeFormats={activeFormats}
         onFormat={handleFormat}
@@ -80,9 +120,7 @@ export default function MessageInput({
         onToggleEmoji={toggleEmoji}
       />
 
-      {/* ── Main input row ──────────────────────────────────────────────── */}
       <div style={styles.inputRow}>
-        {/* File upload */}
         {features.fileUpload && (
           <Upload
             showUploadList={false}
@@ -97,14 +135,12 @@ export default function MessageInput({
           </Upload>
         )}
 
-        {/* GIF button */}
         <GifButton
           active={showGifPicker}
           disabled={uploading}
           onClick={toggleGif}
         />
 
-        {/* Textarea */}
         <textarea
           ref={textareaRef}
           value={value}
@@ -120,7 +156,6 @@ export default function MessageInput({
           onInput={handleTextareaInput}
         />
 
-        {/* Send */}
         <Button
           icon={<SendOutlined />}
           onClick={handleSend}
@@ -132,72 +167,6 @@ export default function MessageInput({
     </div>
   );
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Sub-components  (small, co-located since they only make sense here)
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** Toolbar row: formatting + quick-emoji strip + emoji toggle */
-function QuickBar({
-  activeFormats,
-  onFormat,
-  onInsertEmoji,
-  showEmojiPicker,
-  onToggleEmoji,
-}) {
-  return (
-    <div style={styles.quickRow}>
-      <FormattingToolbar activeFormats={activeFormats} onFormat={onFormat} />
-
-      {QUICK_EMOJIS.map((emoji) => (
-        <button
-          key={emoji}
-          onClick={() => onInsertEmoji(emoji)}
-          style={styles.quickEmoji}
-          title={emoji}
-        >
-          {emoji}
-        </button>
-      ))}
-
-      {/* Toggle full emoji picker */}
-      <button
-        onClick={onToggleEmoji}
-        style={styles.emojiToggleBtn}
-        title="All emojis"
-      >
-        {showEmojiPicker ? "▼" : "▲"}
-      </button>
-    </div>
-  );
-}
-
-/** Styled GIF button — kept as its own component for clarity */
-function GifButton({ active, disabled, onClick }) {
-  return (
-    <Button
-      onClick={onClick}
-      disabled={disabled}
-      style={{
-        ...styles.iconBtn,
-        color: active ? "#a78bfa" : "#667eea",
-        borderColor: active ? "#a78bfa" : "#2a2a4a",
-        background: active ? "#1e1040" : "#1a1a2e",
-        fontWeight: 700,
-        fontSize: 11,
-        letterSpacing: 0.5,
-        padding: "0 10px",
-        width: "auto",
-      }}
-    >
-      GIF
-    </Button>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Styles
-// ─────────────────────────────────────────────────────────────────────────────
 
 const styles = {
   root: {

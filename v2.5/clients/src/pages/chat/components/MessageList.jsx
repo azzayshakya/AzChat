@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { Spin } from "antd";
-import MessageBubble from "./MessageBubble.jsx";
 import UnreadDivider from "./UnreadDivider.jsx";
 import { isNewDayMsg } from "../../../utils/isNewDayMsg.js";
 import DateDividerForChat from "../commonComponents/DateDividerForChat.jsx";
 import RenderState from "../commonComponents/RenderState.jsx";
+import MessageBubble from "../inputComponents/MessageBubble.jsx";
 
 export default function MessageList({
   messages,

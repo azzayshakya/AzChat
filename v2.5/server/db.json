@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-05-26T19:02:23.860Z",
+      "lastSeen": "2026-05-27T03:04:46.796Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -74,7 +74,7 @@
       "passwordHash": "$2a$10$0nonjyT2wpfAc6L3pWybxORd9UCfOpShMW0LE0SphkkrLg3KVIzR.",
       "role": "user",
       "isOnline": true,
-      "lastSeen": "2026-05-25T03:41:08.275Z",
+      "lastSeen": "2026-05-27T02:53:31.080Z",
       "createdAt": "2026-05-21T06:18:08.444Z"
     },
     {
@@ -4274,6 +4274,74 @@
       "deletedForUsers": [],
       "seenAt": "2026-05-26T19:04:25.654Z",
       "createdAt": "2026-05-26T19:04:18.926Z"
+    },
+    {
+      "id": "6b8143c2-5bb8-4591-9378-77a60c704bf7",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "https://chatgpt.com/c/6a15a70a-eec0-8323-aa18-5a18e66d7b72",
+      "file": null,
+      "status": "delivered",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-27T03:01:59.427Z"
+    },
+    {
+      "id": "7aca3605-e460-4627-8605-ff4506f24e2e",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "yoo",
+      "file": null,
+      "status": "delivered",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-27T03:05:53.445Z"
+    },
+    {
+      "id": "7c7cccfc-8dbf-43a3-9a5d-51d3cab9eb3a",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "bit",
+      "file": null,
+      "status": "delivered",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-27T03:05:56.787Z"
+    },
+    {
+      "id": "e58fce34-7e97-423f-bdf6-7fd76bd9214e",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "jdklsaf",
+      "file": null,
+      "status": "delivered",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-05-27T03:05:58.307Z"
     }
   ],
   "groups": [

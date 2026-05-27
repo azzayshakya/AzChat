@@ -18,13 +18,13 @@ import {
   MessageOutlined,
 } from "@ant-design/icons";
 import ContactItem from "./ContactItem.jsx";
-import CreateGroupModal from "./CreateGroupModal.jsx";
 import StatusBar from "../statusComponents/StatusBar.jsx";
 import { useStatus } from "../statusComponents/useStatus.js";
 import { features } from "../../../utils/features.js";
 import { api } from "../../../api.js";
 import { useState } from "react";
-import UserAvatar from "../UComponents/UserAvatar.jsx";
+import UserAvatar from "../commonComponents/UserAvatar.jsx";
+import CreateGroupModal from "../models/Creategroupmodal.jsx";
 
 export default function ChatSidebar({
   currentUser,

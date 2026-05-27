@@ -1,8 +1,8 @@
 import React from "react";
-import UserAvatar from "../UComponents/UserAvatar";
 import { formatMessageTime, truncateText } from "../../../utils/TimeFormater";
 import { getMessagePreview } from "../../../utils/messagePreview";
 import { getProfileImage } from "../../../utils/getProfileImage";
+import UserAvatar from "../commonComponents/UserAvatar";
 
 export default function ContactItem({
   contact,

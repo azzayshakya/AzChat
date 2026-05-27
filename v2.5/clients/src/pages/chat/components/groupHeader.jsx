@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Avatar, Badge, Button } from "antd";
 import { TeamOutlined } from "@ant-design/icons";
-import GroupMembersModal from "./GroupMembersModal.jsx";
+import GroupMembersModal from "../models/Groupmembersmodal";
 
 export default function GroupHeader({ group, currentUserId, onGroupUpdated }) {
   const [showMembers, setShowMembers] = useState(false);

@@ -25,6 +25,7 @@ import { api } from "../../../api.js";
 import { useState } from "react";
 import UserAvatar from "../commonComponents/UserAvatar.jsx";
 import CreateGroupModal from "../modals/Creategroupmodal.jsx";
+import { getProfileImage } from "../../../utils/getProfileImage.js";
 
 export default function ChatSidebar({
   currentUser,
@@ -135,15 +136,7 @@ export default function ChatSidebar({
           <UserAvatar
             name={currentUser.username}
             size={40}
-            image={
-              currentUser.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
-                ? "/default_female_profile_pic.jpg"
-                : currentUser.id === "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d"
-                  ? "/default_female_profile_pic.jpg"
-                  : currentUser.role === "admin"
-                    ? "/developer_profile.jpg"
-                    : "/default_male_profile_pic.jpg"
-            }
+            image={getProfileImage(currentUser)}
           />
           <div>
             <div

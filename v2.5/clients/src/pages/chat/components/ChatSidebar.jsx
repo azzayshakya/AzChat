@@ -121,7 +121,6 @@ export default function ChatSidebar({
         overflow: "hidden",
       }}
     >
-      {/* ── Current user header ─────────────────────────────────────────── */}
       <div
         style={{
           padding: "16px 16px 12px",
@@ -130,6 +129,10 @@ export default function ChatSidebar({
           alignItems: "center",
           justifyContent: "space-between",
           flexShrink: 0,
+          // border: "2px red solid",
+          background: "rgba(102,126,234,0.14)",
+          margin: "12px 15px 3px",
+          borderRadius: 11,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -371,22 +374,38 @@ export default function ChatSidebar({
             return (
               <div
                 key={group.id}
-                style={{ display: "flex", alignItems: "center" }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  // border: "2px blue solid",
+                  // gap: 10,
+                  // padding: "8px 10px",
+                  margin: "10px 15px",
+                  borderRadius: 11,
+                  cursor: "pointer",
+                  transition: "background 0.12s",
+                  background: isSelected
+                    ? "transparent"
+                    : "rgba(102,126,234,0.14)",
+                  outline: isSelected
+                    ? "rgb(102 126 234 / 90%) solid 2px"
+                    : "none",
+                }}
               >
                 <div
                   onClick={() => onSelectGroup(group)}
                   style={{
                     flex: 1,
                     padding: "12px 16px",
-                    cursor: "pointer",
+                    // cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
                     gap: 12,
-                    background: isSelected ? "#1e1e3a" : "transparent",
-                    borderLeft: isSelected
-                      ? "3px solid #764ba2"
-                      : "3px solid transparent",
-                    transition: "all 0.15s",
+                    // background: isSelected ? "#1e1e3a" : "transparent",
+                    // borderLeft: isSelected
+                    //   ? "3px solid #764ba2"
+                    //   : "3px solid transparent",
+                    // transition: "all 0.15s",
                   }}
                 >
                   <Avatar

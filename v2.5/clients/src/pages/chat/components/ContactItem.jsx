@@ -21,20 +21,21 @@ export default function ContactItem({
         alignItems: "center",
         gap: 10,
         padding: "8px 10px",
-        margin: "1px 6px",
+        margin: "6px 15px",
         borderRadius: 11,
         cursor: "pointer",
         transition: "background 0.12s",
-        background: isSelected ? "rgba(102,126,234,0.14)" : "transparent",
-        outline: isSelected ? "1px solid rgba(102,126,234,0.2)" : "none",
+        background: isSelected ? "transparent" : "rgba(102,126,234,0.14)",
+        outline: isSelected ? "rgb(102 126 234 / 90%) solid 2px" : "none",
+        // border: "2px red solid",
       }}
-      onMouseEnter={(e) => {
-        if (!isSelected)
-          e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-      }}
-      onMouseLeave={(e) => {
-        if (!isSelected) e.currentTarget.style.background = "transparent";
-      }}
+      // onMouseEnter={(e) => {
+      //   if (!isSelected)
+      //     e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+      // }}
+      // onMouseLeave={(e) => {
+      //   if (!isSelected) e.currentTarget.style.background = "transparent";
+      // }}
     >
       <div style={{ position: "relative", flexShrink: 0 }}>
         <UserAvatar

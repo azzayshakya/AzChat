@@ -345,9 +345,9 @@ export default function MessageBubble({
           style={{
             padding: "7px 14px",
             borderRadius: 12,
-            background: "rgba(255,255,255,0.04)",
+            background: "rgb(255 0 0 / 36%)",
             border: "1px solid rgba(255,255,255,0.08)",
-            color: "rgba(255,255,255,0.3)",
+            color: "rgb(255, 255, 255)",
             fontSize: 12,
             fontStyle: "italic",
             display: "flex",

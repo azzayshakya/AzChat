@@ -1,10 +1,3 @@
-/**
- * emojiData.js
- * Curated ~350 emojis grouped by category.
- * Each entry: { emoji, label }
- * label is used for search filtering.
- */
-
 export const EMOJI_CATEGORIES = [
   {
     id: "smileys",
@@ -452,12 +445,10 @@ export const EMOJI_CATEGORIES = [
   },
 ];
 
-// Flat list of all emojis for search
 export const ALL_EMOJIS = EMOJI_CATEGORIES.flatMap((cat) =>
   cat.emojis.map((e) => ({ ...e, categoryId: cat.id }))
 );
 
-// Quick-access row shown by default above the input
 export const QUICK_EMOJIS = [
   "😂",
   "😍",

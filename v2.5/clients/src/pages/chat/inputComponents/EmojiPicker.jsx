@@ -11,33 +11,22 @@ import {
   QUICK_EMOJIS,
 } from "../../../data/emojiData";
 
-/**
- * EmojiPicker
- *
- * Props:
- *   onSelect(emoji: string) — called with the emoji character
- *   onClose()               — dismiss the picker
- */
 export default function EmojiPicker({ onSelect, onClose }) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState(EMOJI_CATEGORIES[0].id);
   const searchRef = useRef(null);
   const bodyRef = useRef(null);
   const categoryRefs = useRef({});
-
-  // Auto-focus search input when picker opens
   useEffect(() => {
     searchRef.current?.focus();
   }, []);
 
-  // Filter emojis based on search query
   const searchResults = useMemo(() => {
     if (!search.trim()) return null;
     const q = search.toLowerCase();
     return ALL_EMOJIS.filter((e) => e.label.includes(q) || e.emoji === q);
   }, [search]);
 
-  // Scroll to category section
   const scrollToCategory = useCallback((catId) => {
     setActiveCategory(catId);
     categoryRefs.current[catId]?.scrollIntoView({
@@ -46,7 +35,6 @@ export default function EmojiPicker({ onSelect, onClose }) {
     });
   }, []);
 
-  // Track active category on scroll
   const handleBodyScroll = useCallback(() => {
     if (search.trim()) return;
     const bodyEl = bodyRef.current;
@@ -75,7 +63,6 @@ export default function EmojiPicker({ onSelect, onClose }) {
 
   return (
     <div style={styles.container}>
-      {/* Search */}
       <div style={styles.searchRow}>
         <input
           ref={searchRef}
@@ -93,7 +80,6 @@ export default function EmojiPicker({ onSelect, onClose }) {
         </button>
       </div>
 
-      {/* Category tabs — hidden during search */}
       {!search.trim() && (
         <div style={styles.tabs}>
           {EMOJI_CATEGORIES.map((cat) => (
@@ -111,11 +97,8 @@ export default function EmojiPicker({ onSelect, onClose }) {
           ))}
         </div>
       )}
-
-      {/* Emoji grid body */}
       <div ref={bodyRef} style={styles.body} onScroll={handleBodyScroll}>
         {searchResults !== null ? (
-          // Search results
           searchResults.length === 0 ? (
             <div style={styles.empty}>
               <span style={{ fontSize: 28 }}>🔍</span>
@@ -132,7 +115,6 @@ export default function EmojiPicker({ onSelect, onClose }) {
             </div>
           )
         ) : (
-          // Categorized view
           EMOJI_CATEGORIES.map((cat) => (
             <div key={cat.id} ref={(el) => (categoryRefs.current[cat.id] = el)}>
               <div style={styles.catLabel}>{cat.label}</div>
@@ -145,7 +127,6 @@ export default function EmojiPicker({ onSelect, onClose }) {
   );
 }
 
-/** Reusable emoji grid row */
 function EmojiGrid({ emojis, onSelect }) {
   return (
     <div style={styles.grid}>
@@ -161,7 +142,6 @@ function EmojiGrid({ emojis, onSelect }) {
   );
 }
 
-/** Single emoji button with hover state */
 function EmojiButton({ emoji, label, onSelect }) {
   const [hovered, setHovered] = useState(false);
   return (
@@ -227,6 +207,10 @@ const styles = {
     flexShrink: 0,
     overflowX: "auto",
     scrollbarWidth: "none",
+    border: "2px solid var(--primary-color)",
+    borderRadius: "8px",
+    width: "fit-content",
+    margin: "4px 12px",
   },
   tabBtn: {
     background: "none",
@@ -234,7 +218,7 @@ const styles = {
     borderRadius: 6,
     cursor: "pointer",
     fontSize: 16,
-    padding: "3px 5px",
+    padding: "6px 4px",
     lineHeight: 1,
     transition: "background 0.15s, border-color 0.15s",
     flexShrink: 0,

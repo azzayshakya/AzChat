@@ -2,19 +2,11 @@ import React from "react";
 import { Spin } from "antd";
 import useGifs from "../../../hooks/useGifs";
 
-/**
- * GifPicker
- *
- * Props:
- *   onSelect(gif: { name, url }) — called when user clicks a GIF
- *   onClose()                    — called to dismiss the picker
- */
 export default function GifPicker({ onSelect, onClose }) {
   const { gifs, loading, error } = useGifs();
 
   return (
     <div style={styles.container}>
-      {/* Header */}
       <div style={styles.header}>
         <span style={styles.headerTitle}>🎞 GIFs</span>
         <button
@@ -46,10 +38,6 @@ export default function GifPicker({ onSelect, onClose }) {
           <div style={styles.centered}>
             <span style={{ fontSize: 32 }}>🌵</span>
             <span style={styles.stateText}>No GIFs found</span>
-            <span style={styles.stateHint}>
-              Add .gif files to <code style={styles.code}>public/gifs/</code>{" "}
-              and update <code style={styles.code}>manifest.json</code>
-            </span>
           </div>
         )}
 
@@ -65,7 +53,6 @@ export default function GifPicker({ onSelect, onClose }) {
   );
 }
 
-/** Single GIF tile with hover effect */
 function GifTile({ gif, onSelect }) {
   const [hovered, setHovered] = React.useState(false);
 

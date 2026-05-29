@@ -1,13 +1,5 @@
 import { useState, useEffect } from "react";
 
-/**
- * useGifs — loads GIF filenames from public/gifs/manifest.json
- *
- * To use: place a `manifest.json` in `public/gifs/` with this shape:
- *   ["party.gif", "wave.gif", "laugh.gif", ...]
- *
- * All GIFs should live at: public/gifs/<filename>
- */
 export default function useGifs() {
   const [gifs, setGifs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,7 +17,6 @@ export default function useGifs() {
       })
       .then((names) => {
         if (cancelled) return;
-        // Each entry: { name, url }
         setGifs(
           names.map((n) => ({
             name: n,

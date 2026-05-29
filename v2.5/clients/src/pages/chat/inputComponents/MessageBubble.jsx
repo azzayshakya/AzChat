@@ -9,17 +9,16 @@ import {
   FileTextOutlined,
   FileOutlined,
   DownloadOutlined,
+  CheckCircleTwoTone,
 } from "@ant-design/icons";
 import { features } from "../../../utils/features.js";
 import { api } from "../../../api.js";
-
-/* ─── helpers ────────────────────────────────────────────────────── */
 
 const isOnlyEmoji = (text) => {
   if (!text) return false;
   const emojiRe =
     /^(\p{Emoji_Presentation}|\p{Extended_Pictographic}|\uFE0F|\u200D|\s)+$/u;
-  return emojiRe.test(text.trim()) && text.trim().length <= 12;
+  return emojiRe.test(text.trim()) && text.trim().length <= 110;
 };
 
 const isGif = (url = "") =>
@@ -248,11 +247,19 @@ const FileBubble = ({ url, name, size, text, isMine }) => (
             : "rgba(255,255,255,0.06)")
         }
       >
-        <span style={{ fontSize: 22, opacity: 0.85 }}>{fileIcon(name)}</span>
+        <span
+          style={{
+            fontSize: 22,
+            opacity: 0.85,
+            color: "var(--secondary-color)",
+          }}
+        >
+          {fileIcon(name)}
+        </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div
             style={{
-              fontSize: 12,
+              fontSize: 15,
               fontWeight: 600,
               color: "#fff",
               whiteSpace: "nowrap",
@@ -263,12 +270,26 @@ const FileBubble = ({ url, name, size, text, isMine }) => (
             {name}
           </div>
           {size && (
-            <div style={{ fontSize: 10, opacity: 0.5, marginTop: 1 }}>
+            <div
+              style={{
+                fontSize: 11,
+                opacity: 0.7,
+                marginTop: 1,
+                color: "var(--secondary-color)",
+              }}
+            >
               {formatSize(size)}
             </div>
           )}
         </div>
-        <DownloadOutlined style={{ opacity: 0.5, fontSize: 13 }} />
+        <DownloadOutlined
+          style={{
+            opacity: 0.8,
+            fontSize: 15,
+            // fontWeight: "800",
+            color: "var(--secondary-color)",
+          }}
+        />
       </div>
     </a>
     {text && (
@@ -282,7 +303,7 @@ const FileBubble = ({ url, name, size, text, isMine }) => (
 const SeenIcon = ({ status }) => {
   if (status === "seen")
     return (
-      <CheckCircleOutlined
+      <CheckCircleTwoTone
         style={{ color: "var(--accent-light)", fontSize: 10, flexShrink: 0 }}
       />
     );
@@ -433,7 +454,6 @@ export default function MessageBubble({
 
   const emojiOnly = !message.file && isOnlyEmoji(message.text);
 
-  /* ── avatar for others in group ── */
   const avatarChar = senderName?.[0]?.toUpperCase();
 
   /* ── bubble ── */

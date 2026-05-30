@@ -166,7 +166,7 @@ const DUMMY_STATUSES = [
   {
     id: "admin-welcome",
     userId: "admin",
-    username: "AZChat",
+    username: "ajayshakya",
     role: "admin",
     avatar: null, // will show initials
     items: [
@@ -188,11 +188,11 @@ const DUMMY_STATUSES = [
     isAdmin: true,
   },
   {
-    id: "u1",
+    id: "653c1ea1-acb8-46b3-918e-8416c8936584",
     userId: "u1",
-    username: "ajayshakya",
-    role: "admin",
-    avatar: "/developer_profile.jpg",
+    username: "eram",
+    role: "user",
+    avatar: null,
     items: [
       {
         id: "s2",
@@ -232,55 +232,31 @@ const DUMMY_STATUSES = [
     hasUnread: false,
     isAdmin: false,
   },
-  {
-    id: "u2",
-    userId: "u2",
-    username: "hannibal",
-    role: "user",
-    avatar: null,
-    items: [
-      {
-        id: "s4",
-        type: "image",
-        text: "Sunday vibes 🌅",
-        imageUrl:
-          "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
-        backgroundColor: "#1a1010",
-        textColor: "#e07070",
-        createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 21).toISOString(),
-        privacy: "public",
-        views: 8,
-        replies: [],
-      },
-    ],
-    hasUnread: true,
-    isAdmin: false,
-  },
-  {
-    id: "u3",
-    userId: "u3",
-    username: "eram",
-    role: "user",
-    avatar: null,
-    items: [
-      {
-        id: "s5",
-        type: "text",
-        text: "Just finished reading a great book 📚",
-        imageUrl: null,
-        backgroundColor: "#1a0a1a",
-        textColor: "#d07099",
-        createdAt: new Date(Date.now() - 1000 * 60 * 200).toISOString(),
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 20).toISOString(),
-        privacy: "friends",
-        views: 2,
-        replies: [],
-      },
-    ],
-    hasUnread: true,
-    isAdmin: false,
-  },
+  // {
+  //   id: "u2",
+  //   userId: "u2",
+  //   username: "hannibal",
+  //   role: "user",
+  //   avatar: null,
+  //   items: [
+  //     {
+  //       id: "s4",
+  //       type: "image",
+  //       text: "Sunday vibes 🌅",
+  //       imageUrl:
+  //         "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80",
+  //       backgroundColor: "#1a1010",
+  //       textColor: "#e07070",
+  //       createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
+  //       expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 21).toISOString(),
+  //       privacy: "public",
+  //       views: 8,
+  //       replies: [],
+  //     },
+  //   ],
+  //   hasUnread: true,
+  //   isAdmin: false,
+  // },
 ];
 
 // Current user's own statuses (dummy)
@@ -288,7 +264,7 @@ const MY_STATUSES = [
   {
     id: "my1",
     type: "text",
-    text: "Late night coding session ☕",
+    text: "(my status )Late night coding session ☕",
     imageUrl: null,
     backgroundColor: "#1a1540",
     textColor: "#a78bfa",

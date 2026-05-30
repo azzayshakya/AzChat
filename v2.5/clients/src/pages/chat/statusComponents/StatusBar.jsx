@@ -1,18 +1,14 @@
-/**
- * StatusBar.jsx
- * Horizontal scrollable row of status avatars shown above the search bar
- * in ChatSidebar. Includes the "+ Add status" pill for the current user.
- */
-
 import React, { useRef, useState } from "react";
 import { Avatar, Tooltip, Spin } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import StatusViewer from "./StatusViewer.jsx";
 import StatusUploader from "./StatusUploader.jsx";
+import UserAvatar from "../commonComponents/UserAvatar.jsx";
+import { getProfileImage } from "../../../utils/getProfileImage.js";
 
 export default function StatusBar({
-  statuses, // array from useStatus
-  myStatuses, // current user's own status items
+  statuses,
+  myStatuses,
   loading,
   currentUser,
   deleting,
@@ -24,11 +20,9 @@ export default function StatusBar({
   posting,
 }) {
   const scrollRef = useRef(null);
-  const [viewing, setViewing] = useState(null); // { entry, startIndex }
+  const [viewing, setViewing] = useState(null);
   const [showUploader, setShowUploader] = useState(false);
-
-  // Merge my statuses at the front as a special "My Status" entry
-  const myEntry =
+  const myStatus =
     myStatuses.length > 0
       ? {
           id: "mine",
@@ -44,40 +38,15 @@ export default function StatusBar({
         }
       : null;
 
-  const allEntries = myEntry ? [myEntry, ...statuses] : statuses;
-
+  const allStatus = myStatus ? [myStatus, ...statuses] : statuses;
   const handleAvatarClick = (entry, startIndex = 0) => {
     setViewing({ entry, startIndex });
   };
-
+  console.log("azz bab", allStatus);
   const handleUploaderPost = async (formData) => {
     await onPost(formData);
     setShowUploader(false);
   };
-
-  // Initials helper
-  const initials = (name) =>
-    name
-      ?.split(/[\s_]/)
-      .map((w) => w[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() ?? "?";
-
-  const AVATAR_COLORS = [
-    "#2e2860",
-    "#163a30",
-    "#3a1c1c",
-    "#162040",
-    "#38192c",
-    "#1a3020",
-    "#382610",
-  ];
-  const colorFor = (id) =>
-    AVATAR_COLORS[
-      (id?.split("").reduce((a, c) => a + c.charCodeAt(0), 0) ?? 0) %
-        AVATAR_COLORS.length
-    ];
 
   return (
     <>
@@ -86,6 +55,7 @@ export default function StatusBar({
           borderBottom: "1px solid rgba(255,255,255,0.05)",
           paddingBottom: 10,
           paddingTop: 10,
+          border: "2px red solid",
         }}
       >
         {/* Section label */}
@@ -147,7 +117,6 @@ export default function StatusBar({
                 }}
                 className="status-add-btn"
               >
-                {/* Small + badge */}
                 <PlusOutlined
                   style={{ color: "var(--primary-color)", fontSize: 18 }}
                 />
@@ -167,27 +136,26 @@ export default function StatusBar({
               </span>
             </div>
 
-            {/* Status entries */}
-            {allEntries.map((entry) => {
-              const hasUnread = entry.hasUnread;
-              const isMine = entry.isMine;
-              const isAdmin = entry.isAdmin;
+            {allStatus.map((status) => {
+              const hasUnread = status.hasUnread;
+              const isMine = status.isMine;
+              const isAdmin = status.isAdmin;
 
-              // Ring color
-              const ringColor = isAdmin
-                ? "var(--brand-gradient)"
+              const ringStyle = isAdmin
+                ? {
+                    background: "var(--brand-gradient)",
+                    borderRadius: "50%",
+                    padding: 2.5,
+                    boxShadow:
+                      "0 0 0 1px var(--dark-bg-light), 0 0 8px #764ba244",
+                  }
                 : hasUnread
-                  ? "var(--primary-color)"
-                  : "#333";
-
-              const ringStyle =
-                hasUnread || isAdmin
                   ? {
-                      background: isAdmin
-                        ? "var(--brand-gradient)"
-                        : "var(--primary-color)",
+                      background: "var(--primary-color)",
                       borderRadius: "50%",
                       padding: 2.5,
+                      boxShadow:
+                        "0 0 0 1px var(--dark-bg-light), 0 0 8px var(--primary-color)",
                     }
                   : {
                       background: "#333",
@@ -197,8 +165,8 @@ export default function StatusBar({
 
               return (
                 <div
-                  key={entry.id}
-                  onClick={() => handleAvatarClick(entry, 0)}
+                  key={status.id}
+                  onClick={() => handleAvatarClick(status, 0)}
                   style={{
                     display: "flex",
                     flexDirection: "column",
@@ -206,52 +174,20 @@ export default function StatusBar({
                     gap: 5,
                     cursor: "pointer",
                     flexShrink: 0,
+                    border: "2px red solid",
                   }}
                 >
-                  {/* Glowing ring + avatar */}
-                  <div
-                    style={{
-                      ...ringStyle,
-                      boxShadow:
-                        hasUnread || isAdmin
-                          ? `0 0 0 1px var(--dark-bg-light), 0 0 8px ${isAdmin ? "#764ba2" : "var(--primary-color)"}44`
-                          : "none",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: "50%",
-                        overflow: "hidden",
-                        background: colorFor(entry.userId),
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                  <div style={ringStyle}>
+                    <UserAvatar
+                      image={getProfileImage(status)}
+                      name={isAdmin ? "AZ Chat" : status.username}
+                      size={44}
+                      avatarStyle={{
                         border: "2px solid var(--dark-bg-light)",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: "#fff",
-                        userSelect: "none",
                       }}
-                    >
-                      {entry.avatar ? (
-                        <img
-                          src={entry.avatar}
-                          alt={entry.username}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        initials(isAdmin ? "AZ Chat" : entry.username)
-                      )}
-                    </div>
+                    />
                   </div>
 
-                  {/* Username */}
                   <div
                     style={{
                       display: "flex",
@@ -263,8 +199,9 @@ export default function StatusBar({
                     <span
                       style={{
                         fontSize: 10,
+                        // className="",
                         color: isAdmin
-                          ? "var(--accent-light)"
+                          ? "red"
                           : isMine
                             ? "var(--text-highlight)"
                             : hasUnread
@@ -278,7 +215,7 @@ export default function StatusBar({
                         fontWeight: hasUnread ? 600 : 400,
                       }}
                     >
-                      {isMine ? "My Status" : entry.username}
+                      {isMine ? "My Status" : status.username}
                     </span>
                     <span
                       style={{
@@ -291,9 +228,9 @@ export default function StatusBar({
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {entry.items.length > 1
-                        ? `${entry.items.length} updates`
-                        : entry.items.length === 1
+                      {status.items.length > 1
+                        ? `${status.items.length} updates`
+                        : status.items.length === 1
                           ? "1 update"
                           : ""}
                     </span>

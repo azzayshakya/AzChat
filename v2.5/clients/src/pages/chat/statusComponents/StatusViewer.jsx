@@ -1,16 +1,3 @@
-/**
- * StatusViewer.jsx
- * Full-screen modal overlay for viewing a status entry.
- * Features:
- *  – User info header (avatar, name, time, privacy badge, views)
- *  – Status content (text / image / both)
- *  – Left/Right navigation across multiple status items
- *  – Progress bar per item
- *  – Reply input
- *  – Delete button (owner only) with confirmation popup
- *  – Auto-advances after 5 seconds
- */
-
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Input, Spin, Modal, message as antMsg } from "antd";
 import {

@@ -1,8 +1,3 @@
-/**
- * useStatus.js
- * Central hook for all status-related state and actions.
- */
-
 import { useState, useEffect, useCallback, useRef } from "react";
 import {
   fetchStatuses,
@@ -31,9 +26,6 @@ export function useStatus(currentUser) {
         fetchStatuses(currentUser?.id),
         fetchMyStatuses(),
       ]);
-      // DEBUG — remove before production
-      console.log("[useStatus] feed:", all);
-      console.log("[useStatus] mine:", mine);
       setStatuses(all);
       setMyStatuses(mine);
     } catch (err) {

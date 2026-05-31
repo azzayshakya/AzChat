@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-05-31T03:49:49.999Z",
+      "lastSeen": "2026-05-31T09:40:22.743Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -73,8 +73,8 @@
       "email": "amanshakya@gmail.com",
       "passwordHash": "$2a$10$0nonjyT2wpfAc6L3pWybxORd9UCfOpShMW0LE0SphkkrLg3KVIzR.",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-05-27T02:53:31.080Z",
+      "isOnline": false,
+      "lastSeen": "2026-05-31T08:49:19.750Z",
       "createdAt": "2026-05-21T06:18:08.444Z"
     },
     {
@@ -4283,13 +4283,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "https://chatgpt.com/c/6a15a70a-eec0-8323-aa18-5a18e66d7b72",
       "file": null,
-      "status": "delivered",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-27T03:01:59.427Z"
     },
     {
@@ -4300,13 +4300,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "yoo",
       "file": null,
-      "status": "delivered",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-27T03:05:53.445Z"
     },
     {
@@ -4317,13 +4317,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "bit",
       "file": null,
-      "status": "delivered",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-27T03:05:56.787Z"
     },
     {
@@ -4334,13 +4334,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "jdklsaf",
       "file": null,
-      "status": "delivered",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-27T03:05:58.307Z"
     },
     {
@@ -4351,13 +4351,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "⚾⚾🎾🎾",
       "file": null,
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T05:38:23.935Z"
     },
     {
@@ -4375,13 +4375,13 @@
         "size": 1009091,
         "url": "/uploads/images/1779947501454-9be8c26dbe64.gif"
       },
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T05:51:41.474Z"
     },
     {
@@ -4399,13 +4399,13 @@
         "size": 867429,
         "url": "/uploads/images/1779947840231-1a2948b2cd7e.gif"
       },
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T05:57:20.252Z"
     },
     {
@@ -4416,13 +4416,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "aa😱",
       "file": null,
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:53:39.218Z"
     },
     {
@@ -4433,13 +4433,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "😂",
       "file": null,
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:53:50.027Z"
     },
     {
@@ -4450,13 +4450,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰",
       "file": null,
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:55:33.542Z"
     },
     {
@@ -4467,13 +4467,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️",
       "file": null,
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:55:44.351Z"
     },
     {
@@ -4484,13 +4484,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "🥰😭🥰🥰🥰🥰🥰🥰",
       "file": null,
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:55:51.443Z"
     },
     {
@@ -4501,13 +4501,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "😊😊😊😊",
       "file": null,
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:56:18.188Z"
     },
     {
@@ -4518,13 +4518,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉",
       "file": null,
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:56:29.782Z"
     },
     {
@@ -4535,13 +4535,13 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "text": "🎉🎉🎉🎉🎉🎉🎉🎉🎉",
       "file": null,
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:56:32.305Z"
     },
     {
@@ -4559,13 +4559,13 @@
         "size": 3565260,
         "url": "/uploads/images/1779965903355-5b6d3d5c4e29.gif"
       },
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:58:23.383Z"
     },
     {
@@ -4583,13 +4583,13 @@
         "size": 217018,
         "url": "/uploads/images/1779965962882-e3a208b85a41.webp"
       },
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:59:22.889Z"
     },
     {
@@ -4607,13 +4607,13 @@
         "size": 98864,
         "url": "/uploads/images/1779965971177-9cc0a7408b25.webp"
       },
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T10:59:31.183Z"
     },
     {
@@ -4631,13 +4631,13 @@
         "size": 44857,
         "url": "/uploads/documents/1779966023275-da4214df32ab.pdf"
       },
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T11:00:23.284Z"
     },
     {
@@ -4655,13 +4655,13 @@
         "size": 194370,
         "url": "/uploads/images/1779966036472-ef32a4861342.webp"
       },
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T11:00:36.477Z"
     },
     {
@@ -4679,13 +4679,13 @@
         "size": 611780,
         "url": "/uploads/documents/1779966047671-499b7223465a.docx"
       },
-      "status": "sent",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T11:00:47.679Z"
     },
     {
@@ -4961,7 +4961,12 @@
       "file": null,
       "backgroundColor": "#4b2e83",
       "textColor": "#ffffff",
-      "viewers": [],
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "viewedAt": "2026-05-31T09:18:11.578Z"
+        }
+      ],
       "createdAt": "2026-05-30T11:00:00.000Z",
       "expiresAt": "2026-05-31T11:00:00.000Z"
     },

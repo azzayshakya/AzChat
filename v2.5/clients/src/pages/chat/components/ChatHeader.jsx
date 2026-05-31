@@ -1,6 +1,7 @@
 import React from "react";
 import { Avatar, Badge } from "antd";
 import UserAvatar from "../commonComponents/UserAvatar";
+import { getProfileImage } from "../../../utils/getProfileImage";
 
 export default function ChatHeader({ contact, isOnline }) {
   return (
@@ -11,7 +12,11 @@ export default function ChatHeader({ contact, isOnline }) {
         display: "flex",
         alignItems: "center",
         gap: 12,
-        background: "var(--dark-bg-light)",
+        // background: "var(--dark-bg-light)",
+        // border: "2px red solid",
+        background: "rgba(102,126,234,0.14)",
+        margin: "12px 15px 3px",
+        borderRadius: "11px",
       }}
     >
       <UserAvatar
@@ -19,15 +24,7 @@ export default function ChatHeader({ contact, isOnline }) {
         showOnlineStatus={true}
         name={contact.username}
         size={40}
-        image={
-          contact.id === "13e78680-65ca-4ed3-ab02-495ad60132a3"
-            ? "/default_female_profile_pic.jpg"
-            : contact.id === "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d"
-              ? "/default_female_profile_pic.jpg"
-              : contact.role === "admin"
-                ? "/developer_profile.jpg"
-                : "/default_male_profile_pic.jpg"
-        }
+        image={getProfileImage(contact)}
       />
 
       <div>

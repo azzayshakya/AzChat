@@ -19,7 +19,9 @@ export default function GroupHeader({ group, currentUserId, onGroupUpdated }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          background: "#10101e",
+          background: "rgba(102,126,234,0.14)",
+          margin: "12px 15px 3px",
+          borderRadius: "11px",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

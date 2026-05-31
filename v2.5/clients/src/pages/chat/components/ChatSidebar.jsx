@@ -48,7 +48,6 @@ export default function ChatSidebar({
   const [tab, setTab] = useState("chats");
   const [showCreateGroup, setShowCreateGroup] = useState(false);
 
-  // ── Status hook ──────────────────────────────────────────────────────────
   const {
     statuses,
     myStatuses,

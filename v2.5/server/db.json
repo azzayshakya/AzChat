@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-05-30T11:54:08.490Z",
+      "lastSeen": "2026-05-31T03:49:49.999Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -4936,5 +4936,190 @@
       "joinedAt": "2026-05-22T15:20:26.053Z"
     }
   ],
-  "userQueries": []
+  "userQueries": [],
+  "statuses": [
+    {
+      "id": "st-001",
+      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "Working on the new status feature 🚀",
+      "file": null,
+      "backgroundColor": "#1a1540",
+      "textColor": "#ffffff",
+      "viewers": [
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "viewedAt": "2026-05-31T03:49:37.042Z"
+        }
+      ],
+      "createdAt": "2026-05-30T10:15:00.000Z",
+      "expiresAt": "2026-05-31T10:15:00.000Z"
+    },
+    {
+      "id": "st-002",
+      "userId": "653c1ea1-acb8-46b3-918e-8416c8936584",
+      "text": "Coffee ☕ and code.",
+      "file": null,
+      "backgroundColor": "#4b2e83",
+      "textColor": "#ffffff",
+      "viewers": [],
+      "createdAt": "2026-05-30T11:00:00.000Z",
+      "expiresAt": "2026-05-31T11:00:00.000Z"
+    },
+    {
+      "id": "st-003",
+      "userId": "71057af1-9259-42be-b8fb-01272fc32c81",
+      "text": "The world cannot be changed with pretty words alone.",
+      "file": null,
+      "backgroundColor": "#222831",
+      "textColor": "#eeeeee",
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "viewedAt": "2026-05-31T03:39:56.283Z"
+        }
+      ],
+      "createdAt": "2026-05-30T12:05:00.000Z",
+      "expiresAt": "2026-05-31T12:05:00.000Z"
+    },
+    {
+      "id": "st-004",
+      "userId": "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d",
+      "text": "Lunch break 🍔",
+      "file": null,
+      "backgroundColor": "#f39c12",
+      "textColor": "#ffffff",
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "viewedAt": "2026-05-31T03:35:24.142Z"
+        }
+      ],
+      "createdAt": "2026-05-30T12:40:00.000Z",
+      "expiresAt": "2026-05-31T12:40:00.000Z"
+    },
+    {
+      "id": "st-005",
+      "userId": "a696dacd-7dec-4a44-a48a-2349da7094da",
+      "text": "Beautiful weather today 🌤️",
+      "file": null,
+      "backgroundColor": "#3498db",
+      "textColor": "#ffffff",
+      "viewers": [],
+      "createdAt": "2026-05-30T13:15:00.000Z",
+      "expiresAt": "2026-05-31T13:15:00.000Z"
+    },
+    {
+      "id": "st-006",
+      "userId": "3f761a1d-112d-404f-be08-2351c1e08596",
+      "text": "Debugging is like being a detective in a crime movie.",
+      "file": null,
+      "backgroundColor": "#2c3e50",
+      "textColor": "#ecf0f1",
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "viewedAt": "2026-05-31T03:49:57.281Z"
+        }
+      ],
+      "createdAt": "2026-05-30T14:00:00.000Z",
+      "expiresAt": "2026-05-31T14:00:00.000Z"
+    },
+    {
+      "id": "st-007",
+      "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "Weekend vibes 😎",
+      "file": null,
+      "backgroundColor": "#16a085",
+      "textColor": "#ffffff",
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "viewedAt": "2026-05-31T03:35:13.383Z"
+        }
+      ],
+      "createdAt": "2026-05-30T15:20:00.000Z",
+      "expiresAt": "2026-05-31T15:20:00.000Z"
+    },
+    {
+      "id": "st-008",
+      "userId": "94fed814-ac87-47ba-82af-4e5add5e005e",
+      "text": "Having an old friend for dinner tonight.",
+      "file": null,
+      "backgroundColor": "#8e44ad",
+      "textColor": "#ffffff",
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "viewedAt": "2026-05-31T03:35:09.777Z"
+        }
+      ],
+      "createdAt": "2026-05-30T16:10:00.000Z",
+      "expiresAt": "2026-05-31T16:10:00.000Z"
+    },
+    {
+      "id": "st-009",
+      "userId": "0918d7df-234a-4147-8f4c-ddf2f0fa4041",
+      "text": "Learning React hooks today 📚",
+      "file": null,
+      "backgroundColor": "#27ae60",
+      "textColor": "#ffffff",
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "viewedAt": "2026-05-31T03:35:07.253Z"
+        }
+      ],
+      "createdAt": "2026-05-30T17:00:00.000Z",
+      "expiresAt": "2026-05-31T17:00:00.000Z"
+    },
+    {
+      "id": "st-010",
+      "userId": "697cebb8-16be-4978-8350-6b7afb186e9c",
+      "text": "Deploying to production... wish me luck 🤞",
+      "file": null,
+      "backgroundColor": "#c0392b",
+      "textColor": "#ffffff",
+      "viewers": [],
+      "createdAt": "2026-05-30T18:30:00.000Z",
+      "expiresAt": "2026-05-31T18:30:00.000Z"
+    },
+    {
+      "id": "a822e47e-0cfc-4b80-b89f-9db8cc10c578",
+      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "yoooo new statys is heree",
+      "file": null,
+      "backgroundColor": "#0d1f3c",
+      "textColor": "#7aaee0",
+      "viewers": [
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "viewedAt": "2026-05-31T03:49:39.617Z"
+        }
+      ],
+      "createdAt": "2026-05-31T03:48:27.947Z",
+      "expiresAt": "2026-06-01T03:48:27.911Z"
+    },
+    {
+      "id": "0436df51-7324-4426-a17d-ec827697e2a9",
+      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "suiiiii",
+      "file": {
+        "name": "default_male_profile_pic.jpg",
+        "mimetype": "image/webp",
+        "category": "image",
+        "size": 217018,
+        "url": "/uploads/images/1780199332493-7c4f18927246.webp"
+      },
+      "backgroundColor": "#1a1540",
+      "textColor": "#a78bfa",
+      "viewers": [
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "viewedAt": "2026-05-31T03:49:40.846Z"
+        }
+      ],
+      "createdAt": "2026-05-31T03:48:52.500Z",
+      "expiresAt": "2026-06-01T03:48:52.500Z"
+    }
+  ]
 }

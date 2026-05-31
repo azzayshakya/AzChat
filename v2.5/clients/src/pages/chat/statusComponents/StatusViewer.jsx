@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Input, Spin, Modal, message as antMsg } from "antd";
+import { Spin, Modal, message as antMsg } from "antd";
 import {
   CloseOutlined,
   LeftOutlined,
@@ -7,15 +7,10 @@ import {
   DeleteOutlined,
   SendOutlined,
   EyeOutlined,
-  LockOutlined,
   GlobalOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import {
-  timeAgo,
-  timeLeft,
-  STATUS_CONFIG,
-} from "../statusComponents/statusApi";
+import { timeAgo, timeLeft, STATUS_CONFIG } from "./statusApi";
 
 const AUTO_ADVANCE_MS = 5000;
 
@@ -54,28 +49,27 @@ export default function StatusViewer({
 }) {
   const [idx, setIdx] = useState(startIndex);
   const [replyText, setReplyText] = useState("");
-  const [deleteConfirm, setDeleteConfirm] = useState(null); // statusId to delete
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [paused, setPaused] = useState(false);
   const timerRef = useRef(null);
   const progressRef = useRef(null);
   const inputRef = useRef(null);
-  const [paused, setPaused] = useState(false);
 
   const items = entry?.items ?? [];
   const item = items[idx];
-  const isMine = entry?.userId === currentUser?.id || entry?.isMine;
+  const isMine = entry?.isMine || entry?.userId === currentUser?.id;
   const isAdmin = entry?.isAdmin;
 
-  // Mark viewed
+  // Mark viewed on each slide change
   useEffect(() => {
-    if (item?.id) {
-      setLoading(true);
-      const t = setTimeout(() => setLoading(false), 350);
-      onView?.(item.id, entry.userId);
-      return () => clearTimeout(t);
-    }
-  }, [item?.id]);
+    if (!item?.id) return;
+    setLoading(true);
+    const t = setTimeout(() => setLoading(false), 350);
+    onView?.(item.id, entry.userId);
+    return () => clearTimeout(t);
+  }, [item?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-advance + progress bar
   useEffect(() => {
@@ -99,7 +93,7 @@ export default function StatusViewer({
       clearInterval(progressRef.current);
       clearTimeout(timerRef.current);
     };
-  }, [idx, paused, loading, items.length]);
+  }, [idx, paused, loading, items.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const goNext = useCallback(() => {
     if (idx < items.length - 1) setIdx((i) => i + 1);
@@ -142,13 +136,15 @@ export default function StatusViewer({
 
   if (!item) return null;
 
+  // privacy is a frontend-only field (backend doesn't persist it yet)
+  const privacy = item.privacy ?? "public";
   const privacyIcon =
-    item.privacy === "public" ? (
+    privacy === "public" ? (
       <GlobalOutlined style={{ fontSize: 10 }} />
     ) : (
       <UserOutlined style={{ fontSize: 10 }} />
     );
-  const privacyLabel = item.privacy === "public" ? "Public" : "Friends";
+  const privacyLabel = privacy === "public" ? "Public" : "Friends";
 
   return (
     <div
@@ -160,7 +156,7 @@ export default function StatusViewer({
       onMouseLeave={() => setPaused(false)}
     >
       <div style={modal}>
-        {/* ── Progress bars ─────────────────────────────────────────────── */}
+        {/* ── Progress bars ─────────────────────────────────────────── */}
         <div style={{ display: "flex", gap: 4, padding: "12px 14px 0" }}>
           {items.map((it, i) => (
             <div
@@ -180,7 +176,6 @@ export default function StatusViewer({
                   background: isAdmin
                     ? "var(--accent-light)"
                     : "var(--primary-color)",
-                  transition: i === idx ? "none" : "none",
                   borderRadius: 2,
                 }}
               />
@@ -188,7 +183,7 @@ export default function StatusViewer({
           ))}
         </div>
 
-        {/* ── Top bar: user info + close ──────────────────────────────── */}
+        {/* ── Header ───────────────────────────────────────────────── */}
         <div
           style={{
             display: "flex",
@@ -198,7 +193,6 @@ export default function StatusViewer({
             borderBottom: "1px solid rgba(255,255,255,0.06)",
           }}
         >
-          {/* Avatar */}
           <div
             style={{
               width: 40,
@@ -227,7 +221,6 @@ export default function StatusViewer({
             )}
           </div>
 
-          {/* Name + meta */}
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
@@ -258,7 +251,6 @@ export default function StatusViewer({
                   </span>
                 )}
               </span>
-              {/* Privacy badge */}
               <span
                 style={{
                   display: "inline-flex",
@@ -266,16 +258,16 @@ export default function StatusViewer({
                   gap: 3,
                   fontSize: 10,
                   background:
-                    item.privacy === "public"
+                    privacy === "public"
                       ? "rgba(102,126,234,0.18)"
                       : "rgba(167,139,250,0.18)",
                   color:
-                    item.privacy === "public"
+                    privacy === "public"
                       ? "var(--primary-color)"
                       : "var(--accent-light)",
                   padding: "2px 6px",
                   borderRadius: 10,
-                  border: `1px solid ${item.privacy === "public" ? "rgba(102,126,234,0.3)" : "rgba(167,139,250,0.3)"}`,
+                  border: `1px solid ${privacy === "public" ? "rgba(102,126,234,0.3)" : "rgba(167,139,250,0.3)"}`,
                 }}
               >
                 {privacyIcon} {privacyLabel}
@@ -298,13 +290,13 @@ export default function StatusViewer({
               </span>
               <span style={{ fontSize: 10, color: "var(--text-dim)" }}>·</span>
               <EyeOutlined style={{ fontSize: 10, color: "var(--text-dim)" }} />
+              {/* views is pre-computed in transformItem from viewers.length */}
               <span style={{ fontSize: 10, color: "var(--text-dim)" }}>
                 {item.views ?? 0}
               </span>
             </div>
           </div>
 
-          {/* Delete btn (owner only) */}
           {isMine && !isAdmin && (
             <button
               onClick={() => setDeleteConfirm(item.id)}
@@ -320,13 +312,12 @@ export default function StatusViewer({
             </button>
           )}
 
-          {/* Close */}
           <button onClick={onClose} style={iconBtn} title="Close">
             <CloseOutlined style={{ fontSize: 14, color: "var(--text-dim)" }} />
           </button>
         </div>
 
-        {/* ── Status content ─────────────────────────────────────────── */}
+        {/* ── Status content ───────────────────────────────────────── */}
         <div
           style={{
             flex: 1,
@@ -345,7 +336,7 @@ export default function StatusViewer({
             <Spin size="large" />
           ) : (
             <>
-              {/* Image */}
+              {/* imageUrl is set by transformItem from file.url */}
               {item.imageUrl && (
                 <img
                   src={item.imageUrl}
@@ -360,7 +351,6 @@ export default function StatusViewer({
                   }}
                 />
               )}
-              {/* Text overlay */}
               {item.text && (
                 <div
                   style={{
@@ -389,7 +379,6 @@ export default function StatusViewer({
             </>
           )}
 
-          {/* Nav zones */}
           {idx > 0 && (
             <button
               onClick={goPrev}
@@ -410,7 +399,7 @@ export default function StatusViewer({
           )}
         </div>
 
-        {/* ── Replies section ────────────────────────────────────────── */}
+        {/* ── Replies ──────────────────────────────────────────────── */}
         {item.replies?.length > 0 && (
           <div
             style={{
@@ -495,8 +484,8 @@ export default function StatusViewer({
           </div>
         )}
 
-        {/* ── Reply input (hide for own statuses unless admin welcome) ── */}
-        {(!isMine || isAdmin) && (
+        {/* ── Reply input (hidden for own statuses) ─────────────────── */}
+        {!isMine && (
           <div
             style={{
               display: "flex",
@@ -513,7 +502,7 @@ export default function StatusViewer({
               }
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleReply();
-                e.stopPropagation(); // don't trigger nav
+                e.stopPropagation();
               }}
               placeholder="Reply to this status…"
               style={{
@@ -557,7 +546,7 @@ export default function StatusViewer({
         )}
       </div>
 
-      {/* ── Delete confirmation modal ─────────────────────────────── */}
+      {/* ── Delete confirmation ───────────────────────────────────── */}
       <Modal
         open={!!deleteConfirm}
         title={
@@ -589,7 +578,6 @@ export default function StatusViewer({
   );
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
 const overlay = {
   position: "fixed",
   inset: 0,
@@ -600,7 +588,6 @@ const overlay = {
   justifyContent: "center",
   backdropFilter: "blur(6px)",
 };
-
 const modal = {
   width: 380,
   maxWidth: "95vw",
@@ -609,12 +596,10 @@ const modal = {
   border: "1px solid rgba(255,255,255,0.08)",
   display: "flex",
   flexDirection: "column",
-  gap: 0,
   overflow: "hidden",
   boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
   maxHeight: "90vh",
 };
-
 const iconBtn = {
   width: 30,
   height: 30,
@@ -627,7 +612,6 @@ const iconBtn = {
   justifyContent: "center",
   flexShrink: 0,
 };
-
 const navBtn = {
   position: "absolute",
   top: "50%",

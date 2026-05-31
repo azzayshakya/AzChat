@@ -1,7 +1,6 @@
 /**
  * useStatus.js
  * Central hook for all status-related state and actions.
- * Used by StatusBar, StatusViewer, and StatusUploader.
  */
 
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -13,39 +12,44 @@ import {
   replyToStatus,
   markStatusViewed,
   STATUS_CONFIG,
-} from "../statusComponents/statusApi";
+} from "./statusApi";
 
 export function useStatus(currentUser) {
-  const [statuses, setStatuses] = useState([]); // all visible statuses
-  const [myStatuses, setMyStatuses] = useState([]); // current user's own
+  const [statuses, setStatuses] = useState([]);
+  const [myStatuses, setMyStatuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
-  const [deleting, setDeleting] = useState(null); // statusId being deleted
+  const [deleting, setDeleting] = useState(null);
   const [replying, setReplying] = useState(false);
   const pollRef = useRef(null);
 
-  // ── Load ────────────────────────────────────────────────────────────────────
+  // ── Load ──────────────────────────────────────────────────────────────────
   const load = useCallback(async () => {
     try {
+      // fetchStatuses needs currentUser.id to flag isMine on each entry
       const [all, mine] = await Promise.all([
-        fetchStatuses(),
+        fetchStatuses(currentUser?.id),
         fetchMyStatuses(),
       ]);
+      // DEBUG — remove before production
+      console.log("[useStatus] feed:", all);
+      console.log("[useStatus] mine:", mine);
       setStatuses(all);
       setMyStatuses(mine);
+    } catch (err) {
+      console.error("[useStatus] load error:", err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentUser?.id]);
 
   useEffect(() => {
     load();
-    // Poll for new statuses
     pollRef.current = setInterval(load, STATUS_CONFIG.pollMs);
     return () => clearInterval(pollRef.current);
   }, [load]);
 
-  // ── Post ────────────────────────────────────────────────────────────────────
+  // ── Post ──────────────────────────────────────────────────────────────────
   const handlePost = useCallback(
     async (formData) => {
       if (myStatuses.length >= STATUS_CONFIG.maxPerUser) {
@@ -56,27 +60,29 @@ export function useStatus(currentUser) {
       setPosting(true);
       try {
         const newItem = await postStatus(formData);
-        setMyStatuses((prev) => [newItem, ...prev]);
-        // Reflect in statuses list under the current user's entry
+        setMyStatuses((prev) => [...prev, newItem]);
+
+        // Reflect in the feed under the current user's group entry
         setStatuses((prev) => {
           const existing = prev.find((s) => s.userId === currentUser?.id);
           if (existing) {
             return prev.map((s) =>
               s.userId === currentUser.id
-                ? { ...s, items: [newItem, ...s.items], hasUnread: false }
+                ? { ...s, items: [...s.items, newItem] }
                 : s
             );
           }
+          // First status from this user — create their feed entry
           return [
             {
               id: currentUser.id,
               userId: currentUser.id,
               username: currentUser.username,
-              role: currentUser.role,
               avatar: null,
-              items: [newItem],
               hasUnread: false,
+              isMine: true,
               isAdmin: currentUser.role === "admin",
+              items: [newItem],
             },
             ...prev,
           ];
@@ -86,10 +92,10 @@ export function useStatus(currentUser) {
         setPosting(false);
       }
     },
-    [myStatuses, currentUser]
+    [myStatuses.length, currentUser]
   );
 
-  // ── Delete ───────────────────────────────────────────────────────────────────
+  // ── Delete ────────────────────────────────────────────────────────────────
   const handleDelete = useCallback(async (statusId) => {
     setDeleting(statusId);
     try {
@@ -101,22 +107,23 @@ export function useStatus(currentUser) {
             ...entry,
             items: entry.items.filter((i) => i.id !== statusId),
           }))
-          .filter((entry) => entry.items.length > 0 || entry.isAdmin)
+          .filter((entry) => entry.items.length > 0 || entry.isMine)
       );
     } finally {
       setDeleting(null);
     }
   }, []);
 
-  // ── Reply ────────────────────────────────────────────────────────────────────
+  // ── Reply ─────────────────────────────────────────────────────────────────
   const handleReply = useCallback(async (statusId, text) => {
     setReplying(true);
     try {
       const reply = await replyToStatus(statusId, text);
-      // Append reply to the right status item
       const appendReply = (items) =>
         items.map((i) =>
-          i.id === statusId ? { ...i, replies: [...i.replies, reply] } : i
+          i.id === statusId
+            ? { ...i, replies: [...(i.replies ?? []), reply] }
+            : i
         );
       setStatuses((prev) =>
         prev.map((entry) => ({ ...entry, items: appendReply(entry.items) }))
@@ -128,21 +135,26 @@ export function useStatus(currentUser) {
     }
   }, []);
 
-  // ── Mark viewed ──────────────────────────────────────────────────────────────
+  // ── Mark viewed ───────────────────────────────────────────────────────────
   const handleView = useCallback(async (statusId, userId) => {
-    await markStatusViewed(statusId);
+    try {
+      await markStatusViewed(statusId);
+    } catch (_) {
+      /* non-blocking */
+    }
+
     setStatuses((prev) =>
-      prev.map((entry) =>
-        entry.userId === userId
-          ? {
-              ...entry,
-              hasUnread: false,
-              items: entry.items.map((i) =>
-                i.id === statusId ? { ...i, views: (i.views ?? 0) + 1 } : i
-              ),
-            }
-          : entry
-      )
+      prev.map((entry) => {
+        if (entry.userId !== userId) return entry;
+        const updatedItems = entry.items.map((i) =>
+          i.id === statusId
+            ? { ...i, seen: true, views: (i.views ?? 0) + 1 }
+            : i
+        );
+        // Recalculate hasUnread — false only when every item is seen
+        const hasUnread = updatedItems.some((i) => !i.seen);
+        return { ...entry, items: updatedItems, hasUnread };
+      })
     );
   }, []);
 

@@ -119,6 +119,7 @@ export default function ChatSidebar({
         flexDirection: "column",
         background: "#10101e",
         overflow: "hidden",
+        minWidth: 0,
       }}
     >
       <div

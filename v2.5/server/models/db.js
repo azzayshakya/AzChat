@@ -9,6 +9,7 @@ const DEFAULT_DATA = {
   groups: [],
   groupMembers: [],
   userQueries: [],
+  statuses: [],
 };
 
 function readDB() {
@@ -27,6 +28,7 @@ function readDB() {
       groups: db.groups || [],
       groupMembers: db.groupMembers || [],
       userQueries: db.userQueries || [],
+      statuses: db.statuses || [],
     };
   } catch (err) {
     console.error('DB read error, resetting:', err.message);

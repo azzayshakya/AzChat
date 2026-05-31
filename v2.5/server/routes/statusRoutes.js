@@ -32,9 +32,9 @@ router.post(
 // ─── Interactions ─────────────────────────────────────────────────────────────
 router.post('/statuses/:statusId/view', viewStatus); // POST /api/statuses/:statusId/view
 router.get('/statuses/:statusId/viewers', getStatusViewers); // GET  /api/statuses/:statusId/viewers
+router.delete('/statuses/cleanup', cleanupExpiredStatuses); // DELETE /api/statuses/cleanup
 router.delete('/statuses/:statusId', deleteStatus); // DELETE /api/statuses/:statusId
 
 // ─── Internal / admin cleanup ─────────────────────────────────────────────────
-router.delete('/statuses/cleanup', cleanupExpiredStatuses); // DELETE /api/statuses/cleanup
 
 module.exports = router;

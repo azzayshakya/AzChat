@@ -39,6 +39,14 @@ app.use('/api', groupRoutes);
 app.use('/api', statusRoutes);
 app.use('/api/admin', adminRoutes(getOnlineUsers));
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: 'Chat Backend API',
+    version: process.env.npm_package_version || '1.0.0',
+    status: 'running',
+  });
+});
 // ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 

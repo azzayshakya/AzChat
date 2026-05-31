@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { Avatar, Tooltip, Spin } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { Spin } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import StatusViewer from "./StatusViewer.jsx";
 import StatusUploader from "./StatusUploader.jsx";
@@ -22,32 +22,47 @@ export default function StatusBar({
   const scrollRef = useRef(null);
   const [viewing, setViewing] = useState(null);
   const [showUploader, setShowUploader] = useState(false);
-  const myStatus =
+
+  // Build a synthetic "My Status" entry if the user has posted at least one
+  const myEntry =
     myStatuses.length > 0
       ? {
           id: "mine",
           userId: currentUser?.id,
-          username: "My Status",
-          role: currentUser?.role,
+          username: currentUser?.username ?? "My Status",
           avatar:
             currentUser?.role === "admin" ? "/developer_profile.jpg" : null,
-          items: myStatuses,
-          hasUnread: false,
+          hasUnread: false, // own statuses never show the unread ring
           isMine: true,
           isAdmin: currentUser?.role === "admin",
+          items: myStatuses,
         }
       : null;
 
-  const allStatus = myStatus ? [myStatus, ...statuses] : statuses;
+  // Own entry goes first; exclude the current user from the feed list to avoid duplication
+  const feedWithoutMe = statuses.filter((s) => s.userId !== currentUser?.id);
+  const allEntries = myEntry ? [myEntry, ...feedWithoutMe] : feedWithoutMe;
+
   const handleAvatarClick = (entry, startIndex = 0) => {
     setViewing({ entry, startIndex });
   };
-  console.log("azz bab", allStatus);
+
   const handleUploaderPost = async (formData) => {
     await onPost(formData);
     setShowUploader(false);
   };
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
 
+    const onWheel = (e) => {
+      e.preventDefault();
+      el.scrollLeft += e.deltaY + e.deltaX;
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
   return (
     <>
       <div
@@ -55,7 +70,6 @@ export default function StatusBar({
           borderBottom: "1px solid rgba(255,255,255,0.05)",
           paddingBottom: 10,
           paddingTop: 10,
-          border: "2px red solid",
         }}
       >
         {/* Section label */}
@@ -77,16 +91,22 @@ export default function StatusBar({
             <Spin size="small" />
           </div>
         ) : (
+          // AFTER
           <div
             ref={scrollRef}
             style={{
               display: "flex",
+              flexDirection: "row",
               gap: 12,
               overflowX: "auto",
-              padding: "0 14px",
+              overflowY: "hidden",
+              padding: "4px 14px 8px",
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               alignItems: "flex-start",
+              width: "100%",
+              boxSizing: "border-box",
+              cursor: "grab", // visual hint it's scrollable
             }}
             className="status-scroll"
           >
@@ -113,7 +133,6 @@ export default function StatusBar({
                   alignItems: "center",
                   justifyContent: "center",
                   transition: "border-color 0.2s",
-                  position: "relative",
                 }}
                 className="status-add-btn"
               >
@@ -136,11 +155,13 @@ export default function StatusBar({
               </span>
             </div>
 
-            {allStatus.map((status) => {
-              const hasUnread = status.hasUnread;
-              const isMine = status.isMine;
-              const isAdmin = status.isAdmin;
+            {allEntries.map((entry) => {
+              const { hasUnread, isMine, isAdmin } = entry;
 
+              // Ring priority:
+              // 1. Admin → brand gradient ring (always)
+              // 2. hasUnread=true (someone else's unseen status) → primary color ring
+              // 3. isMine or all seen → subtle gray ring
               const ringStyle = isAdmin
                 ? {
                     background: "var(--brand-gradient)",
@@ -149,7 +170,7 @@ export default function StatusBar({
                     boxShadow:
                       "0 0 0 1px var(--dark-bg-light), 0 0 8px #764ba244",
                   }
-                : hasUnread
+                : hasUnread && !isMine
                   ? {
                       background: "var(--primary-color)",
                       borderRadius: "50%",
@@ -165,8 +186,8 @@ export default function StatusBar({
 
               return (
                 <div
-                  key={status.id}
-                  onClick={() => handleAvatarClick(status, 0)}
+                  key={entry.id}
+                  onClick={() => handleAvatarClick(entry, 0)}
                   style={{
                     display: "flex",
                     flexDirection: "column",
@@ -174,17 +195,14 @@ export default function StatusBar({
                     gap: 5,
                     cursor: "pointer",
                     flexShrink: 0,
-                    border: "2px red solid",
                   }}
                 >
-                  <div style={ringStyle}>
+                  <div style={{ ...ringStyle, flexShrink: 0 }}>
                     <UserAvatar
-                      image={getProfileImage(status)}
-                      name={isAdmin ? "AZ Chat" : status.username}
+                      image={getProfileImage(entry)}
+                      name={isAdmin ? "AZ Chat" : entry.username}
                       size={44}
-                      avatarStyle={{
-                        border: "2px solid var(--dark-bg-light)",
-                      }}
+                      avatarStyle={{ border: "2px solid var(--dark-bg-light)" }}
                     />
                   </div>
 
@@ -199,9 +217,8 @@ export default function StatusBar({
                     <span
                       style={{
                         fontSize: 10,
-                        // className="",
                         color: isAdmin
-                          ? "red"
+                          ? "var(--accent-light)"
                           : isMine
                             ? "var(--text-highlight)"
                             : hasUnread
@@ -212,10 +229,10 @@ export default function StatusBar({
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        fontWeight: hasUnread ? 600 : 400,
+                        fontWeight: hasUnread && !isMine ? 600 : 400,
                       }}
                     >
-                      {isMine ? "My Status" : status.username}
+                      {isMine ? "My Status" : entry.username}
                     </span>
                     <span
                       style={{
@@ -228,9 +245,9 @@ export default function StatusBar({
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {status.items.length > 1
-                        ? `${status.items.length} updates`
-                        : status.items.length === 1
+                      {entry.items.length > 1
+                        ? `${entry.items.length} updates`
+                        : entry.items.length === 1
                           ? "1 update"
                           : ""}
                     </span>
@@ -242,7 +259,6 @@ export default function StatusBar({
         )}
       </div>
 
-      {/* Status Viewer Modal */}
       {viewing && (
         <StatusViewer
           entry={viewing.entry}
@@ -257,7 +273,6 @@ export default function StatusBar({
         />
       )}
 
-      {/* Status Uploader Modal */}
       {showUploader && (
         <StatusUploader
           onClose={() => setShowUploader(false)}
@@ -268,9 +283,11 @@ export default function StatusBar({
       )}
 
       <style>{`
-        .status-scroll::-webkit-scrollbar { display: none; }
-        .status-add-btn:hover { border-color: var(--primary-color) !important; }
-      `}</style>
+  .status-scroll::-webkit-scrollbar { display: none; }
+  .status-scroll { -webkit-overflow-scrolling: touch; }
+  .status-scroll:active { cursor: grabbing; }
+  .status-add-btn:hover { border-color: var(--primary-color) !important; }
+`}</style>
     </>
   );
 }

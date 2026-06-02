@@ -1,0 +1,14 @@
+.ant-input::placeholder {
+  color: var(--text-highlight) !important;
+  opacity: 1;
+}
+.icon_color_light .anticon {
+  color: var(--text-highlight) !important;
+  opacity: 1;
+}
+.search-input input::placeholder {
+  color: var(--text-highlight) !important;
+}
+.anticon-close-circle {
+  color: var(--text-highlight) !important;
+}

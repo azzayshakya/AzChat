@@ -1,0 +1,29 @@
+/* ── Scrollbar: Firefox ── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(102, 126, 234, 0.45) transparent;
+}
+
+/* ── Scrollbar: Chrome / Edge / Safari ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 4px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.45);
+  border-radius: 100px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 139, 250, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

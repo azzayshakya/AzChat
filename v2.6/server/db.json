@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-06-02T17:10:31.078Z",
+      "lastSeen": "2026-06-02T19:00:38.915Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -74,7 +74,7 @@
       "passwordHash": "$2a$10$0nonjyT2wpfAc6L3pWybxORd9UCfOpShMW0LE0SphkkrLg3KVIzR.",
       "role": "user",
       "isOnline": false,
-      "lastSeen": "2026-05-31T08:49:19.750Z",
+      "lastSeen": "2026-06-02T19:13:37.669Z",
       "createdAt": "2026-05-21T06:18:08.444Z"
     },
     {
@@ -5017,6 +5017,132 @@
       "deletedForUsers": [],
       "seenAt": null,
       "createdAt": "2026-06-02T16:12:11.576Z"
+    },
+    {
+      "id": "60fc4ff8-cb61-4330-a6cb-844d4c911fc7",
+      "chatId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "chatType": "group",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": null,
+      "groupId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "text": "gifs msg should have download",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-02T19:03:35.319Z"
+    },
+    {
+      "id": "fe33f077-f389-4162-b0e6-c522510af95f",
+      "chatId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "chatType": "group",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": null,
+      "groupId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "text": "seen msg icon should be more redable ,use react icons if not in the antd",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-02T19:03:56.083Z"
+    },
+    {
+      "id": "f7e65837-c7a6-49c9-9e67-4c98074e7de5",
+      "chatId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "chatType": "group",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": null,
+      "groupId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "text": ", in the direct chat show the group msg too",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-02T19:04:07.821Z"
+    },
+    {
+      "id": "62c514e0-9f30-4c7c-984f-2317597235d9",
+      "chatId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "chatType": "group",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": null,
+      "groupId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "text": "status shold be scroll with mouse wheel",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-02T19:04:33.647Z"
+    },
+    {
+      "id": "663216b2-96d0-45c1-aca5-de4fc6eb9ea2",
+      "chatId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "chatType": "group",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": null,
+      "groupId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "text": "in chats and groups tb , if new msg there should be a bubble to show new msg numbers",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-02T19:05:05.183Z"
+    },
+    {
+      "id": "298ea543-551d-43fe-80af-1bc8a61629b1",
+      "chatId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "chatType": "group",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": null,
+      "groupId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "text": "chat delete funcoinlitu shuld be working",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-02T19:05:24.636Z"
+    },
+    {
+      "id": "ff7fc49f-d135-478c-a853-40dc64a6cfe2",
+      "chatId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "chatType": "group",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": null,
+      "groupId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
+      "text": "group delete funcionlity shoild be there",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-02T19:05:52.251Z"
     }
   ],
   "groups": [
@@ -5332,7 +5458,12 @@
       "file": null,
       "backgroundColor": "#1a1540",
       "textColor": "#a78bfa",
-      "viewers": [],
+      "viewers": [
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "viewedAt": "2026-06-02T17:19:01.586Z"
+        }
+      ],
       "createdAt": "2026-06-02T11:59:56.150Z",
       "expiresAt": "2026-06-03T11:59:56.150Z"
     },
@@ -5343,9 +5474,46 @@
       "file": null,
       "backgroundColor": "#38192c",
       "textColor": "#d07099",
-      "viewers": [],
+      "viewers": [
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "viewedAt": "2026-06-02T17:19:57.689Z"
+        }
+      ],
       "createdAt": "2026-06-02T16:08:32.844Z",
       "expiresAt": "2026-06-03T16:08:32.820Z"
+    },
+    {
+      "id": "1f81a8ab-d9f8-4a87-92bf-45a847b565da",
+      "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "status 1",
+      "file": null,
+      "backgroundColor": "#1a1540",
+      "textColor": "#a78bfa",
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "viewedAt": "2026-06-02T17:20:39.420Z"
+        }
+      ],
+      "createdAt": "2026-06-02T17:20:17.952Z",
+      "expiresAt": "2026-06-03T17:20:17.951Z"
+    },
+    {
+      "id": "65219cd4-153e-4cd1-b7ce-8bd44f6897c0",
+      "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "status 2",
+      "file": null,
+      "backgroundColor": "#1a1540",
+      "textColor": "#a78bfa",
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "viewedAt": "2026-06-02T17:21:15.002Z"
+        }
+      ],
+      "createdAt": "2026-06-02T17:20:24.486Z",
+      "expiresAt": "2026-06-03T17:20:24.486Z"
     }
   ]
 }

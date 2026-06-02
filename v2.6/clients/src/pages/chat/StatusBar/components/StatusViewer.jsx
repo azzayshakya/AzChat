@@ -11,30 +11,10 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { timeAgo, timeLeft, STATUS_CONFIG } from "../apiService/statusApi";
+import UserAvatar from "../../commonComponents/UserAvatar";
+import { getProfileImage } from "../../../../utils/getProfileImage";
 
 const AUTO_ADVANCE_MS = 5000;
-
-const AVATAR_COLORS = [
-  "#2e2860",
-  "#163a30",
-  "#3a1c1c",
-  "#162040",
-  "#38192c",
-  "#1a3020",
-  "#382610",
-];
-const colorFor = (id) =>
-  AVATAR_COLORS[
-    (id?.split("").reduce((a, c) => a + c.charCodeAt(0), 0) ?? 0) %
-      AVATAR_COLORS.length
-  ];
-const initials = (name) =>
-  name
-    ?.split(/[\s_]/)
-    .map((w) => w[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase() ?? "?";
 
 export default function StatusViewer({
   entry,
@@ -61,7 +41,7 @@ export default function StatusViewer({
   const item = items[idx];
   const isMine = entry?.isMine || entry?.userId === currentUser?.id;
   const isAdmin = entry?.isAdmin;
-
+  console.log("azx", entry);
   // Mark viewed on each slide change
   useEffect(() => {
     if (!item?.id) return;
@@ -193,33 +173,12 @@ export default function StatusViewer({
             borderBottom: "1px solid rgba(255,255,255,0.06)",
           }}
         >
-          <div
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: colorFor(entry.userId),
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 13,
-              fontWeight: 700,
-              color: "#fff",
-              overflow: "hidden",
-              flexShrink: 0,
-              border: isAdmin ? "2px solid var(--accent-light)" : "none",
-            }}
-          >
-            {entry.avatar ? (
-              <img
-                src={entry.avatar}
-                alt={entry.username}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            ) : (
-              initials(isAdmin ? "AZ Chat" : entry.username)
-            )}
-          </div>
+          <UserAvatar
+            image={getProfileImage(entry)}
+            name={entry.username}
+            size={44}
+            avatarStyle={{ border: "2px solid var(--dark-bg-light)" }}
+          />
 
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
@@ -297,7 +256,7 @@ export default function StatusViewer({
             </div>
           </div>
 
-          {isMine && !isAdmin && (
+          {isMine && (
             <button
               onClick={() => setDeleteConfirm(item.id)}
               disabled={deleting === item.id}
@@ -433,23 +392,12 @@ export default function StatusViewer({
                   alignItems: "flex-start",
                 }}
               >
-                <div
-                  style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: "50%",
-                    background: colorFor(r.userId),
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 9,
-                    fontWeight: 700,
-                    flexShrink: 0,
-                    color: "#fff",
-                  }}
-                >
-                  {initials(r.username)}
-                </div>
+                <UserAvatar
+                  image={getProfileImage(entry)}
+                  name={entry.username}
+                  size={44}
+                  avatarStyle={{ border: "2px solid var(--dark-bg-light)" }}
+                />
                 <div>
                   <span
                     style={{
@@ -485,7 +433,7 @@ export default function StatusViewer({
         )}
 
         {/* ── Reply input (hidden for own statuses) ─────────────────── */}
-        {!isMine && (
+        {/* {!isMine && (
           <div
             style={{
               display: "flex",
@@ -543,7 +491,7 @@ export default function StatusViewer({
               )}
             </button>
           </div>
-        )}
+        )} */}
       </div>
 
       {/* ── Delete confirmation ───────────────────────────────────── */}

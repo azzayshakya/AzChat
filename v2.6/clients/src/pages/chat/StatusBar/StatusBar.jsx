@@ -22,8 +22,6 @@ export default function StatusBar({
   const scrollRef = useRef(null);
   const [viewing, setViewing] = useState(null);
   const [showUploader, setShowUploader] = useState(false);
-
-  // Build a synthetic "My Status" entry if the user has posted at least one
   const myEntry =
     myStatuses.length > 0
       ? {
@@ -32,14 +30,13 @@ export default function StatusBar({
           username: currentUser?.username ?? "My Status",
           avatar:
             currentUser?.role === "admin" ? "/developer_profile.jpg" : null,
-          hasUnread: false, // own statuses never show the unread ring
+          hasUnread: false,
           isMine: true,
           isAdmin: currentUser?.role === "admin",
           items: myStatuses,
         }
       : null;
 
-  // Own entry goes first; exclude the current user from the feed list to avoid duplication
   const feedWithoutMe = statuses.filter((s) => s.userId !== currentUser?.id);
   const allEntries = myEntry ? [myEntry, ...feedWithoutMe] : feedWithoutMe;
 
@@ -68,11 +65,15 @@ export default function StatusBar({
       <div
         style={{
           borderBottom: "1px solid rgba(255,255,255,0.05)",
-          paddingBottom: 10,
+          // paddingBottom: 10,
           paddingTop: 10,
+          // margin: "10px",
+          border: "2px rgba(255,255,255,0.05) solid",
+          background: "rgba(102,126,234,0.14)",
+          margin: "12px 15px",
+          borderRadius: 11,
         }}
       >
-        {/* Section label */}
         <div
           style={{
             fontSize: 10,
@@ -91,7 +92,6 @@ export default function StatusBar({
             <Spin size="small" />
           </div>
         ) : (
-          // AFTER
           <div
             ref={scrollRef}
             style={{
@@ -106,11 +106,10 @@ export default function StatusBar({
               alignItems: "flex-start",
               width: "100%",
               boxSizing: "border-box",
-              cursor: "grab", // visual hint it's scrollable
+              cursor: "grab",
             }}
             className="status-scroll"
           >
-            {/* Add Status button (always first) */}
             <div
               onClick={() => setShowUploader(true)}
               style={{
@@ -200,7 +199,7 @@ export default function StatusBar({
                   <div style={{ ...ringStyle, flexShrink: 0 }}>
                     <UserAvatar
                       image={getProfileImage(entry)}
-                      name={isAdmin ? "AZ Chat" : entry.username}
+                      name={entry.username}
                       size={44}
                       avatarStyle={{ border: "2px solid var(--dark-bg-light)" }}
                     />

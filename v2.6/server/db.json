@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-06-02T16:08:39.953Z",
+      "lastSeen": "2026-06-02T17:10:31.078Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -4648,18 +4648,12 @@
       "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
       "groupId": null,
       "text": null,
-      "file": {
-        "name": "Biodata.png",
-        "mimetype": "image/webp",
-        "category": "image",
-        "size": 194370,
-        "url": "/uploads/images/1779966036472-ef32a4861342.webp"
-      },
+      "file": null,
       "status": "seen",
       "isRead": true,
       "editedAt": null,
-      "deletedAt": null,
-      "deletedFor": null,
+      "deletedAt": "2026-06-02T16:15:51.813Z",
+      "deletedFor": "everyone",
       "deletedForUsers": [],
       "seenAt": "2026-05-31T03:53:09.537Z",
       "createdAt": "2026-05-28T11:00:36.477Z"
@@ -5006,6 +5000,23 @@
       "deletedForUsers": [],
       "seenAt": null,
       "createdAt": "2026-06-02T12:49:50.166Z"
+    },
+    {
+      "id": "9cc50d9e-bcfa-425d-9581-f45e0e43a220",
+      "chatId": "3f761a1d-112d-404f-be08-2351c1e08596_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "3f761a1d-112d-404f-be08-2351c1e08596",
+      "text": "🥋🎮🎲",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-02T16:12:11.576Z"
     }
   ],
   "groups": [

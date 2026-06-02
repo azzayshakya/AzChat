@@ -41,7 +41,7 @@ export default defineConfig([
     },
 
     rules: {
-      "prettier/prettier": "warn",
+      // "prettier/prettier": "warn",
 
       "no-unused-vars": "off",
 

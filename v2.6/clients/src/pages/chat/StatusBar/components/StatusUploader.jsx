@@ -1,12 +1,3 @@
-/**
- * StatusUploader.jsx
- * Modal for creating a new status.
- * Supports: text only, image only, text + image.
- * Privacy: public | friends
- * Background color + text color pickers.
- * Respects VITE_STATUS_MAX_PER_USER, VITE_STATUS_MAX_TEXT_LEN, VITE_STATUS_MAX_IMAGE_MB
- */
-
 import React, { useState, useRef } from "react";
 import { Spin, message as antMsg } from "antd";
 import {

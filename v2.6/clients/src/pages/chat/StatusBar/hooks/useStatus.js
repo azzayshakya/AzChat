@@ -7,7 +7,7 @@ import {
   replyToStatus,
   markStatusViewed,
   STATUS_CONFIG,
-} from "./statusApi";
+} from "../apiService/statusApi";
 
 export function useStatus(currentUser) {
   const [statuses, setStatuses] = useState([]);

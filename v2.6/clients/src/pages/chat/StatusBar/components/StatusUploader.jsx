@@ -16,7 +16,7 @@ import {
   UserOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
-import { STATUS_CONFIG } from "../statusComponents/statusApi";
+import { STATUS_CONFIG } from "../apiService/statusApi";
 
 const BG_PRESETS = [
   { bg: "#1a1540", text: "#a78bfa" },

@@ -17,8 +17,6 @@ import {
   PlusOutlined,
   MessageOutlined,
 } from "@ant-design/icons";
-import StatusBar from "../statusComponents/StatusBar.jsx";
-import { useStatus } from "../statusComponents/useStatus.js";
 import { features } from "../../../utils/features.js";
 import { api } from "../../../api.js";
 import { useState } from "react";
@@ -26,6 +24,8 @@ import UserAvatar from "../commonComponents/UserAvatar.jsx";
 import CreateGroupModal from "../components/Creategroupmodal.jsx";
 import { getProfileImage } from "../../../utils/getProfileImage.js";
 import ContactItem from "./components/ContactItem.jsx";
+import StatusBar from "../StatusBar/StatusBar.jsx";
+import { useStatus } from "../StatusBar/hooks/useStatus.js";
 
 export default function ChatSidebar({
   currentUser,

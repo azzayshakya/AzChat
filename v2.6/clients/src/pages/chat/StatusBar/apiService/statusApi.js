@@ -1,4 +1,4 @@
-import { api, getSocket } from "../../../api";
+import { api, getSocket } from "../../../../api";
 
 export const STATUS_CONFIG = {
   maxPerUser: Number(import.meta.env.VITE_STATUS_MAX_PER_USER ?? 10),

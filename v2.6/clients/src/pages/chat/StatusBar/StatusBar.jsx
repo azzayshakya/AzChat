@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Spin } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import StatusViewer from "./StatusViewer.jsx";
-import StatusUploader from "./StatusUploader.jsx";
+import StatusUploader from "./components/StatusUploader.jsx";
 import UserAvatar from "../commonComponents/UserAvatar.jsx";
 import { getProfileImage } from "../../../utils/getProfileImage.js";
+import StatusViewer from "./components/StatusViewer.jsx";
 
 export default function StatusBar({
   statuses,

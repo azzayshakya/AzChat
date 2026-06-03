@@ -309,6 +309,7 @@ export default function ChatSidebar({
                   style={{
                     display: "flex",
                     alignItems: "center",
+                    cursor: "pointer",
                     background: selectedContact
                       ? "transparent"
                       : "rgba(102,126,234,0.14)",

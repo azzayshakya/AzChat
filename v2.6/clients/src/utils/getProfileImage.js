@@ -5,10 +5,13 @@ export function getProfileImage(contact) {
   if (contact.id === "653c1ea1-acb8-46b3-918e-8416c8936584") {
     return "/default_female_profile_pic.jpg";
   }
+  if (contact.id === "3f761a1d-112d-404f-be08-2351c1e08596") {
+    return "/maleProfilePic5.png";
+  }
   if (contact.id === "71057af1-9259-42be-b8fb-01272fc32c81") {
     return "/maleProfilePic5.png";
   }
-  if (contact.id === "0918d7df-234a-4147-8f4c-ddf2f0fa4041") {
+  if (contact.id === "17ef5765-aa08-492e-aaa0-215498b5b60a") {
     return "/maleProfilePic4.jpg";
   }
 

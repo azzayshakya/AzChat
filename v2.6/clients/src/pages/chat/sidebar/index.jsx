@@ -45,7 +45,7 @@ export default function ChatSidebar({
   onSelectContact,
   onSelectGroup,
 }) {
-  const [tab, setTab] = useState("chats");
+  const [tab, setTab] = useState("all");
   const [showCreateGroup, setShowCreateGroup] = useState(false);
 
   const {
@@ -74,9 +74,25 @@ export default function ChatSidebar({
           : 0;
         return tB - tA;
       });
+  const allItems = [
+    ...sortedContacts.map((contact) => ({
+      ...contact,
+      itemType: "direct",
+      lastActivityAt: contact.lastMessage?.createdAt || "",
+    })),
 
-  const handleDeleteContact = async (contactId, e) => {
-    e.stopPropagation();
+    ...groups.map((group) => ({
+      ...group,
+      itemType: "group",
+      lastActivityAt:
+        group.lastMessage?.createdAt || group.lastActivityAt || group.createdAt,
+    })),
+  ].sort(
+    (a, b) =>
+      new Date(b.lastActivityAt || 0).getTime() -
+      new Date(a.lastActivityAt || 0).getTime()
+  );
+  const handleDeleteContact = async (contactId) => {
     try {
       await api.delete(`/contacts/${contactId}`);
       setContacts((prev) => prev.filter((c) => c.id !== contactId));
@@ -86,8 +102,7 @@ export default function ChatSidebar({
     }
   };
 
-  const handleDeleteGroup = async (groupId, e) => {
-    e.stopPropagation();
+  const handleDeleteGroup = async (groupId) => {
     try {
       await api.delete(`/groups/${groupId}`);
       setGroups((prev) => prev.filter((g) => g.id !== groupId));
@@ -209,6 +224,7 @@ export default function ChatSidebar({
           }}
         >
           {[
+            { key: "all", icon: <MessageOutlined />, label: "All" },
             { key: "chats", icon: <MessageOutlined />, label: "Chats" },
             { key: "groups", icon: <TeamOutlined />, label: "Groups" },
           ].map(({ key, icon, label }) => (
@@ -242,7 +258,7 @@ export default function ChatSidebar({
         </div>
       )}
 
-      {tab === "chats" && (
+      {(tab === "chats" || tab === "all") && (
         <div style={{ padding: "12px 12px 8px", flexShrink: 0 }}>
           <Input
             className="search-input"
@@ -268,7 +284,121 @@ export default function ChatSidebar({
       )}
 
       <div style={{ flex: 1, overflowY: "auto" }}>
-        {tab === "chats" ? (
+        {tab === "all" ? (
+          allItems.map((item) => {
+            if (item.itemType === "direct") {
+              const menuItems =
+                features.deleteContact && !searchQ
+                  ? [
+                      {
+                        key: "delete",
+                        label: "Clear chat",
+                        icon: <DeleteOutlined />,
+                        danger: true,
+                        onClick: () => handleDeleteContact(item.id),
+                      },
+                    ]
+                  : [];
+
+              const selectedContact =
+                selectedType === "direct" && selectedId === item.id;
+
+              return (
+                <div
+                  key={`direct-${item.id}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    background: selectedContact
+                      ? "transparent"
+                      : "rgba(102,126,234,0.14)",
+                    outline: selectedContact
+                      ? "rgb(102 126 234 / 90%) solid 2px"
+                      : "none",
+                    margin: "10px 15px",
+                    borderRadius: 11,
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <ContactItem
+                      contact={item}
+                      isSelected={selectedContact}
+                      isOnline={isOnline(item.id)}
+                      onClick={() => onSelectContact(item)}
+                    />
+                  </div>
+
+                  {menuItems.length > 0 && (
+                    <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
+                      <EllipsisOutlined
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          color: "#555",
+                          padding: "0 10px",
+                          cursor: "pointer",
+                          fontSize: 16,
+                        }}
+                      />
+                    </Dropdown>
+                  )}
+                </div>
+              );
+            }
+
+            const isSelected =
+              selectedType === "group" && selectedId === item.id;
+
+            return (
+              <div
+                key={`group-${item.id}`}
+                onClick={() => onSelectGroup(item)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  margin: "10px 15px",
+                  borderRadius: 11,
+                  cursor: "pointer",
+                  background: isSelected
+                    ? "transparent"
+                    : "rgba(102,126,234,0.14)",
+                  outline: isSelected
+                    ? "rgb(102 126 234 / 90%) solid 2px"
+                    : "none",
+                }}
+              >
+                <Avatar
+                  style={{
+                    background: "#764ba2",
+                    margin: "12px",
+                    flexShrink: 0,
+                  }}
+                  icon={<TeamOutlined />}
+                />
+
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      color: "#fff",
+                      fontWeight: 500,
+                      fontSize: 13,
+                    }}
+                  >
+                    {item.name}
+                  </div>
+
+                  <div
+                    style={{
+                      color: "#666",
+                      fontSize: 11,
+                    }}
+                  >
+                    Group • {item.members?.length || 0} members
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        ) : tab === "chats" ? (
           loadingContacts && !searchQ ? (
             <div style={{ textAlign: "center", paddingTop: 40 }}>
               <Spin />
@@ -292,22 +422,34 @@ export default function ChatSidebar({
                         label: "Clear chat",
                         icon: <DeleteOutlined />,
                         danger: true,
-                        onClick: (e) => handleDeleteContact(contact.id, e),
+                        onClick: (e) => handleDeleteContact(contact.id),
                       },
                     ]
                   : [];
-
+              const selectedContact =
+                selectedType === "direct" && selectedId === contact.id;
               return (
                 <div
                   key={contact.id}
-                  style={{ display: "flex", alignItems: "center" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    background: selectedContact
+                      ? "transparent"
+                      : "rgba(102,126,234,0.14)",
+                    outline: selectedContact
+                      ? "rgb(102 126 234 / 90%) solid 2px"
+                      : "none",
+                    margin: "10px 15px",
+                    borderRadius: 11,
+                    cursor: "pointer",
+                    transition: "background 0.12s",
+                  }}
                 >
                   <div style={{ flex: 1 }}>
                     <ContactItem
                       contact={contact}
-                      isSelected={
-                        selectedType === "direct" && selectedId === contact.id
-                      }
+                      isSelected={selectedContact}
                       isOnline={isOnline(contact.id)}
                       onClick={() => onSelectContact(contact)}
                     />
@@ -366,7 +508,7 @@ export default function ChatSidebar({
                     label: "Delete group",
                     icon: <DeleteOutlined />,
                     danger: true,
-                    onClick: (e) => handleDeleteGroup(group.id, e),
+                    onClick: (e) => handleDeleteGroup(group.id),
                   },
                 ]
               : [];

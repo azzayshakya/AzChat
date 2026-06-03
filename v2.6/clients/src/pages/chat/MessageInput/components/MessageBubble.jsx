@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Dropdown, Modal, message as antMsg } from "antd";
+import React, { useEffect, useState } from "react";
+import { Dropdown, Modal, Spin, message as antMsg } from "antd";
 import {
   DeleteOutlined,
   CheckOutlined,
@@ -156,8 +156,9 @@ const renderMarkdown = (text) => {
 /* ─── sub-components ─────────────────────────────────────────────── */
 
 const ImageBubble = ({ url, name, text }) => {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(true);
   const gif = isGif(url);
+
   return (
     <div>
       <div
@@ -167,9 +168,29 @@ const ImageBubble = ({ url, name, text }) => {
           overflow: "hidden",
           background: "rgba(0,0,0,0.25)",
           maxWidth: 240,
-          minHeight: loaded ? 0 : 120,
+          minHeight: 120,
         }}
       >
+        {!loaded && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              color: "#aaa",
+            }}
+          >
+            <Spin />
+            <span style={{ fontSize: 12 }}>
+              {gif ? "Loading GIF..." : "Loading image..."}
+            </span>
+          </div>
+        )}
+
         <img
           src={url}
           alt={name}
@@ -181,32 +202,12 @@ const ImageBubble = ({ url, name, text }) => {
             width: "100%",
             objectFit: "cover",
             borderRadius: 10,
-            transition: "opacity 0.3s",
             opacity: loaded ? 1 : 0,
-          }}
-          onError={(e) => {
-            e.target.style.display = "none";
+            transition: "opacity 0.3s",
           }}
         />
-        {gif && loaded && (
-          <span
-            style={{
-              position: "absolute",
-              bottom: 6,
-              left: 6,
-              background: "rgba(0,0,0,0.6)",
-              color: "#fff",
-              fontSize: 9,
-              fontWeight: 700,
-              padding: "2px 5px",
-              borderRadius: 4,
-              letterSpacing: 0.5,
-            }}
-          >
-            GIF
-          </span>
-        )}
       </div>
+
       {text && (
         <div style={{ marginTop: 5, fontSize: 13 }}>{renderMarkdown(text)}</div>
       )}
@@ -214,110 +215,139 @@ const ImageBubble = ({ url, name, text }) => {
   );
 };
 
-const FileBubble = ({ url, name, size, text, isMine }) => (
-  <div>
-    <a
-      href={url}
-      download={name}
-      target="_blank"
-      rel="noreferrer"
-      style={{ textDecoration: "none" }}
-    >
+const FileBubble = ({ url, name, size, text, isMine }) => {
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch(url, { method: "HEAD" }).finally(() => setLoading(false));
+  }, [url]);
+
+  if (loading) {
+    return (
       <div
         style={{
+          padding: 12,
           display: "flex",
           alignItems: "center",
-          gap: 10,
-          background: isMine
-            ? "rgba(255,255,255,0.12)"
-            : "rgba(255,255,255,0.06)",
-          borderRadius: 10,
-          padding: "10px 13px",
-          cursor: "pointer",
-          transition: "background 0.2s",
-          minWidth: 180,
-          maxWidth: 260,
+          gap: 8,
         }}
-        onMouseEnter={(e) =>
-          (e.currentTarget.style.background = isMine
-            ? "rgba(255,255,255,0.18)"
-            : "rgba(255,255,255,0.1)")
-        }
-        onMouseLeave={(e) =>
-          (e.currentTarget.style.background = isMine
-            ? "rgba(255,255,255,0.12)"
-            : "rgba(255,255,255,0.06)")
-        }
       >
-        <span
+        <Spin size="small" />
+        <span>Loading file...</span>
+      </div>
+    );
+  }
+  return (
+    <div>
+      <a
+        href={url}
+        download={name}
+        target="_blank"
+        rel="noreferrer"
+        style={{ textDecoration: "none" }}
+      >
+        <div
           style={{
-            fontSize: 22,
-            opacity: 0.85,
-            color: "var(--secondary-color)",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            background: isMine
+              ? "rgba(255,255,255,0.12)"
+              : "rgba(255,255,255,0.06)",
+            borderRadius: 10,
+            padding: "10px 13px",
+            cursor: "pointer",
+            transition: "background 0.2s",
+            minWidth: 180,
+            maxWidth: 260,
           }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background = isMine
+              ? "rgba(255,255,255,0.18)"
+              : "rgba(255,255,255,0.1)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background = isMine
+              ? "rgba(255,255,255,0.12)"
+              : "rgba(255,255,255,0.06)")
+          }
         >
-          {fileIcon(name)}
-        </span>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div
+          <span
             style={{
-              fontSize: 15,
-              fontWeight: 600,
-              color: "#fff",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              fontSize: 22,
+              opacity: 0.85,
+              color: "var(--secondary-color)",
             }}
           >
-            {name}
-          </div>
-          {size && (
+            {fileIcon(name)}
+          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 11,
-                opacity: 0.7,
-                marginTop: 1,
-                color: "var(--secondary-color)",
+                fontSize: 15,
+                fontWeight: 600,
+                color: "#fff",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
-              {formatSize(size)}
+              {name}
             </div>
-          )}
+            {size && (
+              <div
+                style={{
+                  fontSize: 11,
+                  opacity: 0.7,
+                  marginTop: 1,
+                  color: "var(--secondary-color)",
+                }}
+              >
+                {formatSize(size)}
+              </div>
+            )}
+          </div>
+          <DownloadOutlined
+            style={{
+              opacity: 0.8,
+              fontSize: 15,
+              // fontWeight: "800",
+              color: "var(--secondary-color)",
+            }}
+          />
         </div>
-        <DownloadOutlined
-          style={{
-            opacity: 0.8,
-            fontSize: 15,
-            // fontWeight: "800",
-            color: "var(--secondary-color)",
-          }}
-        />
-      </div>
-    </a>
-    {text && (
-      <div style={{ marginTop: 5, fontSize: 13 }}>{renderMarkdown(text)}</div>
-    )}
-  </div>
-);
+      </a>
+      {text && (
+        <div style={{ marginTop: 5, fontSize: 13 }}>{renderMarkdown(text)}</div>
+      )}
+    </div>
+  );
+};
 
 /* ─── seen tick ──────────────────────────────────────────────────── */
 
 const SeenIcon = ({ status }) => {
   if (status === "seen")
     return (
-      <CheckCircleTwoTone
-        style={{ color: "var(--accent-light)", fontSize: 10, flexShrink: 0 }}
-      />
+      <span style={{ position: "relative", display: "inline-block" }}>
+        <CheckOutlined
+          style={{ color: "var(--seen-tick-color)", fontSize: 14 }}
+        />
+        <CheckOutlined
+          style={{
+            color: "var(--seen-tick-color)",
+            fontSize: 12,
+            marginLeft: -10,
+            filter: "drop-shadow(0 0 2px var(--seen-color))",
+          }}
+        />
+      </span>
     );
   return (
     <CheckOutlined
       style={{
-        color:
-          status === "delivered"
-            ? "rgba(255,255,255,0.45)"
-            : "rgba(255,255,255,0.25)",
-        fontSize: 10,
-        flexShrink: 0,
+        color: "var(--sent-tick-color)",
+        fontSize: 12,
       }}
     />
   );

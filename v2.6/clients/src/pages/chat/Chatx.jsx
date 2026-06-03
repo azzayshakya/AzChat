@@ -104,6 +104,7 @@ export default function Chatx() {
     });
 
     socket.on("new_group_message", (msg) => {
+      fetchGroups();
       if (msg.senderId !== user.id) {
         notify({
           title: "New Group Message",

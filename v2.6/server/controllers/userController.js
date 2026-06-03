@@ -1,4 +1,4 @@
-const { readDB, writeDB } = require('../models/db');
+const { readDB, writeDB } = require("../models/db");
 
 // ─── Search users ─────────────────────────────────────────────────────────────
 function searchUsers(req, res) {
@@ -6,7 +6,7 @@ function searchUsers(req, res) {
   const { q } = req.query;
 
   if (!q || q.trim().length < 1) {
-    return res.status(400).json({ error: 'Query param `q` is required' });
+    return res.status(400).json({ error: "Query param `q` is required" });
   }
 
   const query = q.trim().toLowerCase();
@@ -16,7 +16,7 @@ function searchUsers(req, res) {
     .filter(
       (u) =>
         u.id !== currentUserId &&
-        (u.username.includes(query) || u.name.toLowerCase().includes(query))
+        (u.username.includes(query) || u.name.toLowerCase().includes(query)),
     )
     .map((u) => ({
       id: u.id,
@@ -34,7 +34,7 @@ function getUserProfile(req, res) {
   const db = readDB();
   const user = db.users.find((u) => u.id === req.params.userId);
 
-  if (!user) return res.status(404).json({ error: 'User not found' });
+  if (!user) return res.status(404).json({ error: "User not found" });
 
   return res.json({
     data: {
@@ -56,7 +56,7 @@ function getContacts(req, res) {
   const contactIds = new Set();
   db.messages.forEach((m) => {
     if (m.deletedForUsers && m.deletedForUsers.includes(currentUserId)) return;
-    if (m.chatType !== 'direct') return;
+    if (m.chatType !== "direct") return;
 
     if (m.senderId === currentUserId) contactIds.add(m.receiverId);
     if (m.receiverId === currentUserId) contactIds.add(m.senderId);
@@ -65,18 +65,20 @@ function getContacts(req, res) {
   const contacts = db.users
     .filter((u) => contactIds.has(u.id))
     .map((u) => {
-      const chatId = [currentUserId, u.id].sort().join('_');
+      const chatId = [currentUserId, u.id].sort().join("_");
       const msgs = db.messages
         .filter(
           (m) =>
             m.chatId === chatId &&
-            m.chatType === 'direct' &&
-            !(m.deletedForUsers && m.deletedForUsers.includes(currentUserId))
+            m.chatType === "direct" &&
+            !(m.deletedForUsers && m.deletedForUsers.includes(currentUserId)),
         )
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       const lastMessage = msgs[0] || null;
-      const unreadCount = msgs.filter((m) => m.receiverId === currentUserId && !m.isRead).length;
+      const unreadCount = msgs.filter(
+        (m) => m.receiverId === currentUserId && !m.isRead,
+      ).length;
 
       return {
         id: u.id,
@@ -99,11 +101,11 @@ function deleteContact(req, res) {
   const { contactId } = req.params;
   const db = readDB();
 
-  const chatId = [currentUserId, contactId].sort().join('_');
+  const chatId = [currentUserId, contactId].sort().join("_");
 
   // Soft-delete: mark messages as deleted for this user only
   db.messages = db.messages.map((m) => {
-    if (m.chatId === chatId && m.chatType === 'direct') {
+    if (m.chatId === chatId && m.chatType === "direct") {
       const deletedForUsers = m.deletedForUsers || [];
       if (!deletedForUsers.includes(currentUserId)) {
         deletedForUsers.push(currentUserId);
@@ -115,7 +117,7 @@ function deleteContact(req, res) {
 
   writeDB(db);
 
-  return res.json({ message: 'Chat history cleared' });
+  return res.json({ message: "Chat history cleared" });
 }
 
 module.exports = { searchUsers, getUserProfile, getContacts, deleteContact };

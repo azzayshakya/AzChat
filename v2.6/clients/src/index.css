@@ -27,6 +27,9 @@
 
   --card-hover-border: rgba(102, 126, 234, 0.33);
   --success-green: #04ff58;
+
+  --seen-tick-color: #60ff9a;
+  --sent-tick-color: #94c4ff;
 }
 
 /* <div style={{ background: "var(--main-bg-gradient)" }}>...</div> */

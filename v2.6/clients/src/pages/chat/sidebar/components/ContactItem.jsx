@@ -1,5 +1,8 @@
 import React from "react";
-import { formatMessageTime, truncateText } from "../../../../utils/TimeFormater";
+import {
+  formatMessageTime,
+  truncateText,
+} from "../../../../utils/TimeFormater";
 import { getMessagePreview } from "../../../../utils/messagePreview";
 import { getProfileImage } from "../../../../utils/getProfileImage";
 import UserAvatar from "../../commonComponents/UserAvatar";
@@ -21,13 +24,6 @@ export default function ContactItem({
         alignItems: "center",
         gap: 10,
         padding: "8px 10px",
-        margin: "6px 15px",
-        borderRadius: 11,
-        cursor: "pointer",
-        transition: "background 0.12s",
-        background: isSelected ? "transparent" : "rgba(102,126,234,0.14)",
-        outline: isSelected ? "rgb(102 126 234 / 90%) solid 2px" : "none",
-        // border: "2px red solid",
       }}
       // onMouseEnter={(e) => {
       //   if (!isSelected)

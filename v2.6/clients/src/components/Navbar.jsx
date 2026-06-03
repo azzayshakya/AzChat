@@ -102,6 +102,25 @@ export default function Navbar() {
           >
             About
           </li>
+          <li
+            onClick={() => nav("/features")}
+            style={{
+              listStyle: "none",
+              cursor: "pointer",
+              color: "#FFF",
+              fontSize: "14px",
+              fontWeight: "500",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.color = "#667eea";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.color = "#FFF";
+            }}
+          >
+            Features
+          </li>
         </div>
       ) : (
         ""
@@ -178,6 +197,25 @@ export default function Navbar() {
             }}
           >
             About
+          </li>{" "}
+          <li
+            onClick={() => nav("/feature")}
+            style={{
+              listStyle: "none",
+              cursor: "pointer",
+              color: "#FFF",
+              fontSize: "14px",
+              fontWeight: "500",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.color = "#667eea";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.color = "#FFF";
+            }}
+          >
+            Features
           </li>
           <li
             onClick={() => nav("/chat")}
@@ -197,6 +235,25 @@ export default function Navbar() {
             }}
           >
             Chat
+          </li>
+          <li
+            onClick={() => nav("/attendence")}
+            style={{
+              listStyle: "none",
+              cursor: "pointer",
+              color: "#FFF",
+              fontSize: "14px",
+              fontWeight: "500",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.color = "#667eea";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.color = "#FFF";
+            }}
+          >
+            Attendence
           </li>
           <li style={{ listStyle: "none" }}>
             <Popover

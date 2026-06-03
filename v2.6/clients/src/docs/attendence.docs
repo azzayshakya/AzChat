@@ -1,0 +1,106 @@
+YOU have to create a react page , for attendece calculator , where i will post the xls file  or excel , where you t have to analyze the formate , then show the dataon the ui , with user to user emp id , user file type , user  attendacve date randge , and  table   with the date , and when he came abd when he go , also show the time when he go out in mid  , you have to show everything show that user can see the  how my hours are calculating   , ui should show like evrything so that  ,  user will feel  , and he should be confidtent , also i want u to create a seprate file for rules , like you  should be like , have a file where u will define , total_req_working_hours =8 so that in future i can direcly change the  hours and all , all the rules should be visinble on ui whaever we have deducted m user should get to khow how we calculate there attendence and all , also error handling should be good , also , that rule related file hosuld be good so that c=i can change them easily , code hosuld be easy and redale , maintable , so that we can easily understand the code , give me the opimize and redable code ,  keep a folder with the name  Attendence and inside that keep eveything also give me the folder strucre,m do not change the project theme , use same colors , give me working code , 
+
+```javascriptreact
+import React from "react";
+
+export default function Attendence() {
+  return <div>Attendence</div>;
+}
+
+```
+
+
+```json
+{
+  "name": "client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "preview": "vite preview",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "antd": "^5.12.0",
+    "axios": "^1.6.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.0",
+    "socket.io-client": "^4.7.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@eslint/js": "^10.0.1",
+    "@rolldown/plugin-babel": "^0.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.2.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "prettier": "^3.8.3",
+    "vite": "^8.0.10"
+  }
+}
+
+```
+
+
+```css
+:root {
+  --primary-color: #667eea;
+  --secondary-color: #0f0c29;
+  --secondary-color-light: #1a1540;
+  --accent-light: #a78bfa;
+
+  --dark-bg: #0d0d1a;
+  --dark-bg-light: #10101e;
+
+  --online-status: #52c41a;
+  --offline-status: #666;
+
+  --page-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  --main-bg-gradient: linear-gradient(
+    160deg,
+    #0f0c29 0%,
+    #1a1540 50%,
+    #0f0c29 100%
+  );
+  --brand-gradient: linear-gradient(135deg, #667eea, #764ba2);
+  --divider-gradient: linear-gradient(90deg, transparent, #1e1e3a, transparent);
+
+  --text-white: #ffffff;
+  --text-muted: #9999bb;
+  --text-highlight: #cccccc;
+  --text-dim: #888888;
+
+  --card-hover-border: rgba(102, 126, 234, 0.33);
+  --success-green: #04ff58;
+
+  --seen-tick-color: #60ff9a;
+  --sent-tick-color: #94c4ff;
+}
+
+/* <div style={{ background: "var(--main-bg-gradient)" }}>...</div> */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--secondary-color);
+
+  color: var(--text-white);
+
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+```

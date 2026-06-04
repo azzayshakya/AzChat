@@ -276,7 +276,7 @@ const FileBubble = ({ url, name, size, text, isMine }) => {
             style={{
               fontSize: 22,
               opacity: 0.85,
-              color: "var(--secondary-color)",
+              color: "#4790fd",
             }}
           >
             {fileIcon(name)}
@@ -300,7 +300,7 @@ const FileBubble = ({ url, name, size, text, isMine }) => {
                   fontSize: 11,
                   opacity: 0.7,
                   marginTop: 1,
-                  color: "var(--secondary-color)",
+                  color: "#4790fd",
                 }}
               >
                 {formatSize(size)}
@@ -312,7 +312,7 @@ const FileBubble = ({ url, name, size, text, isMine }) => {
               opacity: 0.8,
               fontSize: 15,
               // fontWeight: "800",
-              color: "var(--secondary-color)",
+              color: "#4790fd",
             }}
           />
         </div>

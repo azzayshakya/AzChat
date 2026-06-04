@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-06-04T07:05:35.546Z",
+      "lastSeen": "2026-06-04T13:02:27.181Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -30,7 +30,7 @@
       "passwordHash": "$2a$10$buOU14pIy9IIA02EyNHRN.hdkpaP4I9B6uakVYVY4rAaaMPY5JsEe",
       "role": "user",
       "isOnline": true,
-      "lastSeen": "2026-06-04T05:14:10.681Z",
+      "lastSeen": "2026-06-04T07:03:26.580Z",
       "createdAt": "2026-05-21T05:48:51.828Z"
     },
     {
@@ -40,8 +40,8 @@
       "email": "user@gmail.com",
       "passwordHash": "$2a$10$uXiFLvG5Pf3HA.MFMdOnD.PiV9McTNg4nEzDTyDlSIZb8F9ZUZe7e",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-06-04T05:14:10.694Z",
+      "isOnline": false,
+      "lastSeen": "2026-06-04T08:15:55.954Z",
       "createdAt": "2026-05-21T05:54:00.634Z"
     },
     {
@@ -106,8 +106,8 @@
       "email": "umangprakash@crl.com",
       "passwordHash": "$2a$10$v/Zy1H7JPFYKgY0Anwr6he78Be3.aQ/qCoHIEVOgA6FzOL7tTl4be",
       "role": "user",
-      "isOnline": true,
-      "lastSeen": "2026-06-02T11:43:34.898Z",
+      "isOnline": false,
+      "lastSeen": "2026-06-04T09:36:59.292Z",
       "createdAt": "2026-05-21T08:24:29.952Z"
     },
     {
@@ -140,7 +140,7 @@
       "passwordHash": "$2a$10$IjzBYIKLYIaN/tHImtlHkutOXrr2Eve2lnlUvtFUZGti4uyXVBELq",
       "role": "user",
       "isOnline": false,
-      "lastSeen": "2026-06-03T10:25:09.163Z",
+      "lastSeen": "2026-06-04T09:48:41.735Z",
       "createdAt": "2026-06-02T08:17:52.409Z"
     },
     {
@@ -2099,13 +2099,13 @@
       "receiverId": "d119587d-8d0e-4eeb-b4bf-625595760886",
       "text": "okk.",
       "file": null,
-      "status": "delivered",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-06-04T08:56:43.568Z",
       "createdAt": "2026-06-03T08:19:25.294Z"
     },
     {
@@ -2116,13 +2116,13 @@
       "receiverId": "d119587d-8d0e-4eeb-b4bf-625595760886",
       "text": "koi issue fix ho to push kar dena just .",
       "file": null,
-      "status": "delivered",
-      "isRead": false,
+      "status": "seen",
+      "isRead": true,
       "editedAt": null,
       "deletedAt": null,
       "deletedFor": null,
       "deletedForUsers": [],
-      "seenAt": null,
+      "seenAt": "2026-06-04T08:56:43.568Z",
       "createdAt": "2026-06-03T08:19:39.215Z"
     },
     {
@@ -2244,6 +2244,40 @@
       "deletedForUsers": [],
       "seenAt": "2026-06-03T13:59:35.922Z",
       "createdAt": "2026-06-03T10:22:14.498Z"
+    },
+    {
+      "id": "bfa4c441-870e-432b-9946-b275637d3b95",
+      "chatId": "a696dacd-7dec-4a44-a48a-2349da7094da_b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d",
+      "chatType": "direct",
+      "senderId": "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d",
+      "receiverId": "a696dacd-7dec-4a44-a48a-2349da7094da",
+      "text": "lunch?",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-04T07:02:14.293Z"
+    },
+    {
+      "id": "c44b44fa-35e0-4b22-81bd-138f1718884e",
+      "chatId": "a696dacd-7dec-4a44-a48a-2349da7094da_b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d",
+      "chatType": "direct",
+      "senderId": "b3c5ec70-ec6b-4895-8c1a-d137a60ecc9d",
+      "receiverId": "a696dacd-7dec-4a44-a48a-2349da7094da",
+      "text": "-madhu",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-04T07:02:20.297Z"
     }
   ],
   "groups": [
@@ -2349,5 +2383,17 @@
     }
   ],
   "userQueries": [],
-  "statuses": []
+  "statuses": [
+    {
+      "id": "b599957d-f667-4d8a-8568-100e06be5c0c",
+      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "new",
+      "file": null,
+      "backgroundColor": "#1a1540",
+      "textColor": "#a78bfa",
+      "viewers": [],
+      "createdAt": "2026-06-04T12:37:09.508Z",
+      "expiresAt": "2026-06-05T12:37:09.504Z"
+    }
+  ]
 }

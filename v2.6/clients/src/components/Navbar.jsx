@@ -236,7 +236,7 @@ export default function Navbar() {
           >
             Chat
           </li>
-          <li
+          {/* <li
             onClick={() => nav("/attendence")}
             style={{
               listStyle: "none",
@@ -254,7 +254,7 @@ export default function Navbar() {
             }}
           >
             Attendence
-          </li>
+          </li> */}
           <li style={{ listStyle: "none" }}>
             <Popover
               content={<UserProfile user={user} logout={logout} />}

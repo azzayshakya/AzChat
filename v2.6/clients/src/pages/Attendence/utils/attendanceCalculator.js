@@ -1,268 +1,338 @@
-import { ATTENDANCE_RULES } from "../attendanceRules.js";
+/**
+ * attendanceCalculator.js
+ *
+ * Takes the raw punch map from excelParser and applies all business rules
+ * from attendanceRules.js to produce a per-day result with full breakdown.
+ *
+ * PUNCH INTERPRETATION:
+ *   Given N sorted punches in a day:
+ *   • punch[0]          = IN  time
+ *   • punch[N-1]        = OUT time
+ *   • punch[1..N-2]     = mid-day exits, grouped as OOO pairs: (out, in), (out, in) …
+ *     If middle count is odd → unpaired last middle punch = "missing pair"
+ */
 
-const R = ATTENDANCE_RULES;
+import { getSeason, RULES } from "../attendanceRules";
 
-// ── Time helpers ──────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Public helpers — time arithmetic
+// ─────────────────────────────────────────────────────────────────────────────
 
 /** "HH:MM" → total minutes from midnight */
-export function timeToMinutes(time) {
-  if (!time) return null;
-  const [h, m] = time.split(":").map(Number);
+export function toMins(hhmm) {
+  if (!hhmm) return null;
+  const [h, m] = hhmm.split(":").map(Number);
   return h * 60 + m;
 }
 
-/** Minutes → "HH:MM" */
-export function minutesToTime(minutes) {
-  if (minutes == null || isNaN(minutes)) return "--";
-  const h = Math.floor(Math.abs(minutes) / 60);
-  const m = Math.abs(minutes) % 60;
-  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+/** total minutes → "HH:MM" */
+export function toHHMM(mins) {
+  if (mins == null || isNaN(mins)) return "--";
+  const sign = mins < 0 ? "-" : "";
+  const abs = Math.abs(mins);
+  return `${sign}${String(Math.floor(abs / 60)).padStart(2, "0")}:${String(abs % 60).padStart(2, "0")}`;
 }
 
-/** Minutes → "Xh Ym" display string */
-export function minutesToHumanTime(minutes) {
-  if (minutes == null || isNaN(minutes)) return "--";
-  const h = Math.floor(Math.abs(minutes) / 60);
-  const m = Math.abs(minutes) % 60;
-  if (h === 0) return `${m}m`;
-  if (m === 0) return `${h}h`;
-  return `${h}h ${m}m`;
+/** total minutes → "Xh Ym" human label */
+export function toHuman(mins) {
+  if (mins == null || isNaN(mins) || mins === 0) return "0 m";
+  const abs = Math.abs(mins);
+  const h = Math.floor(abs / 60);
+  const m = abs % 60;
+  if (h === 0) return `${m} m`;
+  if (m === 0) return `${h} h`;
+  return `${h} h ${m} m`;
 }
 
-// ── Core calculation per day ───────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Main per-day calculator
+// ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Calculates full attendance details for a single attendance row.
+ * Calculates attendance for a single day given sorted punches.
  *
- * @param {Object} row  - Normalised attendance row from excelParser
+ * @param {string}   dateStr   YYYY-MM-DD
+ * @param {{ time: string, clockId: string, clockName: string }[]} punches  sorted ASC
  * @returns {DayResult}
  */
-export function calculateDayAttendance(row) {
-  const { date, inTime, outTime, oooEntries = [] } = row;
+export function calculateDay(dateStr, punches) {
+  const date = new Date(dateStr + "T00:00:00");
+  const dow = date.getDay(); // 0=Sun … 6=Sat
+  const month = date.getMonth() + 1; // 1-indexed
+  const season = getSeason(month);
 
-  const result = {
-    date,
-    inTime,
-    outTime,
-    oooEntries,
-
-    // Computed fields
-    totalMinutes: null, // outTime - inTime (gross)
-    oooMinutes: 0, // total mid-day out minutes
-    oooAllowedMinutes: R.MAX_OOO_ALLOWED_MINUTES,
-    oooDeductedMinutes: 0, // actual deduction from OOO
-    effectiveMinutes: null, // totalMinutes - oooDeductedMinutes
-    lateMinutes: 0, // how late (after grace) arrival
-    overtimeMinutes: 0,
-
-    status: null,
-    statusColor: null,
-
-    // Breakdown object for UI transparency
-    breakdown: [],
-  };
-
-  // ── Week-off check ──────────────────────────────────────────────────────────
-  if (date) {
-    const dow = new Date(date + "T00:00:00").getDay(); // 0=Sun…6=Sat
-    if (R.WEEK_OFF_DAYS.includes(dow)) {
-      result.status = R.STATUS_LABELS.WEEK_OFF;
-      result.statusColor = R.STATUS_COLORS.WEEK_OFF;
-      result.breakdown = [
+  // ── Week off ──────────────────────────────────────────────────────────────
+  if (RULES.WEEK_OFF_DAYS.includes(dow)) {
+    return makeResult(dateStr, punches, season, {
+      status: RULES.STATUS.WEEK_OFF,
+      breakdown: [
         {
           label: "Week Off",
-          detail: "Day falls on a configured week-off day.",
+          detail: "Day falls on a configured week-off (Sat/Sun).",
+          type: "info",
         },
-      ];
-      return result;
-    }
-  }
-
-  // ── No punch data ───────────────────────────────────────────────────────────
-  if (!inTime && !outTime) {
-    result.status = R.STATUS_LABELS.ABSENT;
-    result.statusColor = R.STATUS_COLORS.ABSENT;
-    result.breakdown = [
-      { label: "Absent", detail: "No punch-in or punch-out recorded." },
-    ];
-    return result;
-  }
-
-  // ── Gross time ──────────────────────────────────────────────────────────────
-  const inMins = timeToMinutes(inTime);
-  const outMins = timeToMinutes(outTime);
-
-  if (inMins == null || outMins == null) {
-    result.status = R.STATUS_LABELS.ABSENT;
-    result.statusColor = R.STATUS_COLORS.ABSENT;
-    result.breakdown = [
-      {
-        label: "Invalid Times",
-        detail: "Could not parse punch-in or punch-out times.",
-      },
-    ];
-    return result;
-  }
-
-  result.totalMinutes = outMins - inMins;
-  result.breakdown.push({
-    label: "Gross Hours",
-    detail: `OutTime (${outTime}) − InTime (${inTime}) = ${minutesToHumanTime(result.totalMinutes)}`,
-    value: minutesToHumanTime(result.totalMinutes),
-  });
-
-  // ── Late arrival ───────────────────────────────────────────────────────────
-  const shiftStartMins = timeToMinutes(R.SHIFT_START_TIME);
-  const graceEnd = shiftStartMins + R.GRACE_PERIOD_MINUTES;
-  if (inMins > graceEnd) {
-    result.lateMinutes = inMins - shiftStartMins;
-    result.breakdown.push({
-      label: "Late Arrival",
-      detail: `Arrived at ${inTime}, shift starts ${R.SHIFT_START_TIME} (grace: ${R.GRACE_PERIOD_MINUTES} min) → late by ${minutesToHumanTime(result.lateMinutes)}`,
-      value: minutesToHumanTime(result.lateMinutes),
-      warn: true,
+      ],
     });
   }
 
-  // ── OOO (mid-day out) ──────────────────────────────────────────────────────
-  let rawOOOMinutes = 0;
-  oooEntries.forEach((entry, i) => {
-    if (!entry.out || !entry.in) return;
-    const ooOut = timeToMinutes(entry.out);
-    const ooIn = timeToMinutes(entry.in);
-    if (ooOut != null && ooIn != null && ooIn > ooOut) {
-      const duration = ooIn - ooOut;
-      rawOOOMinutes += duration;
-      result.breakdown.push({
-        label: `OOO #${i + 1}`,
-        detail: `Left at ${entry.out}, returned at ${entry.in} = ${minutesToHumanTime(duration)}`,
-        value: minutesToHumanTime(duration),
-        warn: true,
-      });
-    }
-  });
-
-  result.oooMinutes = rawOOOMinutes;
-
-  if (rawOOOMinutes > 0) {
-    const excess = Math.max(0, rawOOOMinutes - R.MAX_OOO_ALLOWED_MINUTES);
-    result.oooDeductedMinutes = excess * R.OOO_DEDUCTION_PER_MINUTE;
-    result.breakdown.push({
-      label: "OOO Deduction",
-      detail: `Total OOO: ${minutesToHumanTime(rawOOOMinutes)}, Free: ${R.MAX_OOO_ALLOWED_MINUTES} min → Deducted: ${minutesToHumanTime(result.oooDeductedMinutes)}`,
-      value: `−${minutesToHumanTime(result.oooDeductedMinutes)}`,
-      deduct: true,
+  // ── No punches at all → Absent ────────────────────────────────────────────
+  if (!punches || punches.length === 0) {
+    return makeResult(dateStr, [], season, {
+      status: RULES.STATUS.ABSENT,
+      breakdown: [
+        {
+          label: "Absent",
+          detail: "No punch records found for this day.",
+          type: "bad",
+        },
+      ],
     });
   }
 
-  // ── Effective hours ────────────────────────────────────────────────────────
-  result.effectiveMinutes = result.totalMinutes - result.oooDeductedMinutes;
-  result.breakdown.push({
-    label: "Effective Hours",
-    detail: `Gross (${minutesToHumanTime(result.totalMinutes)}) − OOO Deduction (${minutesToHumanTime(result.oooDeductedMinutes)}) = ${minutesToHumanTime(result.effectiveMinutes)}`,
-    value: minutesToHumanTime(result.effectiveMinutes),
-    highlight: true,
-  });
-
-  // ── Overtime ───────────────────────────────────────────────────────────────
-  const requiredMins = R.OVERTIME_AFTER_HOURS * 60;
-  if (result.effectiveMinutes > requiredMins) {
-    result.overtimeMinutes = result.effectiveMinutes - requiredMins;
-    result.breakdown.push({
-      label: "Overtime",
-      detail: `Worked ${minutesToHumanTime(result.effectiveMinutes)} > ${R.OVERTIME_AFTER_HOURS}h → OT: ${minutesToHumanTime(result.overtimeMinutes)}`,
-      value: `+${minutesToHumanTime(result.overtimeMinutes)}`,
-      good: true,
+  // ── Only 1 punch → Missing Punch ─────────────────────────────────────────
+  if (punches.length === 1) {
+    return makeResult(dateStr, punches, season, {
+      inTime: punches[0].time,
+      status: RULES.STATUS.MISSING_PUNCH,
+      breakdown: [
+        {
+          label: "Only 1 Punch",
+          detail: `Recorded: ${punches[0].time}. Need both IN and OUT to calculate hours.`,
+          type: "warn",
+        },
+      ],
     });
   }
 
-  // ── Status classification ──────────────────────────────────────────────────
-  const effectiveHours = result.effectiveMinutes / 60;
+  const inTime = punches[0].time;
+  const outTime = punches[punches.length - 1].time;
+  const inMins = toMins(inTime);
+  const outMins = toMins(outTime);
 
-  if (effectiveHours >= R.FULL_DAY_THRESHOLD_HOURS) {
-    result.status =
-      result.overtimeMinutes > 0
-        ? R.STATUS_LABELS.OVERTIME
-        : R.STATUS_LABELS.FULL_DAY;
-    result.statusColor =
-      result.overtimeMinutes > 0
-        ? R.STATUS_COLORS.OVERTIME
-        : R.STATUS_COLORS.FULL_DAY;
-  } else if (effectiveHours >= R.HALF_DAY_THRESHOLD_HOURS) {
-    result.status = R.STATUS_LABELS.HALF_DAY;
-    result.statusColor = R.STATUS_COLORS.HALF_DAY;
+  const breakdown = [];
+
+  // ── Step 1 : Gross time ───────────────────────────────────────────────────
+  const grossMins = outMins - inMins;
+  breakdown.push({
+    label: "Gross Time",
+    detail: `OUT (${outTime}) − IN (${inTime}) = ${toHuman(grossMins)}`,
+    value: toHHMM(grossMins),
+    type: "neutral",
+  });
+
+  // ── Step 2 : Extract OOO (mid-day exits) ─────────────────────────────────
+  //   Middle punches (index 1 … N-2) are paired as (out, in) tuples.
+  const midPunches = punches.slice(1, punches.length - 1);
+  const oooPairs = [];
+
+  for (let i = 0; i < midPunches.length - 1; i += 2) {
+    oooPairs.push({ out: midPunches[i].time, in: midPunches[i + 1].time });
+  }
+  // Unpaired last middle punch
+  const unpairedPunch =
+    midPunches.length % 2 !== 0 ? midPunches[midPunches.length - 1].time : null;
+
+  // ── Step 3 : Calculate OOO deduction applying lunch relaxation ───────────
+  const lunchStart = toMins(RULES.LUNCH_RELAX_START);
+  const lunchEnd = toMins(RULES.LUNCH_RELAX_END);
+  let totalOOODeductedMins = 0;
+
+  oooPairs.forEach((pair, i) => {
+    const oooOut = toMins(pair.out);
+    const oooIn = toMins(pair.in);
+    const rawMins = oooIn - oooOut;
+
+    // Overlap of this absence with the free lunch window
+    const freeStart = Math.max(oooOut, lunchStart);
+    const freeEnd = Math.min(oooIn, lunchEnd);
+    const freeMins = Math.max(0, freeEnd - freeStart);
+    const deductMins = rawMins - freeMins;
+
+    totalOOODeductedMins += deductMins;
+
+    const detail =
+      freeMins > 0
+        ? `Out ${pair.out} → In ${pair.in} = ${toHuman(rawMins)} total. ` +
+          `Lunch free window covers ${toHuman(freeMins)} → deducted: ${toHuman(deductMins)}`
+        : `Out ${pair.out} → In ${pair.in} = ${toHuman(rawMins)} → fully deducted`;
+
+    breakdown.push({
+      label: `OOO #${i + 1}`,
+      detail,
+      value: `−${toHHMM(deductMins)}`,
+      type: deductMins > 0 ? "warn" : "good",
+    });
+  });
+
+  if (unpairedPunch) {
+    breakdown.push({
+      label: "Unpaired Punch",
+      detail: `Punch at ${unpairedPunch} has no pair — ignored in calculation.`,
+      type: "warn",
+    });
+  }
+
+  // ── Step 4 : Effective minutes ────────────────────────────────────────────
+  const effectiveMins = grossMins - totalOOODeductedMins;
+  breakdown.push({
+    label: "Effective Time",
+    detail: `Gross (${toHuman(grossMins)}) − OOO deductions (${toHuman(totalOOODeductedMins)}) = ${toHuman(effectiveMins)}`,
+    value: toHHMM(effectiveMins),
+    type: "highlight",
+  });
+
+  // ── Step 5 : Apply Rule 5 — Late join ────────────────────────────────────
+  const lateJoinMins = toMins(RULES.LATE_JOIN_CUTOFF);
+  let forcedHalfDay = false;
+  let forcedReason = "";
+
+  if (inMins > lateJoinMins) {
+    forcedHalfDay = true;
+    forcedReason = `Rule 5: Joined at ${inTime} (after ${RULES.LATE_JOIN_CUTOFF}) → capped at Half Day`;
+    breakdown.push({
+      label: "Late Join",
+      detail: forcedReason,
+      value: "Half Day cap",
+      type: "bad",
+    });
+  }
+
+  // ── Step 6 : Apply Rule 6 — Early leave ──────────────────────────────────
+  const earlyLeaveCutoff = RULES.EARLY_LEAVE_CUTOFF[season];
+  if (!forcedHalfDay && outMins < toMins(earlyLeaveCutoff)) {
+    forcedHalfDay = true;
+    forcedReason = `Rule 6: Left at ${outTime} (before ${earlyLeaveCutoff} for ${season === "JAN_MAR" ? "Jan–Mar" : "Apr–Dec"}) → capped at Half Day`;
+    breakdown.push({
+      label: "Early Leave",
+      detail: forcedReason,
+      value: "Half Day cap",
+      type: "bad",
+    });
+  }
+
+  // ── Step 7 : Classify status ──────────────────────────────────────────────
+  const minFull = RULES.MIN_FOR_FULL_DAY_MIN[season];
+  const minHalf = RULES.MIN_FOR_HALF_DAY_MIN[season];
+
+  let status;
+
+  if (forcedHalfDay) {
+    status = RULES.STATUS.HALF_DAY;
+  } else if (effectiveMins >= minFull) {
+    status = RULES.STATUS.FULL_DAY;
+    breakdown.push({
+      label: "Full Day ✓",
+      detail: `Effective ${toHuman(effectiveMins)} ≥ min ${toHuman(minFull)} for ${season === "JAN_MAR" ? "Jan–Mar" : "Apr–Dec"}`,
+      value: "Full Day",
+      type: "good",
+    });
+  } else if (effectiveMins >= minHalf) {
+    status = RULES.STATUS.HALF_DAY;
+    breakdown.push({
+      label: "Half Day",
+      detail: `Effective ${toHuman(effectiveMins)} < full-day min (${toHuman(minFull)}) but ≥ half-day min (${toHuman(minHalf)})`,
+      value: "Half Day",
+      type: "warn",
+    });
   } else {
-    result.status = R.STATUS_LABELS.ABSENT;
-    result.statusColor = R.STATUS_COLORS.ABSENT;
+    status = RULES.STATUS.ABSENT;
+    breakdown.push({
+      label: "Absent",
+      detail: `Effective ${toHuman(effectiveMins)} < half-day min (${toHuman(minHalf)}) → Absent`,
+      value: "Absent",
+      type: "bad",
+    });
   }
 
-  result.breakdown.push({
-    label: "Final Status",
-    detail: `${minutesToHumanTime(result.effectiveMinutes)} effective → Rule: Full Day ≥${R.FULL_DAY_THRESHOLD_HOURS}h, Half Day ≥${R.HALF_DAY_THRESHOLD_HOURS}h`,
-    value: result.status,
-    status: true,
+  return makeResult(dateStr, punches, season, {
+    inTime,
+    outTime,
+    grossMins,
+    oooPairs,
+    unpairedPunch,
+    totalOOODeductedMins,
+    effectiveMins,
+    status,
+    breakdown,
   });
-
-  return result;
 }
 
-// ── Aggregate summary ─────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Summary aggregator
+// ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Given all calculated day results for one employee, returns a summary.
- */
 export function calculateSummary(dayResults) {
-  const workDays = dayResults.filter(
-    (d) =>
-      d.status !== R.STATUS_LABELS.WEEK_OFF &&
-      d.status !== R.STATUS_LABELS.HOLIDAY
-  );
+  const working = dayResults.filter((d) => d.status !== RULES.STATUS.WEEK_OFF);
 
-  const fullDays = workDays.filter(
-    (d) => d.status === R.STATUS_LABELS.FULL_DAY
+  const full = working.filter((d) => d.status === RULES.STATUS.FULL_DAY).length;
+  const half = working.filter((d) => d.status === RULES.STATUS.HALF_DAY).length;
+  const absent = working.filter((d) => d.status === RULES.STATUS.ABSENT).length;
+  const missing = working.filter(
+    (d) => d.status === RULES.STATUS.MISSING_PUNCH
   ).length;
-  const halfDays = workDays.filter(
-    (d) => d.status === R.STATUS_LABELS.HALF_DAY
-  ).length;
-  const overtimeDays = workDays.filter(
-    (d) => d.status === R.STATUS_LABELS.OVERTIME
-  ).length;
-  const absentDays = workDays.filter(
-    (d) => d.status === R.STATUS_LABELS.ABSENT
-  ).length;
-  const weekOffs = dayResults.filter(
-    (d) => d.status === R.STATUS_LABELS.WEEK_OFF
+  const weekOff = dayResults.filter(
+    (d) => d.status === RULES.STATUS.WEEK_OFF
   ).length;
 
-  const totalEffectiveMins = workDays.reduce(
-    (s, d) => s + (d.effectiveMinutes || 0),
+  const totalEffective = working.reduce(
+    (s, d) => s + (d.effectiveMins || 0),
     0
   );
-  const totalOvertimeMins = workDays.reduce(
-    (s, d) => s + (d.overtimeMinutes || 0),
+  const totalOOO = working.reduce(
+    (s, d) => s + (d.totalOOODeductedMins || 0),
     0
   );
-  const totalOOOMins = workDays.reduce((s, d) => s + (d.oooMinutes || 0), 0);
-  const requiredMins = workDays.length * R.TOTAL_REQUIRED_WORKING_HOURS * 60;
-  const deficitMins = Math.max(0, requiredMins - totalEffectiveMins);
+
+  // Attendance % = (full + half*0.5) / total working days
+  const pct =
+    working.length > 0
+      ? Math.round(((full + half * 0.5) / working.length) * 100)
+      : 0;
 
   return {
-    totalWorkDays: workDays.length,
-    fullDays,
-    halfDays,
-    overtimeDays,
-    absentDays,
-    weekOffs,
-    totalEffectiveMins,
-    totalOvertimeMins,
-    totalOOOMins,
-    requiredMins,
-    deficitMins,
-    attendancePercent:
-      workDays.length > 0
-        ? Math.round(
-            ((fullDays + halfDays * 0.5 + overtimeDays) / workDays.length) * 100
-          )
-        : 0,
+    full,
+    half,
+    absent,
+    missing,
+    weekOff,
+    totalEffective,
+    totalOOO,
+    pct,
+    totalWorkingDays: working.length,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Internal factory
+// ─────────────────────────────────────────────────────────────────────────────
+
+function makeResult(dateStr, punches, season, overrides) {
+  return {
+    dateStr,
+    season,
+    punches,
+    inTime: null,
+    outTime: null,
+    grossMins: null,
+    oooPairs: [],
+    unpairedPunch: null,
+    totalOOODeductedMins: 0,
+    effectiveMins: null,
+    status: RULES.STATUS.ABSENT,
+    statusColor:
+      RULES.STATUS_COLOR[
+        Object.keys(RULES.STATUS).find(
+          (k) => RULES.STATUS[k] === (overrides.status || RULES.STATUS.ABSENT)
+        )
+      ] || "#666",
+    breakdown: [],
+    ...overrides,
+    // Resolve statusColor from final status
+    statusColor:
+      RULES.STATUS_COLOR[
+        Object.keys(RULES.STATUS).find(
+          (k) => RULES.STATUS[k] === (overrides.status || RULES.STATUS.ABSENT)
+        )
+      ] || "#666",
   };
 }

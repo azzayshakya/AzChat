@@ -1,170 +1,167 @@
 /**
- * Attendance Calculator — Main Page
+ * Attendance/index.jsx — Main Page
  *
  * Flow:
- *  1. User uploads Excel/CSV file
- *  2. File is parsed → employee list + attendance rows extracted
- *  3. User selects an employee from sidebar
- *  4. Attendance is calculated day-by-day using rules from attendanceRules.js
- *  5. Summary + detailed table are rendered with full calculation breakdown
+ *  1. User uploads .xls / .xlsx / .csv exported from biometric system
+ *  2. File is parsed → raw punch rows grouped by employee → date
+ *  3. User selects an employee from the sidebar
+ *  4. Each day's punches are calculated via attendanceCalculator.js
+ *     (rules come from attendanceRules.js)
+ *  5. Summary cards + day-wise table with full breakdown are shown
  */
 
 import React, { useState, useMemo } from "react";
+
 import FileUpload from "./components/FileUpload.jsx";
 import EmployeeSelector from "./components/EmployeeSelector.jsx";
 import SummaryCard from "./components/SummaryCard.jsx";
 import AttendanceTable from "./components/AttendanceTable.jsx";
 import RulesPanel from "./components/RulesPanel.jsx";
+
 import { parseAttendanceFile } from "./utils/excelParser.js";
 import {
-  calculateDayAttendance,
+  calculateDay,
   calculateSummary,
 } from "./utils/attendanceCalculator.js";
 
-export default function Attendance() {
-  // ── State ────────────────────────────────────────────────────────────────
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [parsedData, setParsedData] = useState(null); // { rows, employees, dateRange }
-  const [selectedEmpId, setSelectedEmpId] = useState(null);
-  const [fileName, setFileName] = useState(null);
+// ─────────────────────────────────────────────────────────────────────────────
 
-  // ── File upload handler ──────────────────────────────────────────────────
-  const handleFileLoaded = async (file) => {
-    setIsLoading(true);
+export default function Attendance() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [parsed, setParsed] = useState(null); // { employees, punchMap, dateRange }
+  const [fileName, setFileName] = useState(null);
+  const [selectedEmp, setSelectedEmp] = useState(null);
+
+  // ── Upload handler ──────────────────────────────────────────────────────────
+  const handleFile = async (file) => {
+    setLoading(true);
     setError(null);
-    setParsedData(null);
-    setSelectedEmpId(null);
+    setParsed(null);
+    setSelectedEmp(null);
 
     try {
       const data = await parseAttendanceFile(file);
-      setParsedData(data);
+      setParsed(data);
       setFileName(file.name);
-      // Auto-select first employee
-      if (data.employees.length > 0) {
-        setSelectedEmpId(data.employees[0].empId);
-      }
+      if (data.employees.length > 0) setSelectedEmp(data.employees[0].empCode);
     } catch (err) {
       setError(err.message || "Failed to parse file.");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  // ── Derive selected employee data ────────────────────────────────────────
-  const selectedEmployee = useMemo(() => {
-    if (!parsedData || !selectedEmpId) return null;
-    return parsedData.employees.find((e) => e.empId === selectedEmpId) || null;
-  }, [parsedData, selectedEmpId]);
+  const reset = () => {
+    setParsed(null);
+    setSelectedEmp(null);
+    setFileName(null);
+    setError(null);
+  };
 
+  // ── Derive day results for selected employee ────────────────────────────────
   const dayResults = useMemo(() => {
-    if (!parsedData || !selectedEmpId) return [];
-    return parsedData.rows
-      .filter((r) => r.empId === selectedEmpId)
-      .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
-      .map(calculateDayAttendance);
-  }, [parsedData, selectedEmpId]);
+    if (!parsed || !selectedEmp) return [];
+    const empMap = parsed.punchMap.get(selectedEmp);
+    if (!empMap) return [];
+
+    return [...empMap.entries()]
+      .sort(([a], [b]) => a.localeCompare(b)) // sort by date
+      .map(([dateStr, punches]) => calculateDay(dateStr, punches));
+  }, [parsed, selectedEmp]);
 
   const summary = useMemo(() => {
     if (!dayResults.length) return null;
     return calculateSummary(dayResults);
   }, [dayResults]);
 
-  // ── Reset ────────────────────────────────────────────────────────────────
-  const handleReset = () => {
-    setParsedData(null);
-    setSelectedEmpId(null);
-    setFileName(null);
-    setError(null);
-  };
-
-  // ── Render ───────────────────────────────────────────────────────────────
+  // ── Render ──────────────────────────────────────────────────────────────────
   return (
-    <div style={styles.page}>
-      {/* ── Page Title ──────────────────────────────────────────────────── */}
-      <div style={styles.pageHeader}>
+    <div style={s.page}>
+      {/* Page header */}
+      <div style={s.pageHeader}>
         <div>
-          <h1 style={styles.pageTitle}>
-            <span style={styles.emoji}>🕐</span> Attendance Calculator
-          </h1>
-          <p style={styles.pageSubtitle}>
-            Upload your attendance Excel sheet to get a full breakdown of
-            working hours.
+          <h1 style={s.title}>🕐 Attendance Calculator</h1>
+          <p style={s.subtitle}>
+            Upload your biometric attendance export to get a full hours
+            breakdown.
           </p>
         </div>
-        {parsedData && (
-          <button style={styles.resetBtn} onClick={handleReset}>
+        {parsed && (
+          <button style={s.resetBtn} onClick={reset}>
             ↩ Upload New File
           </button>
         )}
       </div>
 
-      {/* ── Rules Panel (always visible) ────────────────────────────────── */}
+      {/* Rules panel — always visible */}
       <RulesPanel />
 
-      {/* ── Error Banner ────────────────────────────────────────────────── */}
+      {/* Error */}
       {error && (
-        <div style={styles.errorBanner}>
-          <span style={styles.errorIcon}>⚠️</span>
+        <div style={s.error}>
+          <span>⚠️</span>
           <div>
-            <strong>Parse Error</strong>
-            <p style={styles.errorMsg}>{error}</p>
+            <strong>Error parsing file</strong>
+            <p style={s.errorMsg}>{error}</p>
           </div>
-          <button style={styles.errorClose} onClick={() => setError(null)}>
+          <button style={s.errorClose} onClick={() => setError(null)}>
             ✕
           </button>
         </div>
       )}
 
-      {/* ── Upload screen (no data yet) ──────────────────────────────────── */}
-      {!parsedData && !isLoading && (
-        <div style={styles.uploadSection}>
-          <FileUpload onFileLoaded={handleFileLoaded} isLoading={isLoading} />
+      {/* Upload area */}
+      {!parsed && (
+        <div style={s.uploadWrap}>
+          <FileUpload onFile={handleFile} loading={loading} />
         </div>
       )}
 
-      {isLoading && (
-        <div style={styles.uploadSection}>
-          <FileUpload onFileLoaded={handleFileLoaded} isLoading={true} />
-        </div>
-      )}
-
-      {/* ── Main layout (after parsing) ─────────────────────────────────── */}
-      {parsedData && !isLoading && (
+      {/* Main layout */}
+      {parsed && !loading && (
         <>
           {/* File info bar */}
-          <div style={styles.fileBar}>
-            <span style={styles.fileIcon}>📄</span>
-            <span style={styles.fileName}>{fileName}</span>
-            <span style={styles.fileMeta}>
-              {parsedData.employees.length} employee
-              {parsedData.employees.length !== 1 ? "s" : ""}
+          <div style={s.fileBar}>
+            <span>📄</span>
+            <span style={s.fileName}>{fileName}</span>
+            <span style={s.fileMeta}>
+              {parsed.employees.length} employee
+              {parsed.employees.length !== 1 ? "s" : ""}
               &nbsp;·&nbsp;
-              {parsedData.rows.length} records
+              {[...parsed.punchMap.values()].reduce(
+                (n, m) => n + m.size,
+                0
+              )}{" "}
+              days with records
             </span>
           </div>
 
-          <div style={styles.layout}>
-            {/* ── Sidebar: employee list ──────────────────────────────── */}
-            <aside style={styles.sidebar}>
+          <div style={s.layout}>
+            {/* Sidebar */}
+            <aside style={s.sidebar}>
               <EmployeeSelector
-                employees={parsedData.employees}
-                selectedEmpId={selectedEmpId}
-                onSelect={setSelectedEmpId}
-                dateRange={parsedData.dateRange}
+                employees={parsed.employees}
+                selected={selectedEmp}
+                onSelect={setSelectedEmp}
+                dateRange={parsed.dateRange}
               />
             </aside>
 
-            {/* ── Main content: summary + table ──────────────────────── */}
-            <main style={styles.main}>
-              {selectedEmployee ? (
+            {/* Content */}
+            <main style={s.main}>
+              {selectedEmp ? (
                 <>
-                  <SummaryCard summary={summary} employee={selectedEmployee} />
+                  <SummaryCard
+                    summary={summary}
+                    empCode={selectedEmp}
+                    dateRange={parsed.dateRange}
+                  />
                   <AttendanceTable dayResults={dayResults} />
                 </>
               ) : (
-                <div style={styles.emptyState}>
-                  <span style={{ fontSize: 48 }}>👈</span>
+                <div style={s.empty}>
+                  <span style={{ fontSize: 44 }}>👈</span>
                   <p>Select an employee to view their attendance.</p>
                 </div>
               )}
@@ -176,13 +173,13 @@ export default function Attendance() {
   );
 }
 
-// ── Styles ─────────────────────────────────────────────────────────────────────
+// ── Styles ────────────────────────────────────────────────────────────────────
 
-const styles = {
+const s = {
   page: {
     minHeight: "100vh",
     padding: "32px 24px",
-    maxWidth: 1300,
+    maxWidth: 1320,
     margin: "0 auto",
     display: "flex",
     flexDirection: "column",
@@ -196,36 +193,26 @@ const styles = {
     flexWrap: "wrap",
     gap: 16,
   },
-  pageTitle: {
+  title: {
     fontSize: 28,
-    fontWeight: 800,
+    fontWeight: 900,
     color: "var(--text-white)",
-    display: "flex",
-    alignItems: "center",
-    gap: 10,
     margin: 0,
   },
-  emoji: { fontSize: 28 },
-  pageSubtitle: {
-    fontSize: 14,
-    color: "var(--text-muted)",
-    marginTop: 6,
-    margin: "6px 0 0",
-  },
+  subtitle: { fontSize: 14, color: "var(--text-muted)", marginTop: 6 },
 
   resetBtn: {
     padding: "10px 20px",
     background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.12)",
+    border: "1px solid rgba(255,255,255,0.1)",
     borderRadius: 8,
     color: "var(--text-highlight)",
     fontSize: 13,
     fontWeight: 600,
     cursor: "pointer",
-    flexShrink: 0,
   },
 
-  errorBanner: {
+  error: {
     display: "flex",
     alignItems: "flex-start",
     gap: 12,
@@ -235,12 +222,12 @@ const styles = {
     borderRadius: 12,
     color: "var(--text-white)",
   },
-  errorIcon: { fontSize: 20, flexShrink: 0 },
   errorMsg: {
     margin: "4px 0 0",
     fontSize: 13,
     color: "var(--text-muted)",
-    lineHeight: 1.5,
+    lineHeight: 1.6,
+    whiteSpace: "pre-line",
   },
   errorClose: {
     marginLeft: "auto",
@@ -249,14 +236,9 @@ const styles = {
     color: "var(--text-muted)",
     fontSize: 16,
     cursor: "pointer",
-    flexShrink: 0,
   },
 
-  uploadSection: {
-    maxWidth: 600,
-    margin: "0 auto",
-    width: "100%",
-  },
+  uploadWrap: { maxWidth: 620, margin: "0 auto", width: "100%" },
 
   fileBar: {
     display: "flex",
@@ -264,43 +246,35 @@ const styles = {
     gap: 10,
     padding: "10px 16px",
     background: "rgba(4,255,88,0.06)",
-    border: "1px solid rgba(4,255,88,0.2)",
+    border: "1px solid rgba(4,255,88,0.18)",
     borderRadius: 10,
     fontSize: 13,
   },
-  fileIcon: { fontSize: 16 },
-  fileName: { fontWeight: 600, color: "var(--text-white)" },
-  fileMeta: { color: "var(--text-muted)", marginLeft: "auto" },
+  fileName: { fontWeight: 700, color: "var(--text-white)" },
+  fileMeta: { color: "var(--text-muted)", marginLeft: "auto", fontSize: 12 },
 
   layout: {
     display: "grid",
-    gridTemplateColumns: "260px 1fr",
+    gridTemplateColumns: "240px 1fr",
     gap: 24,
     alignItems: "start",
   },
-
   sidebar: {
     position: "sticky",
     top: 24,
     background: "rgba(255,255,255,0.02)",
     border: "1px solid rgba(255,255,255,0.06)",
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 14,
+    padding: 14,
   },
-
-  main: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 24,
-  },
-
-  emptyState: {
+  main: { display: "flex", flexDirection: "column", gap: 24 },
+  empty: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     gap: 16,
-    padding: 64,
+    padding: 60,
     color: "var(--text-muted)",
-    fontSize: 16,
+    fontSize: 15,
   },
 };

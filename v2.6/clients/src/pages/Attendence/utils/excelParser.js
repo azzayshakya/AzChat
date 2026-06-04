@@ -1,66 +1,75 @@
+/**
+ * excelParser.js
+ *
+ * Parses the biometric system's attendance export.
+ *
+ * FILE FORMAT:
+ *   The system saves an HTML <table> with a .xls extension.
+ *   SheetJS reads this transparently — no special handling needed.
+ *
+ * COLUMNS (exact headers from the system):
+ *   Employee Code | Clock ID | Clock Name | Attendance Date | Attendance Time | Type
+ *
+ * KEY INSIGHT — each row is ONE punch swipe, NOT a day summary:
+ *   • Sorted punches per day: first = IN, last = OUT, middle pairs = OOO exits
+ *   • Date format : DD.MM.YYYY
+ *   • Time format : HH:MM:SS
+ *   • Clock 3151  : REGULAR / PERSONAL gate (main entry/exit)
+ *   • Clock 3252  : LUNCH gate (mid-day exit/entry)
+ */
+
 import * as XLSX from "xlsx";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Public API
+// ─────────────────────────────────────────────────────────────────────────────
+
 /**
- * Parses an uploaded Excel / CSV file and returns normalised attendance rows.
+ * @param {File} file  — .xls / .xlsx / .csv uploaded by user
+ * @returns {Promise<ParseResult>}
  *
- * Expected columns (case-insensitive, order-independent):
- *   EmpID / EmployeeID / Emp_ID
- *   EmpName / Name / EmployeeName
- *   Date
- *   InTime  / In  / CheckIn
- *   OutTime / Out / CheckOut
- *   FileType / Type / ShiftType  (optional)
- *
- * Returns:
- *   { rows: AttendanceRow[], employees: Employee[], dateRange: { from, to }, rawHeaders: string[] }
+ * ParseResult = {
+ *   employees : { empCode: string, clockName: string }[],
+ *   punchMap  : Map<empCode, Map<dateYYYYMMDD, { time: "HH:MM", clockId, clockName }[]>>,
+ *   dateRange : { from: string, to: string }  (YYYY-MM-DD),
+ *   rawHeaders: string[],
+ * }
  */
 export function parseAttendanceFile(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-
-    reader.onerror = () => reject(new Error("Failed to read file."));
+    reader.onerror = () => reject(new Error("Could not read the file."));
 
     reader.onload = (e) => {
       try {
         const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array", cellDates: true });
+        const workbook = XLSX.read(data, { type: "array", raw: false });
 
-        if (!workbook.SheetNames.length) {
-          reject(new Error("No sheets found in the file."));
-          return;
-        }
+        if (!workbook.SheetNames.length)
+          throw new Error("No sheets found in the file.");
 
-        // Use first sheet
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rawRows = XLSX.utils.sheet_to_json(sheet, {
-          raw: false,
-          dateNF: "yyyy-mm-dd",
-          defval: "",
-        });
+        const rawRows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-        if (!rawRows.length) {
-          reject(new Error("The sheet appears to be empty."));
-          return;
-        }
+        if (!rawRows.length) throw new Error("The sheet is empty.");
 
         const rawHeaders = Object.keys(rawRows[0]);
-        const colMap = buildColumnMap(rawHeaders);
+        const colMap = detectColumns(rawHeaders);
+        validateColumns(colMap, rawHeaders);
 
-        validateRequiredColumns(colMap);
+        const punches = rawRows
+          .map((r) => normaliseRow(r, colMap))
+          .filter(Boolean);
 
-        const rows = rawRows
-          .map((row, idx) => normaliseRow(row, colMap, idx))
-          .filter((r) => r !== null);
+        if (!punches.length)
+          throw new Error("No valid punch records found after parsing.");
 
-        if (!rows.length) {
-          reject(new Error("No valid attendance rows found after parsing."));
-          return;
-        }
-
-        const employees = buildEmployeeList(rows);
-        const dateRange = buildDateRange(rows);
-
-        resolve({ rows, employees, dateRange, rawHeaders });
+        resolve({
+          employees: buildEmployeeList(punches),
+          punchMap: buildPunchMap(punches),
+          dateRange: buildDateRange(punches),
+          rawHeaders,
+        });
       } catch (err) {
         reject(err);
       }
@@ -70,203 +79,128 @@ export function parseAttendanceFile(file) {
   });
 }
 
-// ── Internal helpers ─────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Column detection — case-insensitive alias matching
+// ─────────────────────────────────────────────────────────────────────────────
 
-const COLUMN_ALIASES = {
-  empId: [
-    "empid",
-    "employeeid",
-    "emp_id",
-    "employee_id",
-    "id",
+const ALIASES = {
+  empCode: [
+    "employee code",
     "empcode",
     "emp code",
-    "employee code",
+    "emp_code",
+    "employeecode",
+    "employee_code",
+    "empid",
+    "emp id",
   ],
-  empName: [
-    "empname",
-    "name",
-    "employeename",
-    "employee_name",
-    "employee name",
-    "full name",
-    "fullname",
-  ],
-  date: ["date", "attendancedate", "attendance_date", "day", "workdate"],
-  inTime: [
-    "intime",
-    "in",
-    "checkin",
-    "check_in",
-    "in_time",
-    "punch_in",
-    "punchin",
-    "entry time",
-    "entrytime",
-  ],
-  outTime: [
-    "outtime",
-    "out",
-    "checkout",
-    "check_out",
-    "out_time",
-    "punch_out",
-    "punchout",
-    "exit time",
-    "exittime",
-  ],
-  fileType: [
-    "filetype",
-    "type",
-    "shifttype",
-    "shift_type",
-    "category",
-    "emp type",
-    "emptype",
+  clockId: ["clock id", "clockid", "clock_id"],
+  clockName: ["clock name", "clockname", "clock_name"],
+  date: ["attendance date", "attendancedate", "attendance_date", "date"],
+  time: [
+    "attendance time",
+    "attendancetime",
+    "attendance_time",
+    "time",
+    "punch time",
   ],
 };
 
-function buildColumnMap(headers) {
+function detectColumns(headers) {
   const map = {};
   headers.forEach((h) => {
-    const key = h.toLowerCase().replace(/\s+/g, " ").trim();
-    Object.entries(COLUMN_ALIASES).forEach(([field, aliases]) => {
-      if (!map[field] && aliases.includes(key)) {
-        map[field] = h; // original header name
-      }
+    const lower = h.toLowerCase().trim();
+    Object.entries(ALIASES).forEach(([field, aliases]) => {
+      if (!map[field] && aliases.includes(lower)) map[field] = h;
     });
   });
   return map;
 }
 
-function validateRequiredColumns(colMap) {
-  const required = ["empId", "date", "inTime", "outTime"];
+function validateColumns(colMap, rawHeaders) {
+  const required = ["empCode", "date", "time"];
   const missing = required.filter((f) => !colMap[f]);
   if (missing.length) {
     throw new Error(
-      `Missing required columns: ${missing.join(", ")}.\n` +
-        `Expected column names like: EmpID, Date, InTime, OutTime.\n` +
-        `Found headers but couldn't map them.`
+      `Missing columns: ${missing.join(", ")}.\n` +
+        `File headers: ${rawHeaders.join(", ")}.\n` +
+        `Expected: "Employee Code", "Attendance Date", "Attendance Time".`
     );
   }
 }
 
-function normaliseRow(row, colMap, idx) {
-  const empId = String(row[colMap.empId] || "").trim();
-  const date = String(row[colMap.date] || "").trim();
-  const inTime = String(row[colMap.inTime] || "").trim();
-  const outTime = String(row[colMap.outTime] || "").trim();
+// ─────────────────────────────────────────────────────────────────────────────
+// Row normalisation
+// ─────────────────────────────────────────────────────────────────────────────
 
-  // Skip rows with no empId or date
-  if (!empId || !date) return null;
+function normaliseRow(row, colMap) {
+  const empCode = String(row[colMap.empCode] || "").trim();
+  const rawDate = String(row[colMap.date] || "").trim();
+  const rawTime = String(row[colMap.time] || "").trim();
+  const clockId = String(row[colMap.clockId] || "").trim();
+  const clockName = String(row[colMap.clockName] || "").trim();
 
-  const empName = colMap.empName
-    ? String(row[colMap.empName] || "").trim()
-    : empId;
-  const fileType = colMap.fileType
-    ? String(row[colMap.fileType] || "").trim()
-    : "Regular";
+  if (!empCode || !rawDate || !rawTime) return null;
 
-  // Collect any extra OOO columns: "Out1", "In1", "Out2", "In2" ...
-  const oooEntries = extractOOOEntries(row, colMap);
+  const date = parseDotDate(rawDate); // DD.MM.YYYY → YYYY-MM-DD
+  const time = toHHMM(rawTime); // HH:MM:SS  → HH:MM
 
-  return {
-    _idx: idx,
-    empId,
-    empName: empName || empId,
-    fileType,
-    date: normaliseDate(date),
-    inTime: normaliseTime(inTime),
-    outTime: normaliseTime(outTime),
-    oooEntries, // [{out, in}, ...]
-    rawDate: date,
-  };
+  if (!date || !time) return null;
+
+  return { empCode, date, time, clockId, clockName };
 }
 
-/** Support patterns like Out1/In1, Out2/In2 for mid-day exits */
-function extractOOOEntries(row, colMap) {
-  const entries = [];
-  const keys = Object.keys(row).map((k) => k.toLowerCase());
-  let i = 1;
-  while (true) {
-    const outKey = keys.find((k) => k === `out${i}` || k === `ooo_out${i}`);
-    const inKey = keys.find((k) => k === `in${i}` || k === `ooo_in${i}`);
-    if (!outKey && !inKey) break;
-    const outVal = outKey ? Object.values(row)[keys.indexOf(outKey)] : "";
-    const inVal = inKey ? Object.values(row)[keys.indexOf(inKey)] : "";
-    if (outVal || inVal) {
-      entries.push({
-        out: normaliseTime(String(outVal || "")),
-        in: normaliseTime(String(inVal || "")),
-      });
-    }
-    i++;
-    if (i > 10) break;
-  }
-  return entries;
-}
-
-/** Normalise date to YYYY-MM-DD */
-function normaliseDate(raw) {
-  if (!raw) return null;
-  // Already YYYY-MM-DD
-  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
-  // DD/MM/YYYY or DD-MM-YYYY
-  const m1 = raw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-  if (m1) return `${m1[3]}-${m1[2].padStart(2, "0")}-${m1[1].padStart(2, "0")}`;
-  // MM/DD/YYYY
-  const m2 = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (m2) return `${m2[3]}-${m2[1].padStart(2, "0")}-${m2[2].padStart(2, "0")}`;
-  // Try native Date parse
+/** DD.MM.YYYY → YYYY-MM-DD */
+function parseDotDate(raw) {
+  const m = raw.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if (m) return `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
   const d = new Date(raw);
-  if (!isNaN(d)) return d.toISOString().slice(0, 10);
-  return raw;
+  return isNaN(d) ? null : d.toISOString().slice(0, 10);
 }
 
-/** Normalise time to HH:MM (24h) */
-export function normaliseTime(raw) {
-  if (!raw || raw === "--" || raw === "-") return null;
-  raw = raw.trim();
-
-  // Already HH:MM or HH:MM:SS
-  const m24 = raw.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
-  if (m24) return `${m24[1].padStart(2, "0")}:${m24[2]}`;
-
-  // 12-hour  e.g. "9:30 AM"
-  const m12 = raw.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-  if (m12) {
-    let h = parseInt(m12[1], 10);
-    const min = m12[2];
-    const ap = m12[3].toUpperCase();
-    if (ap === "PM" && h !== 12) h += 12;
-    if (ap === "AM" && h === 12) h = 0;
-    return `${String(h).padStart(2, "0")}:${min}`;
-  }
-
-  return null;
+/** HH:MM:SS or HH:MM → HH:MM */
+export function toHHMM(raw) {
+  const m = raw.trim().match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+  return m ? `${m[1].padStart(2, "0")}:${m[2]}` : null;
 }
 
-/** Build unique employee list */
-function buildEmployeeList(rows) {
+// ─────────────────────────────────────────────────────────────────────────────
+// Build data structures
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * punchMap: Map<empCode → Map<date → punch[]>>
+ * Punches within each day are sorted chronologically.
+ */
+function buildPunchMap(punches) {
   const map = new Map();
-  rows.forEach((r) => {
-    if (!map.has(r.empId)) {
-      map.set(r.empId, {
-        empId: r.empId,
-        empName: r.empName,
-        fileType: r.fileType,
-      });
-    }
+
+  punches.forEach(({ empCode, date, time, clockId, clockName }) => {
+    if (!map.has(empCode)) map.set(empCode, new Map());
+    const empMap = map.get(empCode);
+    if (!empMap.has(date)) empMap.set(date, []);
+    empMap.get(date).push({ time, clockId, clockName });
   });
-  return Array.from(map.values()).sort((a, b) =>
-    a.empId.localeCompare(b.empId)
+
+  // Sort punches within each day by time
+  map.forEach((empMap) =>
+    empMap.forEach((dayPunches) =>
+      dayPunches.sort((a, b) => a.time.localeCompare(b.time))
+    )
   );
+
+  return map;
 }
 
-function buildDateRange(rows) {
-  const dates = rows
-    .map((r) => r.date)
-    .filter(Boolean)
-    .sort();
+function buildEmployeeList(punches) {
+  const seen = new Map();
+  punches.forEach(({ empCode, clockName }) => {
+    if (!seen.has(empCode)) seen.set(empCode, { empCode, clockName });
+  });
+  return [...seen.values()].sort((a, b) => a.empCode.localeCompare(b.empCode));
+}
+
+function buildDateRange(punches) {
+  const dates = [...new Set(punches.map((p) => p.date))].sort();
   return { from: dates[0] || null, to: dates[dates.length - 1] || null };
 }

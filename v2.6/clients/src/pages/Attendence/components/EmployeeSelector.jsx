@@ -2,42 +2,39 @@ import React from "react";
 
 export default function EmployeeSelector({
   employees,
-  selectedEmpId,
+  selected,
   onSelect,
   dateRange,
 }) {
   return (
-    <div style={styles.wrapper}>
+    <div style={s.wrap}>
       {/* Date range badge */}
       {dateRange?.from && (
-        <div style={styles.dateRange}>
-          <span style={styles.drIcon}>📅</span>
+        <div style={s.dateRange}>
+          <span>📅</span>
           <span>
-            {fmt(dateRange.from)} &nbsp;→&nbsp; {fmt(dateRange.to)}
+            {fmt(dateRange.from)} → {fmt(dateRange.to)}
           </span>
         </div>
       )}
 
-      <p style={styles.label}>Select Employee</p>
+      <p style={s.label}>Employees</p>
 
-      <div style={styles.list}>
+      <div style={s.list}>
         {employees.map((emp) => {
-          const active = emp.empId === selectedEmpId;
+          const active = emp.empCode === selected;
           return (
             <button
-              key={emp.empId}
-              style={{ ...styles.card, ...(active ? styles.cardActive : {}) }}
-              onClick={() => onSelect(emp.empId)}
+              key={emp.empCode}
+              style={{ ...s.card, ...(active ? s.cardActive : {}) }}
+              onClick={() => onSelect(emp.empCode)}
             >
-              <span style={styles.avatar}>{getInitials(emp.empName)}</span>
-              <span style={styles.info}>
-                <span style={styles.name}>{emp.empName}</span>
-                <span style={styles.meta}>
-                  ID: {emp.empId}
-                  {emp.fileType ? ` · ${emp.fileType}` : ""}
-                </span>
+              <span style={s.avatar}>{initials(emp.empCode)}</span>
+              <span style={s.info}>
+                <span style={s.code}>{emp.empCode}</span>
+                <span style={s.type}>{shortName(emp.clockName)}</span>
               </span>
-              {active && <span style={styles.tick}>✓</span>}
+              {active && <span style={s.tick}>✓</span>}
             </button>
           );
         })}
@@ -46,102 +43,73 @@ export default function EmployeeSelector({
   );
 }
 
-function getInitials(name) {
-  if (!name) return "?";
-  return name
-    .split(" ")
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase() || "")
-    .join("");
-}
+const initials = (code) => code?.slice(-3) || "?";
+const shortName = (n = "") => n.replace(/CRL GAD/gi, "").trim() || "Employee";
+const fmt = (d) =>
+  d
+    ? new Date(d + "T00:00:00").toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    : "—";
 
-function fmt(dateStr) {
-  if (!dateStr) return "—";
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-const styles = {
-  wrapper: { display: "flex", flexDirection: "column", gap: 12 },
-
+const s = {
+  wrap: { display: "flex", flexDirection: "column", gap: 10 },
   dateRange: {
     display: "flex",
     alignItems: "center",
     gap: 8,
-    padding: "10px 14px",
+    padding: "9px 13px",
     background: "rgba(102,126,234,0.1)",
-    border: "1px solid rgba(102,126,234,0.25)",
-    borderRadius: 10,
-    fontSize: 13,
+    border: "1px solid rgba(102,126,234,0.22)",
+    borderRadius: 9,
+    fontSize: 12,
     color: "var(--text-highlight)",
     fontWeight: 500,
   },
-  drIcon: { fontSize: 16 },
-
   label: {
-    fontSize: 12,
-    fontWeight: 600,
+    fontSize: 11,
+    fontWeight: 700,
     color: "var(--text-muted)",
     textTransform: "uppercase",
     letterSpacing: "1px",
     margin: 0,
   },
-
-  list: { display: "flex", flexDirection: "column", gap: 8 },
-
+  list: { display: "flex", flexDirection: "column", gap: 7 },
   card: {
     display: "flex",
     alignItems: "center",
-    gap: 12,
-    padding: "12px 14px",
+    gap: 10,
+    padding: "11px 13px",
     background: "rgba(255,255,255,0.03)",
     border: "1px solid rgba(255,255,255,0.06)",
     borderRadius: 10,
     cursor: "pointer",
-    textAlign: "left",
-    transition: "all 0.15s ease",
-    color: "var(--text-white)",
     width: "100%",
+    textAlign: "left",
+    color: "var(--text-white)",
+    transition: "all .15s",
   },
   cardActive: {
     background: "rgba(102,126,234,0.15)",
-    border: "1px solid rgba(102,126,234,0.4)",
+    border: "1px solid rgba(102,126,234,0.38)",
   },
-
   avatar: {
-    width: 36,
-    height: 36,
+    width: 34,
+    height: 34,
     borderRadius: "50%",
     background: "linear-gradient(135deg,#667eea,#764ba2)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: 13,
-    fontWeight: 700,
+    fontSize: 11,
+    fontWeight: 800,
     color: "#fff",
     flexShrink: 0,
   },
-
-  info: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 2,
-    flex: 1,
-    minWidth: 0,
-  },
-  name: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: "var(--text-white)",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  },
-  meta: { fontSize: 12, color: "var(--text-muted)" },
-
-  tick: { color: "#667eea", fontWeight: 700, fontSize: 16, flexShrink: 0 },
+  info: { display: "flex", flexDirection: "column", gap: 2, flex: 1 },
+  code: { fontSize: 13, fontWeight: 700, color: "var(--text-white)" },
+  type: { fontSize: 11, color: "var(--text-muted)" },
+  tick: { color: "#667eea", fontWeight: 800, fontSize: 15, flexShrink: 0 },
 };

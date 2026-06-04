@@ -76,4 +76,44 @@ VITE_STATUS_REPLY_MAX_LEN=200
 # 60000 = 1 minute
 VITE_STATUS_POLL_MS=60000, 
 
- 
+ backend : 
+
+i want to optimize my backend  for production , and idutustrey level  male it , tell me about the files , and then suggest me the improvements , also you have to keep the  things in env , like if they should be controlled diretly , keep a fallback values to , utizie the env in this way ,  PORT=8001
+suggest me  the changes  , so that my backend will be nore good ,with reason 
+# HOST=0.0.0.0
+HOST=localhost
+
+# CORS
+CORS_ORIGIN=*
+
+# DB
+DB_FILE=db.json
+
+
+# SECURITY
+BCRYPT_SALT_ROUNDS=10
+
+APP_NAME=AZ_CHAT
+APP_ENV=development
+
+
+JWT_SECRET=your_secret
+
+JWT_EXPIRES_IN=7d
+
+BCRYPT_SALT_ROUNDS=10
+
+DEFAULT_USER_ROLE=user
+
+AUTH_RATE_LIMIT_WINDOW_MS=900000
+
+AUTH_RATE_LIMIT_MAX_REQUESTS=10
+
+
+//status 
+STATUS_EXPIRY_HOURS=24
+MAX_STATUS_TEXT_LENGTH=280
+MAX_STATUSES_PER_USER=10
+DEFAULT_STATUS_BG=#1a1540
+DEFAULT_STATUS_TEXT_COLOR=#ffffff
+STATUS_CLEANUP_INTERVAL_MINUTES=30

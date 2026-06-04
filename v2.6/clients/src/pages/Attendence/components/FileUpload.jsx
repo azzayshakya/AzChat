@@ -1,65 +1,57 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 
-export default function FileUpload({ onFileLoaded, isLoading }) {
-  const [dragging, setDragging] = useState(false);
+export default function FileUpload({ onFile, loading }) {
   const inputRef = useRef();
+  const [dragging, setDrag] = useState(false);
 
-  const handleFile = (file) => {
+  const handle = (file) => {
     if (!file) return;
     const ext = file.name.split(".").pop().toLowerCase();
-    if (!["xlsx", "xls", "csv"].includes(ext)) {
-      alert("Please upload an Excel (.xlsx / .xls) or CSV file.");
+    if (!["xls", "xlsx", "csv"].includes(ext)) {
+      alert("Please upload an Excel (.xls / .xlsx) or CSV file.");
       return;
     }
-    onFileLoaded(file);
+    onFile(file);
   };
-
-  const onDrop = (e) => {
-    e.preventDefault();
-    setDragging(false);
-    handleFile(e.dataTransfer.files[0]);
-  };
-
-  const onInputChange = (e) => handleFile(e.target.files[0]);
 
   return (
-    <div style={styles.wrapper}>
+    <div style={s.wrap}>
       <div
-        style={{
-          ...styles.dropzone,
-          ...(dragging ? styles.dropzoneDragging : {}),
-        }}
+        style={{ ...s.zone, ...(dragging ? s.zoneDrag : {}) }}
+        onClick={() => inputRef.current?.click()}
         onDragOver={(e) => {
           e.preventDefault();
-          setDragging(true);
+          setDrag(true);
         }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={onDrop}
-        onClick={() => inputRef.current?.click()}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+        onDragLeave={() => setDrag(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDrag(false);
+          handle(e.dataTransfer.files[0]);
+        }}
       >
         <input
           ref={inputRef}
           type="file"
-          accept=".xlsx,.xls,.csv"
+          accept=".xls,.xlsx,.csv"
           style={{ display: "none" }}
-          onChange={onInputChange}
+          onChange={(e) => handle(e.target.files[0])}
         />
 
-        {isLoading ? (
-          <div style={styles.loadingState}>
-            <div style={styles.spinner} />
-            <p style={styles.loadingText}>Parsing file…</p>
+        {loading ? (
+          <div style={s.center}>
+            <div style={s.spinner} />
+            <p style={s.sub}>Parsing file…</p>
           </div>
         ) : (
-          <div style={styles.idleState}>
-            <div style={styles.icon}>📊</div>
-            <p style={styles.title}>Drop your attendance file here</p>
-            <p style={styles.subtitle}>Supports .xlsx, .xls, .csv</p>
+          <div style={s.center}>
+            <div style={s.icon}>📊</div>
+            <p style={s.title}>Drop your attendance file here</p>
+            <p style={s.sub}>
+              Supports .xls · .xlsx · .csv exported from biometric system
+            </p>
             <button
-              style={styles.btn}
+              style={s.btn}
               onClick={(e) => {
                 e.stopPropagation();
                 inputRef.current?.click();
@@ -71,51 +63,53 @@ export default function FileUpload({ onFileLoaded, isLoading }) {
         )}
       </div>
 
-      <div style={styles.hint}>
-        <span style={styles.hintIcon}>💡</span>
+      {/* format hint */}
+      <div style={s.hint}>
+        <span>💡</span>
         <span>
-          Required columns: <strong>EmpID, Date, InTime, OutTime</strong>.
-          Optional: EmpName, FileType, Out1/In1 (for mid-day exits).
+          Expected columns:{" "}
+          <b>
+            Employee Code, Clock ID, Clock Name, Attendance Date, Attendance
+            Time
+          </b>
+          <br />
+          Each row = one punch swipe. Multiple punches per day are supported.
         </span>
       </div>
     </div>
   );
 }
 
-const styles = {
-  wrapper: { width: "100%" },
-
-  dropzone: {
-    border: "2px dashed rgba(102,126,234,0.4)",
+const s = {
+  wrap: { width: "100%" },
+  zone: {
+    border: "2px dashed rgba(102,126,234,0.35)",
     borderRadius: 16,
-    padding: "48px 32px",
+    padding: "52px 32px",
     textAlign: "center",
     cursor: "pointer",
     background: "rgba(102,126,234,0.04)",
-    transition: "all 0.2s ease",
-    outline: "none",
+    transition: "all .2s",
   },
-  dropzoneDragging: {
+  zoneDrag: {
     border: "2px dashed #667eea",
     background: "rgba(102,126,234,0.1)",
     transform: "scale(1.01)",
   },
-
-  idleState: {
+  center: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     gap: 12,
   },
-  icon: { fontSize: 48 },
+  icon: { fontSize: 52 },
   title: {
     fontSize: 18,
-    fontWeight: 600,
+    fontWeight: 700,
     color: "var(--text-white)",
     margin: 0,
   },
-  subtitle: { fontSize: 14, color: "var(--text-muted)", margin: 0 },
-
+  sub: { fontSize: 13, color: "var(--text-muted)", margin: 0, lineHeight: 1.6 },
   btn: {
     marginTop: 8,
     padding: "10px 28px",
@@ -124,39 +118,27 @@ const styles = {
     border: "none",
     borderRadius: 8,
     fontSize: 14,
-    fontWeight: 600,
+    fontWeight: 700,
     cursor: "pointer",
-    letterSpacing: "0.5px",
-  },
-
-  loadingState: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 16,
   },
   spinner: {
-    width: 36,
-    height: 36,
+    width: 38,
+    height: 38,
     border: "3px solid rgba(102,126,234,0.2)",
     borderTop: "3px solid #667eea",
     borderRadius: "50%",
-    animation: "spin 0.8s linear infinite",
+    animation: "spin .8s linear infinite",
   },
-  loadingText: { color: "var(--text-muted)", margin: 0 },
-
   hint: {
     display: "flex",
-    alignItems: "flex-start",
-    gap: 8,
-    marginTop: 16,
+    gap: 10,
+    marginTop: 14,
     padding: "12px 16px",
-    background: "rgba(167,139,250,0.08)",
-    border: "1px solid rgba(167,139,250,0.2)",
+    background: "rgba(167,139,250,0.07)",
+    border: "1px solid rgba(167,139,250,0.18)",
     borderRadius: 10,
-    fontSize: 13,
+    fontSize: 12,
     color: "var(--text-muted)",
-    lineHeight: 1.5,
+    lineHeight: 1.6,
   },
-  hintIcon: { fontSize: 16, flexShrink: 0 },
 };

@@ -1,82 +1,76 @@
 import React, { useState } from "react";
-import { minutesToHumanTime } from "../utils/attendanceCalculator.js";
+import { toHHMM, toHuman } from "../utils/attendanceCalculator.js";
+import { RULES } from "../attendanceRules.js";
 
 export default function AttendanceTable({ dayResults }) {
-  const [expandedRow, setExpandedRow] = useState(null);
-
+  const [expanded, setExpanded] = useState(null);
   if (!dayResults?.length) return null;
 
-  const toggleRow = (idx) =>
-    setExpandedRow((prev) => (prev === idx ? null : idx));
+  const toggle = (i) => setExpanded((p) => (p === i ? null : i));
 
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.tableHeader}>
-        <h3 style={styles.title}>Day-wise Attendance</h3>
-        <span style={styles.hint}>
-          Click any row to see calculation breakdown
+    <div style={s.wrap}>
+      <div style={s.titleRow}>
+        <h3 style={s.title}>Day-wise Attendance</h3>
+        <span style={s.hint}>
+          Click any row to see how hours were calculated
         </span>
       </div>
 
-      <div style={styles.tableScroll}>
-        <table style={styles.table}>
+      <div style={s.scroll}>
+        <table style={s.table}>
           <thead>
             <tr>
               {COLS.map((c) => (
-                <th key={c.key} style={{ ...styles.th, ...c.thStyle }}>
-                  {c.label}
+                <th key={c} style={s.th}>
+                  {c}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {dayResults.map((day, idx) => (
-              <React.Fragment key={`${day.date}-${idx}`}>
+            {dayResults.map((day, i) => (
+              <React.Fragment key={day.dateStr}>
                 <tr
                   style={{
-                    ...styles.tr,
+                    ...s.tr,
                     background:
-                      expandedRow === idx
+                      expanded === i
                         ? "rgba(102,126,234,0.1)"
-                        : idx % 2 === 0
+                        : i % 2 === 0
                           ? "rgba(255,255,255,0.015)"
                           : "transparent",
                     cursor: "pointer",
                   }}
-                  onClick={() => toggleRow(idx)}
+                  onClick={() => toggle(i)}
                 >
-                  <td style={styles.td}>{fmtDate(day.date)}</td>
-                  <td style={styles.td}>{day.inTime || "—"}</td>
-                  <td style={styles.td}>{day.outTime || "—"}</td>
-                  <td style={styles.td}>{renderOOO(day)}</td>
-                  <td style={styles.td}>
-                    {minutesToHumanTime(day.totalMinutes)}
-                  </td>
-                  <td style={styles.td}>
-                    {day.oooDeductedMinutes > 0 ? (
-                      <span style={{ color: "#ff4d4f" }}>
-                        −{minutesToHumanTime(day.oooDeductedMinutes)}
+                  <td style={s.td}>{fmtDate(day.dateStr)}</td>
+                  <td style={s.td}>{day.inTime || "—"}</td>
+                  <td style={s.td}>{day.outTime || "—"}</td>
+                  <td style={s.td}>{renderOOO(day.oooPairs)}</td>
+                  <td style={s.td}>{toHHMM(day.grossMins)}</td>
+                  <td style={s.td}>
+                    {day.totalOOODeductedMins > 0 ? (
+                      <span style={{ color: "#faad14" }}>
+                        −{toHHMM(day.totalOOODeductedMins)}
                       </span>
                     ) : (
                       "—"
                     )}
                   </td>
-                  <td style={{ ...styles.td, fontWeight: 700 }}>
-                    {minutesToHumanTime(day.effectiveMinutes)}
+                  <td
+                    style={{
+                      ...s.td,
+                      fontWeight: 700,
+                      color: "var(--text-white)",
+                    }}
+                  >
+                    {toHHMM(day.effectiveMins)}
                   </td>
-                  <td style={styles.td}>
-                    {day.overtimeMinutes > 0 ? (
-                      <span style={{ color: "#00e5ff" }}>
-                        +{minutesToHumanTime(day.overtimeMinutes)}
-                      </span>
-                    ) : (
-                      "—"
-                    )}
-                  </td>
-                  <td style={styles.td}>
+                  <td style={s.td}>
                     <span
                       style={{
-                        ...styles.statusBadge,
+                        ...s.badge,
                         background: day.statusColor + "22",
                         color: day.statusColor,
                         border: `1px solid ${day.statusColor}44`,
@@ -85,22 +79,21 @@ export default function AttendanceTable({ dayResults }) {
                       {day.status}
                     </span>
                   </td>
-                  <td
-                    style={{
-                      ...styles.td,
-                      color: "var(--text-muted)",
-                      fontSize: 16,
-                    }}
-                  >
-                    {expandedRow === idx ? "▲" : "▼"}
+                  <td style={{ ...s.td, color: "var(--text-muted)" }}>
+                    {expanded === i ? "▲" : "▼"}
                   </td>
                 </tr>
 
-                {/* Expandable breakdown row */}
-                {expandedRow === idx && (
+                {expanded === i && (
                   <tr>
-                    <td colSpan={COLS.length} style={styles.breakdownCell}>
-                      <BreakdownPanel day={day} />
+                    <td
+                      colSpan={COLS.length}
+                      style={{
+                        padding: 0,
+                        borderBottom: "1px solid rgba(102,126,234,0.2)",
+                      }}
+                    >
+                      <Breakdown day={day} />
                     </td>
                   </tr>
                 )}
@@ -113,57 +106,51 @@ export default function AttendanceTable({ dayResults }) {
   );
 }
 
-function renderOOO(day) {
-  if (!day.oooEntries?.length) return "—";
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      {day.oooEntries.map((e, i) => (
-        <span key={i} style={{ fontSize: 12, color: "#faad14" }}>
-          {e.out || "?"} → {e.in || "?"}
-        </span>
-      ))}
-    </div>
-  );
-}
+// ── Breakdown panel ───────────────────────────────────────────────────────────
 
-function BreakdownPanel({ day }) {
+function Breakdown({ day }) {
+  const typeStyle = {
+    good: { color: "#04ff58" },
+    bad: { color: "#ff4d4f" },
+    warn: { color: "#faad14" },
+    highlight: { color: "#667eea" },
+    neutral: { color: "var(--text-highlight)" },
+    info: { color: "#a78bfa" },
+  };
+
   return (
     <div style={bd.panel}>
-      <div style={bd.header}>
-        <span style={bd.icon}>🔍</span>
-        How this day was calculated
-      </div>
+      <div style={bd.header}>🔍 Calculation Breakdown</div>
+
+      {/* All punches for this day */}
+      {day.punches?.length > 0 && (
+        <div style={bd.punchRow}>
+          <span style={bd.punchLabel}>Raw Punches:</span>
+          {day.punches.map((p, i) => (
+            <span key={i} style={bd.punch}>
+              {p.time}
+              <span style={bd.punchNote}>
+                {i === 0
+                  ? " (IN)"
+                  : i === day.punches.length - 1
+                    ? " (OUT)"
+                    : " (OOO)"}
+              </span>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Step-by-step breakdown */}
       <div style={bd.steps}>
         {day.breakdown?.map((step, i) => (
-          <div
-            key={i}
-            style={{
-              ...bd.step,
-              ...(step.highlight ? bd.stepHL : {}),
-              ...(step.status ? bd.stepStatus : {}),
-            }}
-          >
-            <div style={bd.stepLabel}>{step.label}</div>
-            <div style={bd.stepDetail}>{step.detail}</div>
+          <div key={i} style={bd.step}>
+            <span style={bd.stepLabel}>{step.label}</span>
+            <span style={bd.stepDetail}>{step.detail}</span>
             {step.value && (
-              <div
-                style={{
-                  ...bd.stepValue,
-                  color: step.good
-                    ? "#04ff58"
-                    : step.deduct
-                      ? "#ff4d4f"
-                      : step.warn
-                        ? "#faad14"
-                        : step.status
-                          ? day.statusColor
-                          : step.highlight
-                            ? "#667eea"
-                            : "var(--text-highlight)",
-                }}
-              >
+              <span style={{ ...bd.stepVal, ...(typeStyle[step.type] || {}) }}>
                 {step.value}
-              </div>
+              </span>
             )}
           </div>
         ))}
@@ -172,37 +159,51 @@ function BreakdownPanel({ day }) {
   );
 }
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
 const COLS = [
-  { key: "date", label: "Date", thStyle: { minWidth: 110 } },
-  { key: "in", label: "In Time", thStyle: {} },
-  { key: "out", label: "Out Time", thStyle: {} },
-  { key: "ooo", label: "OOO (Mid-day)", thStyle: { minWidth: 120 } },
-  { key: "gross", label: "Gross Hrs", thStyle: {} },
-  { key: "deduct", label: "OOO Deduction", thStyle: {} },
-  { key: "effective", label: "Effective Hrs", thStyle: {} },
-  { key: "ot", label: "Overtime", thStyle: {} },
-  { key: "status", label: "Status", thStyle: { minWidth: 100 } },
-  { key: "expand", label: "", thStyle: { width: 30 } },
+  "Date",
+  "In",
+  "Out",
+  "OOO (Mid-day)",
+  "Gross",
+  "OOO Deducted",
+  "Effective",
+  "Status",
+  "",
 ];
 
 function fmtDate(d) {
   if (!d) return "—";
-  const dt = new Date(d + "T00:00:00");
-  return dt.toLocaleDateString("en-IN", {
+  return new Date(d + "T00:00:00").toLocaleDateString("en-IN", {
     weekday: "short",
     day: "2-digit",
     month: "short",
   });
 }
 
-const styles = {
-  wrapper: { display: "flex", flexDirection: "column", gap: 0 },
+function renderOOO(pairs) {
+  if (!pairs?.length)
+    return <span style={{ color: "var(--text-muted)" }}>—</span>;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      {pairs.map((p, i) => (
+        <span key={i} style={{ fontSize: 11, color: "#faad14" }}>
+          {p.out} → {p.in}
+        </span>
+      ))}
+    </div>
+  );
+}
 
-  tableHeader: {
+// ── Styles ────────────────────────────────────────────────────────────────────
+
+const s = {
+  wrap: { display: "flex", flexDirection: "column", gap: 12 },
+  titleRow: {
     display: "flex",
     alignItems: "baseline",
-    gap: 16,
-    marginBottom: 12,
+    gap: 14,
     flexWrap: "wrap",
   },
   title: {
@@ -212,109 +213,94 @@ const styles = {
     margin: 0,
   },
   hint: { fontSize: 12, color: "var(--text-muted)" },
-
-  tableScroll: { overflowX: "auto" },
-
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    fontSize: 13,
-  },
-
+  scroll: { overflowX: "auto" },
+  table: { width: "100%", borderCollapse: "collapse", fontSize: 13 },
   th: {
-    padding: "10px 14px",
+    padding: "10px 13px",
     textAlign: "left",
-    fontWeight: 600,
     fontSize: 11,
+    fontWeight: 700,
     color: "var(--text-muted)",
     textTransform: "uppercase",
-    letterSpacing: "0.5px",
+    letterSpacing: ".4px",
     borderBottom: "1px solid rgba(255,255,255,0.08)",
     background: "rgba(255,255,255,0.02)",
     whiteSpace: "nowrap",
   },
-
-  tr: { transition: "background 0.15s ease" },
-
+  tr: { transition: "background .15s" },
   td: {
-    padding: "12px 14px",
+    padding: "11px 13px",
     color: "var(--text-highlight)",
     borderBottom: "1px solid rgba(255,255,255,0.04)",
     whiteSpace: "nowrap",
   },
-
-  statusBadge: {
+  badge: {
     padding: "3px 10px",
     borderRadius: 20,
     fontSize: 11,
     fontWeight: 700,
-    letterSpacing: "0.3px",
-  },
-
-  breakdownCell: {
-    padding: 0,
-    borderBottom: "1px solid rgba(102,126,234,0.2)",
   },
 };
 
 const bd = {
   panel: {
     padding: "16px 24px 20px",
-    background: "rgba(10,10,30,0.6)",
+    background: "rgba(8,8,25,0.7)",
     borderLeft: "3px solid #667eea",
   },
   header: {
+    fontSize: 12,
+    fontWeight: 800,
+    color: "#667eea",
+    textTransform: "uppercase",
+    letterSpacing: ".6px",
+    marginBottom: 14,
+  },
+  punchRow: {
     display: "flex",
     alignItems: "center",
+    flexWrap: "wrap",
     gap: 8,
-    fontSize: 13,
-    fontWeight: 700,
-    color: "#667eea",
     marginBottom: 14,
-    textTransform: "uppercase",
-    letterSpacing: "0.5px",
+    padding: "8px 12px",
+    background: "rgba(102,126,234,0.07)",
+    border: "1px solid rgba(102,126,234,0.15)",
+    borderRadius: 8,
   },
-  icon: { fontSize: 16 },
-  steps: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 8,
+  punchLabel: {
+    fontSize: 11,
+    fontWeight: 700,
+    color: "var(--text-muted)",
+    marginRight: 4,
   },
+  punch: { fontSize: 13, fontWeight: 600, color: "var(--text-white)" },
+  punchNote: { fontSize: 10, color: "var(--text-muted)", fontWeight: 400 },
+
+  steps: { display: "flex", flexDirection: "column", gap: 7 },
   step: {
     display: "flex",
     alignItems: "baseline",
-    gap: 12,
     flexWrap: "wrap",
+    gap: 10,
     padding: "8px 12px",
-    borderRadius: 8,
     background: "rgba(255,255,255,0.02)",
     border: "1px solid rgba(255,255,255,0.04)",
-  },
-  stepHL: {
-    background: "rgba(102,126,234,0.08)",
-    border: "1px solid rgba(102,126,234,0.2)",
-  },
-  stepStatus: {
-    background: "rgba(4,255,88,0.05)",
-    border: "1px solid rgba(4,255,88,0.15)",
+    borderRadius: 7,
   },
   stepLabel: {
-    minWidth: 130,
-    fontSize: 12,
-    fontWeight: 700,
+    minWidth: 140,
+    fontSize: 11,
+    fontWeight: 800,
     color: "var(--text-muted)",
     textTransform: "uppercase",
-    letterSpacing: "0.4px",
+    letterSpacing: ".4px",
+    flexShrink: 0,
   },
   stepDetail: {
     flex: 1,
-    fontSize: 13,
+    fontSize: 12,
     color: "var(--text-highlight)",
+    lineHeight: 1.5,
   },
-  stepValue: {
-    fontWeight: 700,
-    fontSize: 14,
-    minWidth: 80,
-    textAlign: "right",
-  },
+  stepVal: { fontSize: 13, fontWeight: 800, minWidth: 70, textAlign: "right" },
 };

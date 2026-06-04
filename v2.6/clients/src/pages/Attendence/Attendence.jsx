@@ -177,8 +177,9 @@ export default function Attendance() {
 
 const s = {
   page: {
-    minHeight: "100vh",
-    padding: "32px 24px",
+    height: "100vh",
+    padding: "32px 24px 0",
+    overflow: "hidden",
     maxWidth: 1320,
     margin: "0 auto",
     display: "flex",
@@ -258,6 +259,8 @@ const s = {
     gridTemplateColumns: "240px 1fr",
     gap: 24,
     alignItems: "start",
+    height: "calc(100vh - 260px)", // full viewport minus top content
+    minHeight: 500,
   },
   sidebar: {
     position: "sticky",
@@ -266,8 +269,20 @@ const s = {
     border: "1px solid rgba(255,255,255,0.06)",
     borderRadius: 14,
     padding: 14,
+    maxHeight: "calc(100vh - 280px)",
+    overflowY: "auto",
   },
-  main: { display: "flex", flexDirection: "column", gap: 24 },
+  main: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 24,
+    height: "100%",
+    overflowY: "auto",
+    paddingRight: 4,
+    // custom scrollbar styling
+    scrollbarWidth: "thin",
+    scrollbarColor: "rgba(102,126,234,0.4) transparent",
+  },
   empty: {
     display: "flex",
     flexDirection: "column",

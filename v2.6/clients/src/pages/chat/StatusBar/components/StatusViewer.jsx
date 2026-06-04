@@ -497,6 +497,7 @@ export default function StatusViewer({
       {/* ── Delete confirmation ───────────────────────────────────── */}
       <Modal
         open={!!deleteConfirm}
+        zIndex={3000}
         title={
           <span style={{ color: "var(--text-white)" }}>Delete Status?</span>
         }

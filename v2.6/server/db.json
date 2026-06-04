@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-06-04T13:02:27.181Z",
+      "lastSeen": "2026-06-04T13:43:03.856Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -2316,13 +2316,6 @@
   ],
   "groups": [
     {
-      "id": "47fd79b7-f341-4509-9459-17f06b40bc84",
-      "name": "AFSAC",
-      "description": "afsac",
-      "ownerId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "createdAt": "2026-05-21T06:28:26.173Z"
-    },
-    {
       "id": "7c012f1f-467a-46fc-8279-83a788ae46b4",
       "name": "UI Query",
       "description": "",
@@ -2335,44 +2328,9 @@
       "description": "",
       "ownerId": "1d4a0346-02be-49c2-8974-23e5954ba7d6",
       "createdAt": "2026-05-21T08:26:02.247Z"
-    },
-    {
-      "id": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
-      "name": "Remaing Bugs",
-      "description": "Remaing Bugs",
-      "ownerId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "createdAt": "2026-05-22T15:20:26.053Z"
     }
   ],
   "groupMembers": [
-    {
-      "id": "8e8a19d4-2d9d-4c91-a009-52cfa0ffef61",
-      "groupId": "47fd79b7-f341-4509-9459-17f06b40bc84",
-      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "role": "owner",
-      "joinedAt": "2026-05-21T06:28:26.173Z"
-    },
-    {
-      "id": "c9f7def0-b905-437f-a4d3-8aa3a9f6d14f",
-      "groupId": "47fd79b7-f341-4509-9459-17f06b40bc84",
-      "userId": "653c1ea1-acb8-46b3-918e-8416c8936584",
-      "role": "admin",
-      "joinedAt": "2026-05-21T06:28:34.410Z"
-    },
-    {
-      "id": "21b3c48a-8019-4ed5-a73d-a19a7ef7396d",
-      "groupId": "47fd79b7-f341-4509-9459-17f06b40bc84",
-      "userId": "71057af1-9259-42be-b8fb-01272fc32c81",
-      "role": "admin",
-      "joinedAt": "2026-05-21T06:28:41.657Z"
-    },
-    {
-      "id": "6c4e9669-f8df-43e4-9f69-4877c6ed3c63",
-      "groupId": "47fd79b7-f341-4509-9459-17f06b40bc84",
-      "userId": "94fed814-ac87-47ba-82af-4e5add5e005e",
-      "role": "admin",
-      "joinedAt": "2026-05-21T06:29:40.426Z"
-    },
     {
       "id": "c24fea8f-ed49-4e84-a3ac-14bc0c873a7e",
       "groupId": "7c012f1f-467a-46fc-8279-83a788ae46b4",
@@ -2407,27 +2365,26 @@
       "userId": "697cebb8-16be-4978-8350-6b7afb186e9c",
       "role": "member",
       "joinedAt": "2026-05-21T08:26:23.441Z"
-    },
-    {
-      "id": "46e8a882-7d2d-4b19-b8d2-ae25155632c1",
-      "groupId": "9c6cd201-ea7f-4ba8-816d-c9170d72ca5a",
-      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "role": "owner",
-      "joinedAt": "2026-05-22T15:20:26.053Z"
     }
   ],
   "userQueries": [],
   "statuses": [
     {
-      "id": "b599957d-f667-4d8a-8568-100e06be5c0c",
+      "id": "aae06419-54f9-4034-88f1-a7d2e94e96a9",
       "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "text": "new",
-      "file": null,
-      "backgroundColor": "#1a1540",
-      "textColor": "#a78bfa",
+      "text": "New Version (v2.6) Release .",
+      "file": {
+        "name": "default_male_profile_pic.jpg",
+        "mimetype": "image/webp",
+        "category": "image",
+        "size": 232384,
+        "url": "/uploads/images/1780580678294-f0ce0335f4e4.webp"
+      },
+      "backgroundColor": "#38192c",
+      "textColor": "#d07099",
       "viewers": [],
-      "createdAt": "2026-06-04T12:37:09.508Z",
-      "expiresAt": "2026-06-05T12:37:09.504Z"
+      "createdAt": "2026-06-04T13:44:38.295Z",
+      "expiresAt": "2026-06-05T13:44:38.295Z"
     }
   ]
 }

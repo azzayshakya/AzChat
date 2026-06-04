@@ -1,0 +1,119 @@
+i want to optimze my files , wher for each funcionlit i have mulitle files , but the files are diffrent for each  feature , i want u too seprate , them with meaning full , readable code , optimze and easy to understand for middle level coders , code should be optize and error free  with each handle case , code should use , enums , hooks , env , for enabling the feature and disbling the feature from env , also use env , for constant data like preview s,, we ill give yu example , alsou should use hoosks , constants , components , loading state ,  error and empty component with handling each case , use utils , folder stucture should be good and redable , , use commne compnents , common things diffrent place , use  env it like this ,
+
+const flag = (key, fallback = true) => {
+  const val = import.meta.env[key];
+
+  if (val === undefined || val === "") {
+    return fallback;
+  }
+
+  return val === "true";
+};
+
+export const features = {
+  // Core
+  deleteOwnMessage: flag("VITE_FEATURE_DELETE_OWN_MESSAGE"),
+  deleteForEveryone: flag("VITE_FEATURE_DELETE_FOR_EVERYONE"),
+  fileUpload: flag("VITE_FEATURE_FILE_UPLOAD"),
+  deleteContact: flag("VITE_FEATURE_DELETE_CONTACT"),
+  groupChat: flag("VITE_FEATURE_GROUP_CHAT"),
+  typingIndicator: flag("VITE_FEATURE_TYPING_INDICATOR"),
+  messageSeenStatus: flag("VITE_FEATURE_MESSAGE_SEEN_STATUS"),
+
+  // Extra
+  gifs: flag("VITE_FEATURE_GIFS"),
+  emoji: flag("VITE_FEATURE_EMOJI"),
+  textFormatter: flag("VITE_FEATURE_TEXT_FORMATTER"),
+  filePreview: flag("VITE_FEATURE_FILE_PREVIEW"),
+};
+,VITE_FRONT_END_PORT=8000
+VITE_APP_VERSION="2.0.5"
+VITE_UNDER_DEVELOPMENT=false
+APP_DEVELOPER=AZZAYSHAKYA
+
+# VITE_API_URL=http://10.229.40.67:7001
+# VITE_SOCKET_URL=http://10.229.40.67:7001
+
+VITE_API_URL=http://localhost:8001
+VITE_SOCKET_URL=http://localhost:8001
+
+# Core Features
+VITE_FEATURE_DELETE_OWN_MESSAGE=true
+VITE_FEATURE_DELETE_FOR_EVERYONE=true
+VITE_FEATURE_FILE_UPLOAD=true
+VITE_FEATURE_DELETE_CONTACT=false
+VITE_FEATURE_GROUP_CHAT=true
+VITE_FEATURE_TYPING_INDICATOR=true
+VITE_FEATURE_MESSAGE_SEEN_STATUS=true
+
+# Chat Extra Features
+VITE_FEATURE_GIFS=true
+VITE_FEATURE_EMOJI=true
+VITE_FEATURE_TEXT_FORMATTER=true
+VITE_FEATURE_FILE_PREVIEW=true
+
+
+#status feature
+
+# ─── Status feature ───────────────────────────────────────────────────────────
+
+# Maximum number of active statuses a single user can have at one time
+VITE_STATUS_MAX_PER_USER=10
+
+# How many hours a status lives before expiring
+VITE_STATUS_TTL_HOURS=24
+
+# Maximum characters allowed in a text status
+VITE_STATUS_MAX_TEXT_LEN=300
+
+# Maximum image upload size in megabytes
+VITE_STATUS_MAX_IMAGE_MB=5
+
+# Maximum characters allowed in a status reply
+VITE_STATUS_REPLY_MAX_LEN=200
+
+# How often (milliseconds) the client polls for fresh statuses
+# 60000 = 1 minute
+VITE_STATUS_POLL_MS=60000, 
+
+ backend : 
+
+i want to optimize my backend  for production , and idutustrey level  male it , tell me about the files , and then suggest me the improvements , also you have to keep the  things in env , like if they should be controlled diretly , keep a fallback values to , utizie the env in this way ,  PORT=8001
+suggest me  the changes  , so that my backend will be nore good ,with reason 
+# HOST=0.0.0.0
+HOST=localhost
+
+# CORS
+CORS_ORIGIN=*
+
+# DB
+DB_FILE=db.json
+
+
+# SECURITY
+BCRYPT_SALT_ROUNDS=10
+
+APP_NAME=AZ_CHAT
+APP_ENV=development
+
+
+JWT_SECRET=your_secret
+
+JWT_EXPIRES_IN=7d
+
+BCRYPT_SALT_ROUNDS=10
+
+DEFAULT_USER_ROLE=user
+
+AUTH_RATE_LIMIT_WINDOW_MS=900000
+
+AUTH_RATE_LIMIT_MAX_REQUESTS=10
+
+
+//status 
+STATUS_EXPIRY_HOURS=24
+MAX_STATUS_TEXT_LENGTH=280
+MAX_STATUSES_PER_USER=10
+DEFAULT_STATUS_BG=#1a1540
+DEFAULT_STATUS_TEXT_COLOR=#ffffff
+STATUS_CLEANUP_INTERVAL_MINUTES=30

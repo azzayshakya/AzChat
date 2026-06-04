@@ -162,12 +162,15 @@ function EmojiButton({ emoji, label, onSelect }) {
 
 const styles = {
   container: {
-    background: "#10101e",
+    background: "var(--dark-bg)",
     borderTop: "1px solid #1e1e3a",
     display: "flex",
     flexDirection: "column",
     maxHeight: 320,
     minHeight: 200,
+    padding: "5px ",
+    margin: "5px 10px",
+    borderRadius: 11,
   },
   searchRow: {
     display: "flex",

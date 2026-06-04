@@ -55,7 +55,7 @@ function GifButton({ active, disabled, onClick }) {
         ...styles.iconBtn,
         color: active ? "#a78bfa" : "#667eea",
         borderColor: active ? "#a78bfa" : "#2a2a4a",
-        background: active ? "#1e1040" : "#1a1a2e",
+        background: active ? "#1e1040" : "var(--dark-bg)",
         fontWeight: 700,
         fontSize: 11,
         letterSpacing: 0.5,
@@ -141,6 +141,7 @@ export default function MessageInput({
           active={showGifPicker}
           disabled={uploading}
           onClick={toggleGif}
+          style={{ color: "red", display: "none" }}
         />
 
         <textarea
@@ -173,7 +174,11 @@ export default function MessageInput({
 const styles = {
   root: {
     borderTop: "1px solid #1e1e3a",
-    background: "#10101e",
+    background: "#494950",
+    background: "rgba(102,126,234,0.14)",
+    margin: "12px 15px 3px",
+    padding: "10px 5px",
+    borderRadius: "11px",
   },
 
   quickRow: {
@@ -219,7 +224,7 @@ const styles = {
   },
 
   iconBtn: {
-    background: "#1a1a2e",
+    background: "var(--dark-bg)",
     border: "1px solid #2a2a4a",
     color: "#667eea",
     borderRadius: 10,
@@ -233,7 +238,8 @@ const styles = {
 
   textarea: {
     flex: 1,
-    background: "#1a1a2e",
+    // background: "#09090c",
+    background: "var(--dark-bg)",
     border: "1px solid #2a2a4a",
     color: "#fff",
     borderRadius: 10,

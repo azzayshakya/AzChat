@@ -38,8 +38,10 @@ export default function FormattingToolbar({ activeFormats, onFormat }) {
         display: "flex",
         gap: 4,
         padding: "6px 10px",
+        borderRadius: 11,
         borderBottom: "1px solid #1e1e3a",
-        background: "#0e0e1c",
+        background: "var(--dark-bg)",
+        // border: "2px red solid",
       }}
     >
       {FORMATS.map((f) => (

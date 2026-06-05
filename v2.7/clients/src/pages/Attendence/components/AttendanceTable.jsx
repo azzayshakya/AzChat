@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { toHHMM, toHuman } from "../utils/attendanceCalculator.js";
-import { RULES } from "../attendanceRules.js";
+import { toHHMM, toHuman, toHumanAbs } from "../utils/attendanceCalculator.js";
 
 export default function AttendanceTable({ dayResults }) {
   const [expanded, setExpanded] = useState(null);
@@ -13,7 +12,7 @@ export default function AttendanceTable({ dayResults }) {
       <div style={s.titleRow}>
         <h3 style={s.title}>Day-wise Attendance</h3>
         <span style={s.hint}>
-          Click any row to see how hours were calculated
+          Click any row to see full calculation breakdown
         </span>
       </div>
 
@@ -22,8 +21,8 @@ export default function AttendanceTable({ dayResults }) {
           <thead>
             <tr>
               {COLS.map((c) => (
-                <th key={c} style={s.th}>
-                  {c}
+                <th key={c.key} style={{ ...s.th, ...c.style }}>
+                  {c.label}
                 </th>
               ))}
             </tr>
@@ -55,7 +54,7 @@ export default function AttendanceTable({ dayResults }) {
                         −{toHHMM(day.totalOOODeductedMins)}
                       </span>
                     ) : (
-                      "—"
+                      <span style={{ color: "var(--text-muted)" }}>—</span>
                     )}
                   </td>
                   <td
@@ -67,6 +66,10 @@ export default function AttendanceTable({ dayResults }) {
                   >
                     {toHHMM(day.effectiveMins)}
                   </td>
+
+                  {/* ── +/- diff column ── */}
+                  <td style={s.td}>{renderDiff(day.diffMins, day.status)}</td>
+
                   <td style={s.td}>
                     <span
                       style={{
@@ -79,7 +82,13 @@ export default function AttendanceTable({ dayResults }) {
                       {day.status}
                     </span>
                   </td>
-                  <td style={{ ...s.td, color: "var(--text-muted)" }}>
+                  <td
+                    style={{
+                      ...s.td,
+                      color: "var(--text-muted)",
+                      textAlign: "center",
+                    }}
+                  >
                     {expanded === i ? "▲" : "▼"}
                   </td>
                 </tr>
@@ -100,29 +109,109 @@ export default function AttendanceTable({ dayResults }) {
               </React.Fragment>
             ))}
           </tbody>
+
+          {/* ── Running totals footer ── */}
+          <TableFooter dayResults={dayResults} />
         </table>
       </div>
     </div>
   );
 }
 
+// ── Running diff column renderer ──────────────────────────────────────────────
+
+function renderDiff(diffMins, status) {
+  if (diffMins == null)
+    return <span style={{ color: "var(--text-muted)" }}>—</span>;
+
+  // Week off: no diff shown
+  if (status === "Week Off")
+    return <span style={{ color: "var(--text-muted)" }}>—</span>;
+
+  const isPositive = diffMins >= 0;
+  const color = isPositive ? "#04ff58" : "#ff4d4f";
+  const prefix = isPositive ? "+" : "";
+  const h = Math.floor(Math.abs(diffMins) / 60);
+  const m = Math.abs(diffMins) % 60;
+  const label = h === 0 ? `${m}m` : m === 0 ? `${h}h` : `${h}h ${m}m`;
+
+  return (
+    <span style={{ color, fontWeight: 700, fontSize: 13 }}>
+      {prefix}
+      {label}
+    </span>
+  );
+}
+
+// ── Footer with column totals ─────────────────────────────────────────────────
+
+function TableFooter({ dayResults }) {
+  const workDays = dayResults.filter((d) => d.status !== "Week Off");
+  const totalEff = workDays.reduce((s, d) => s + (d.effectiveMins || 0), 0);
+  const totalOOO = workDays.reduce(
+    (s, d) => s + (d.totalOOODeductedMins || 0),
+    0
+  );
+  const totalDiff = workDays.reduce((s, d) => s + (d.diffMins ?? 0), 0);
+  const pos = workDays.reduce((s, d) => s + Math.max(0, d.diffMins ?? 0), 0);
+  const neg = workDays.reduce((s, d) => s + Math.min(0, d.diffMins ?? 0), 0);
+  const diffColor = totalDiff >= 0 ? "#04ff58" : "#ff4d4f";
+
+  return (
+    <tfoot>
+      <tr
+        style={{
+          background: "rgba(102,126,234,0.1)",
+          borderTop: "2px solid rgba(102,126,234,0.3)",
+        }}
+      >
+        <td style={f.td} colSpan={4}>
+          <strong style={{ color: "var(--text-white)" }}>Totals</strong>
+        </td>
+        <td style={f.td}></td>
+        <td style={{ ...f.td, color: "#faad14" }}>
+          {totalOOO > 0 ? `−${toHHMM(totalOOO)}` : "—"}
+        </td>
+        <td style={{ ...f.td, color: "var(--text-white)", fontWeight: 800 }}>
+          {toHHMM(totalEff)}
+        </td>
+        <td style={f.td}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <span style={{ color: "#04ff58", fontSize: 11 }}>
+              +{toHHMM(pos)}
+            </span>
+            <span style={{ color: "#ff4d4f", fontSize: 11 }}>
+              {toHHMM(neg)}
+            </span>
+            <span style={{ color: diffColor, fontWeight: 800, fontSize: 13 }}>
+              Net: {totalDiff >= 0 ? "+" : ""}
+              {toHHMM(totalDiff)}
+            </span>
+          </div>
+        </td>
+        <td style={f.td} colSpan={2}></td>
+      </tr>
+    </tfoot>
+  );
+}
+
 // ── Breakdown panel ───────────────────────────────────────────────────────────
 
 function Breakdown({ day }) {
-  const typeStyle = {
-    good: { color: "#04ff58" },
-    bad: { color: "#ff4d4f" },
-    warn: { color: "#faad14" },
-    highlight: { color: "#667eea" },
-    neutral: { color: "var(--text-highlight)" },
-    info: { color: "#a78bfa" },
+  const typeColor = {
+    good: "#04ff58",
+    bad: "#ff4d4f",
+    warn: "#faad14",
+    highlight: "#667eea",
+    neutral: "var(--text-highlight)",
+    info: "#a78bfa",
   };
 
   return (
     <div style={bd.panel}>
       <div style={bd.header}>🔍 Calculation Breakdown</div>
 
-      {/* All punches for this day */}
+      {/* Raw punches */}
       {day.punches?.length > 0 && (
         <div style={bd.punchRow}>
           <span style={bd.punchLabel}>Raw Punches:</span>
@@ -141,14 +230,19 @@ function Breakdown({ day }) {
         </div>
       )}
 
-      {/* Step-by-step breakdown */}
+      {/* Steps */}
       <div style={bd.steps}>
         {day.breakdown?.map((step, i) => (
           <div key={i} style={bd.step}>
             <span style={bd.stepLabel}>{step.label}</span>
             <span style={bd.stepDetail}>{step.detail}</span>
             {step.value && (
-              <span style={{ ...bd.stepVal, ...(typeStyle[step.type] || {}) }}>
+              <span
+                style={{
+                  ...bd.stepVal,
+                  color: typeColor[step.type] || "var(--text-highlight)",
+                }}
+              >
                 {step.value}
               </span>
             )}
@@ -162,15 +256,16 @@ function Breakdown({ day }) {
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 const COLS = [
-  "Date",
-  "In",
-  "Out",
-  "OOO (Mid-day)",
-  "Gross",
-  "OOO Deducted",
-  "Effective",
-  "Status",
-  "",
+  { key: "date", label: "Date", style: { minWidth: 110 } },
+  { key: "in", label: "In", style: {} },
+  { key: "out", label: "Out", style: {} },
+  { key: "ooo", label: "OOO (Mid-day)", style: { minWidth: 110 } },
+  { key: "gross", label: "Gross", style: {} },
+  { key: "ded", label: "OOO Deducted", style: {} },
+  { key: "eff", label: "Effective", style: {} },
+  { key: "diff", label: "+/− vs Target", style: { minWidth: 110 } },
+  { key: "status", label: "Status", style: { minWidth: 110 } },
+  { key: "expand", label: "", style: { width: 28 } },
 ];
 
 function fmtDate(d) {
@@ -233,12 +328,21 @@ const s = {
     color: "var(--text-highlight)",
     borderBottom: "1px solid rgba(255,255,255,0.04)",
     whiteSpace: "nowrap",
+    verticalAlign: "middle",
   },
   badge: {
     padding: "3px 10px",
     borderRadius: 20,
     fontSize: 11,
     fontWeight: 700,
+  },
+};
+
+const f = {
+  td: {
+    padding: "12px 13px",
+    color: "var(--text-highlight)",
+    verticalAlign: "middle",
   },
 };
 
@@ -275,7 +379,6 @@ const bd = {
   },
   punch: { fontSize: 13, fontWeight: 600, color: "var(--text-white)" },
   punchNote: { fontSize: 10, color: "var(--text-muted)", fontWeight: 400 },
-
   steps: { display: "flex", flexDirection: "column", gap: 7 },
   step: {
     display: "flex",

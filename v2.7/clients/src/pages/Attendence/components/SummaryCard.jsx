@@ -1,5 +1,5 @@
 import React from "react";
-import { toHuman, toHHMM } from "../utils/attendanceCalculator.js";
+import { toHHMM, toHuman, toHumanAbs } from "../utils/attendanceCalculator.js";
 import { RULES } from "../attendanceRules.js";
 
 export default function SummaryCard({ summary, empCode, dateRange }) {
@@ -7,6 +7,8 @@ export default function SummaryCard({ summary, empCode, dateRange }) {
 
   const pctColor =
     summary.pct >= 85 ? "#04ff58" : summary.pct >= 70 ? "#faad14" : "#ff4d4f";
+  const netColor = summary.totalDiff >= 0 ? "#04ff58" : "#ff4d4f";
+  const netPrefix = summary.totalDiff >= 0 ? "+" : "";
 
   const tiles = [
     {
@@ -49,7 +51,7 @@ export default function SummaryCard({ summary, empCode, dateRange }) {
 
   return (
     <div style={s.wrap}>
-      {/* Header */}
+      {/* ── Top header row ─────────────────────────────────────────────── */}
       <div style={s.header}>
         <div style={s.avatar}>{empCode?.slice(-3) || "EMP"}</div>
         <div>
@@ -65,7 +67,91 @@ export default function SummaryCard({ summary, empCode, dateRange }) {
         </div>
       </div>
 
-      {/* Count tiles */}
+      {/* ── Overall Balance bar (most prominent) ────────────────────────── */}
+      <div style={s.balanceBar}>
+        <BalanceTile
+          label="Total Positive"
+          val={`+${toHHMM(summary.positive)}`}
+          sub="Extra hours worked"
+          color="#04ff58"
+          bg="rgba(4,255,88,0.08)"
+          border="rgba(4,255,88,0.2)"
+        />
+        <BalanceTile
+          label="Total Negative"
+          val={toHHMM(summary.negative)}
+          sub="Hours short"
+          color="#ff4d4f"
+          bg="rgba(255,77,79,0.08)"
+          border="rgba(255,77,79,0.2)"
+        />
+        <BalanceTile
+          label="Net Balance"
+          val={`${netPrefix}${toHHMM(Math.abs(summary.totalDiff))}${summary.totalDiff < 0 ? " (deficit)" : ""}`}
+          sub={
+            summary.totalDiff >= 0
+              ? "You are ahead ✓"
+              : "⚠ Must clear by quarter end"
+          }
+          color={netColor}
+          bg={
+            summary.totalDiff >= 0
+              ? "rgba(4,255,88,0.05)"
+              : "rgba(255,77,79,0.05)"
+          }
+          border={
+            summary.totalDiff >= 0
+              ? "rgba(4,255,88,0.25)"
+              : "rgba(255,77,79,0.25)"
+          }
+          big
+        />
+      </div>
+
+      {/* ── Quarterly breakdown ──────────────────────────────────────────── */}
+      {summary.quarters?.length > 0 && (
+        <div style={s.section}>
+          <p style={s.sectionTitle}>
+            📅 Quarterly Balance{" "}
+            <span style={s.sectionSub}>
+              (Negative must be cleared by quarter end)
+            </span>
+          </p>
+          <div style={s.quarterGrid}>
+            {summary.quarters.map((q) => {
+              const qNetColor = q.net >= 0 ? "#04ff58" : "#ff4d4f";
+              return (
+                <div key={q.key} style={s.quarterCard}>
+                  <div style={s.quarterLabel}>{q.label}</div>
+                  <div style={s.quarterRow}>
+                    <span style={{ color: "#04ff58", fontSize: 12 }}>
+                      +{toHHMM(q.positive)}
+                    </span>
+                    <span style={{ color: "var(--text-muted)", fontSize: 11 }}>
+                      positive
+                    </span>
+                  </div>
+                  <div style={s.quarterRow}>
+                    <span style={{ color: "#ff4d4f", fontSize: 12 }}>
+                      {toHHMM(q.negative)}
+                    </span>
+                    <span style={{ color: "var(--text-muted)", fontSize: 11 }}>
+                      negative
+                    </span>
+                  </div>
+                  <div style={{ ...s.quarterNet, color: qNetColor }}>
+                    {q.net >= 0 ? "+" : ""}
+                    {toHHMM(q.net)}
+                    <span style={s.quarterNetLabel}>net</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── Day count tiles ──────────────────────────────────────────────── */}
       <div style={s.tiles}>
         {tiles.map((t) => (
           <div key={t.label} style={s.tile}>
@@ -76,10 +162,10 @@ export default function SummaryCard({ summary, empCode, dateRange }) {
         ))}
       </div>
 
-      {/* Hours row */}
+      {/* ── Hours row ───────────────────────────────────────────────────── */}
       <div style={s.hours}>
         <HBadge
-          label="Total Effective"
+          label="Total Effective Hours"
           val={toHHMM(summary.totalEffective)}
           color="#667eea"
         />
@@ -89,6 +175,34 @@ export default function SummaryCard({ summary, empCode, dateRange }) {
           color="#faad14"
         />
       </div>
+    </div>
+  );
+}
+
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+function BalanceTile({ label, val, sub, color, bg, border, big }) {
+  return (
+    <div
+      style={{
+        ...s.balanceTile,
+        background: bg,
+        border: `1px solid ${border}`,
+        flex: big ? "2 1 200px" : "1 1 140px",
+      }}
+    >
+      <span style={s.balanceLabel}>{label}</span>
+      <span style={{ ...s.balanceVal, fontSize: big ? 26 : 20, color }}>
+        {val}
+      </span>
+      <span
+        style={{
+          ...s.balanceSub,
+          color: sub.includes("⚠") ? "#faad14" : "var(--text-muted)",
+        }}
+      >
+        {sub}
+      </span>
     </div>
   );
 }
@@ -111,6 +225,7 @@ const fmt = (d) =>
       })
     : "—";
 
+// ── Styles ────────────────────────────────────────────────────────────────────
 const s = {
   wrap: {
     background: "rgba(102,126,234,0.06)",
@@ -119,8 +234,9 @@ const s = {
     padding: "20px 24px",
     display: "flex",
     flexDirection: "column",
-    gap: 18,
+    gap: 20,
   },
+
   header: { display: "flex", alignItems: "center", gap: 16 },
   avatar: {
     width: 50,
@@ -152,6 +268,70 @@ const s = {
     marginTop: 2,
   },
 
+  // Balance bar
+  balanceBar: { display: "flex", flexWrap: "wrap", gap: 12 },
+  balanceTile: {
+    borderRadius: 12,
+    padding: "14px 18px",
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+  },
+  balanceLabel: {
+    fontSize: 11,
+    fontWeight: 700,
+    color: "var(--text-muted)",
+    textTransform: "uppercase",
+    letterSpacing: ".5px",
+  },
+  balanceVal: { fontWeight: 900, lineHeight: 1.1 },
+  balanceSub: { fontSize: 11, marginTop: 2 },
+
+  // Quarterly
+  section: { display: "flex", flexDirection: "column", gap: 10 },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: 700,
+    color: "var(--text-white)",
+    margin: 0,
+  },
+  sectionSub: { fontSize: 11, color: "var(--text-muted)", fontWeight: 400 },
+  quarterGrid: { display: "flex", flexWrap: "wrap", gap: 10 },
+  quarterCard: {
+    flex: "1 1 140px",
+    background: "rgba(255,255,255,0.03)",
+    border: "1px solid rgba(255,255,255,0.07)",
+    borderRadius: 10,
+    padding: "12px 14px",
+    display: "flex",
+    flexDirection: "column",
+    gap: 5,
+  },
+  quarterLabel: {
+    fontSize: 12,
+    fontWeight: 700,
+    color: "var(--text-highlight)",
+  },
+  quarterRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  quarterNet: {
+    fontSize: 16,
+    fontWeight: 900,
+    marginTop: 4,
+    display: "flex",
+    alignItems: "baseline",
+    gap: 5,
+  },
+  quarterNetLabel: {
+    fontSize: 10,
+    color: "var(--text-muted)",
+    fontWeight: 400,
+  },
+
+  // Day count tiles
   tiles: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(90px, 1fr))",
@@ -171,6 +351,7 @@ const s = {
   tileVal: { fontSize: 22, fontWeight: 900, lineHeight: 1 },
   tileLabel: { fontSize: 10, color: "var(--text-muted)", textAlign: "center" },
 
+  // Hours badges
   hours: { display: "flex", flexWrap: "wrap", gap: 10 },
   hbadge: {
     flex: "1 1 140px",

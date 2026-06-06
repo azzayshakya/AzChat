@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { Spin } from "antd";
-import UnreadDivider from "../commonComponents/UnreadDivider.jsx";
-import DateDividerForChat from "../commonComponents/DateDividerForChat.jsx";
-import MessageBubble from "../MessageInput/components/MessageBubble.jsx";
-import { isNewDayMsg } from "../../../utils/isNewDayMsg.js";
+import UnreadDivider from "../../../../components/UnreadDivider.jsx";
+import DateDividerForChat from "../../../../components/DateDividerForChat.jsx";
+import MessageBubble from "../../MessageInput/components/MessageBubble.jsx";
+import { isNewDayMsg } from "../../../../utils/isNewDayMsg.js";
 // import MessageBubble from "../inputComponents/MessageBubble.jsx";
 
 export default function MessageList({

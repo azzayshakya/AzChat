@@ -20,10 +20,8 @@ export default function PrivateLayout() {
         overflow: "hidden",
       }}
     >
-      {/* Navbar height */}
       <Navbar />
 
-      {/* Remaining page area */}
       <div
         style={{
           flex: 1,

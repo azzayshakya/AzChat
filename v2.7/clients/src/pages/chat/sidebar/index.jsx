@@ -20,8 +20,8 @@ import {
 import { features } from "../../../utils/features.js";
 import { api } from "../../../api.js";
 import { useState } from "react";
-import UserAvatar from "../commonComponents/UserAvatar.jsx";
-import CreateGroupModal from "../components/Creategroupmodal.jsx";
+import UserAvatar from "../../../components/UserAvatar.jsx";
+import CreateGroupModal from "./components/Creategroupmodal.jsx";
 import { getProfileImage } from "../../../utils/getProfileImage.js";
 import ContactItem from "./components/ContactItem.jsx";
 import StatusBar from "../StatusBar/StatusBar.jsx";

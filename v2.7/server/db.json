@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-06-05T13:32:54.579Z",
+      "lastSeen": "2026-06-06T06:29:48.366Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -2064,6 +2064,23 @@
       "deletedForUsers": [],
       "seenAt": "2026-06-05T13:30:59.843Z",
       "createdAt": "2026-06-05T13:30:56.835Z"
+    },
+    {
+      "id": "09461095-7684-4f49-96dd-9cc30e223086",
+      "chatId": "5d11fead-5078-4d43-a151-c321e3cb6252_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "5d11fead-5078-4d43-a151-c321e3cb6252",
+      "text": "🔥",
+      "file": null,
+      "status": "sent",
+      "isRead": false,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": null,
+      "createdAt": "2026-06-06T06:25:00.787Z"
     }
   ],
   "groups": [

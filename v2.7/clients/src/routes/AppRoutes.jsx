@@ -1,6 +1,6 @@
 import React from "react";
-
 import { Routes, Route, Navigate } from "react-router-dom";
+
 import Home from "../pages/Home.jsx";
 import About from "../pages/about/index.jsx";
 import Chatx from "../pages/chat/Chatx.jsx";

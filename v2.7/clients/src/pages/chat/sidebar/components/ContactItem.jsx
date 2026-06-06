@@ -5,7 +5,7 @@ import {
 } from "../../../../utils/TimeFormater";
 import { getMessagePreview } from "../../../../utils/messagePreview";
 import { getProfileImage } from "../../../../utils/getProfileImage";
-import UserAvatar from "../../commonComponents/UserAvatar";
+import UserAvatar from "../../../../components/UserAvatar";
 
 export default function ContactItem({
   contact,

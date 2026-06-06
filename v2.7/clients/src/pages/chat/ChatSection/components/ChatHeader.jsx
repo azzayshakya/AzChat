@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, Badge } from "antd";
-import UserAvatar from "../commonComponents/UserAvatar";
-import { getProfileImage } from "../../../utils/getProfileImage";
+import UserAvatar from "../../../../components/UserAvatar";
+import { getProfileImage } from "../../../../utils/getProfileImage";
 
 export default function ChatHeader({ contact, isOnline }) {
   return (

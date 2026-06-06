@@ -21,7 +21,6 @@ export default function PublicLayout() {
     >
       <Navbar />
 
-      {/* Remaining page area */}
       <div
         style={{
           flex: 1,

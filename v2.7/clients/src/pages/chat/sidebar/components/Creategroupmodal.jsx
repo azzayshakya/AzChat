@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Input, Button, message as antMsg } from "antd";
-import { api } from "../../../api.js";
+import { api } from "../../../../api.js";
 
 export default function CreateGroupModal({ open, onClose, onCreated }) {
   const [name, setName] = useState("");

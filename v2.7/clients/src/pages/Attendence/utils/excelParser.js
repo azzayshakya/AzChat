@@ -41,25 +41,29 @@ export function parseAttendanceFile(file) {
         if (!workbook.SheetNames.length)
           throw new Error("No sheets found in the file.");
 
-        const sheet   = workbook.Sheets[workbook.SheetNames[0]];
-        const rawRows = XLSX.utils.sheet_to_json(sheet, { defval: "", raw: true });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rawRows = XLSX.utils.sheet_to_json(sheet, {
+          defval: "",
+          raw: true,
+        });
 
-        if (!rawRows.length)
-          throw new Error("The sheet is empty.");
+        if (!rawRows.length) throw new Error("The sheet is empty.");
 
         const rawHeaders = Object.keys(rawRows[0]);
-        const colMap     = detectColumns(rawHeaders);
+        const colMap = detectColumns(rawHeaders);
         validateColumns(colMap, rawHeaders);
 
-        const punches = rawRows.map((r) => normaliseRow(r, colMap)).filter(Boolean);
+        const punches = rawRows
+          .map((r) => normaliseRow(r, colMap))
+          .filter(Boolean);
 
         if (!punches.length)
           throw new Error("No valid punch records found after parsing.");
 
         resolve({
-          employees : buildEmployeeList(punches),
-          punchMap  : buildPunchMap(punches),
-          dateRange : buildDateRange(punches),
+          employees: buildEmployeeList(punches),
+          punchMap: buildPunchMap(punches),
+          dateRange: buildDateRange(punches),
           rawHeaders,
         });
       } catch (err) {
@@ -76,11 +80,26 @@ export function parseAttendanceFile(file) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ALIASES = {
-  empCode:   ["employee code", "empcode", "emp code", "emp_code", "employeecode", "employee_code", "empid", "emp id"],
-  clockId:   ["clock id", "clockid", "clock_id"],
+  empCode: [
+    "employee code",
+    "empcode",
+    "emp code",
+    "emp_code",
+    "employeecode",
+    "employee_code",
+    "empid",
+    "emp id",
+  ],
+  clockId: ["clock id", "clockid", "clock_id"],
   clockName: ["clock name", "clockname", "clock_name"],
-  date:      ["attendance date", "attendancedate", "attendance_date", "date"],
-  time:      ["attendance time", "attendancetime", "attendance_time", "time", "punch time"],
+  date: ["attendance date", "attendancedate", "attendance_date", "date"],
+  time: [
+    "attendance time",
+    "attendancetime",
+    "attendance_time",
+    "time",
+    "punch time",
+  ],
 };
 
 function detectColumns(headers) {
@@ -96,12 +115,12 @@ function detectColumns(headers) {
 
 function validateColumns(colMap, rawHeaders) {
   const required = ["empCode", "date", "time"];
-  const missing  = required.filter((f) => !colMap[f]);
+  const missing = required.filter((f) => !colMap[f]);
   if (missing.length) {
     throw new Error(
       `Missing columns: ${missing.join(", ")}.\n` +
-      `File headers: ${rawHeaders.join(", ")}.\n` +
-      `Expected: "Employee Code", "Attendance Date", "Attendance Time".`
+        `File headers: ${rawHeaders.join(", ")}.\n` +
+        `Expected: "Employee Code", "Attendance Date", "Attendance Time".`
     );
   }
 }
@@ -111,10 +130,10 @@ function validateColumns(colMap, rawHeaders) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function normaliseRow(row, colMap) {
-  const empCode   = String(row[colMap.empCode]   || "").trim();
-  const rawDate   = String(row[colMap.date]       || "").trim();
-  const rawTime   = String(row[colMap.time]       || "").trim();
-  const clockId   = String(row[colMap.clockId]   || "").trim();
+  const empCode = String(row[colMap.empCode] || "").trim();
+  const rawDate = String(row[colMap.date] || "").trim();
+  const rawTime = String(row[colMap.time] || "").trim();
+  const clockId = String(row[colMap.clockId] || "").trim();
   const clockName = String(row[colMap.clockName] || "").trim();
 
   if (!empCode || !rawDate || !rawTime) return null;
@@ -160,7 +179,7 @@ function parseAnyDate(raw) {
 
   // Excel serial number (e.g. 46026)
   if (/^\d{5}$/.test(raw)) {
-    const ms  = (parseInt(raw, 10) - 25569) * 86400000;
+    const ms = (parseInt(raw, 10) - 25569) * 86400000;
     const utc = new Date(ms);
     return isNaN(utc) ? null : utc.toISOString().slice(0, 10);
   }
@@ -170,7 +189,9 @@ function parseAnyDate(raw) {
 
 /** HH:MM:SS or HH:MM → HH:MM */
 export function parseTime(raw) {
-  const m = String(raw).trim().match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+  const m = String(raw)
+    .trim()
+    .match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
   return m ? `${m[1].padStart(2, "0")}:${m[2]}` : null;
 }
 

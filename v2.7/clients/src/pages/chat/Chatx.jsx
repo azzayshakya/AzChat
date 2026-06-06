@@ -2,12 +2,11 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { message as antMsg } from "antd";
 import { useAuth } from "../../AuthContext.jsx";
 import { api, getSocket } from "../../api.js";
-import ChatHeader from "./components/ChatHeader.jsx";
-import GroupHeader from "./components/GroupHeader.jsx";
-import MessageList from "./components/MessageList.jsx";
+import ChatHeader from "./ChatSection/components/ChatHeader.jsx";
+import MessageList from "./ChatSection/components/MessageList.jsx";
 import { features } from "../../utils/features.js";
 import { useNotification } from "../../hooks/useNotification.js";
-import NoMessage from "./commonComponents/NoMessage.jsx";
+import NoMessage from "../../components/NoMessage.jsx";
 import MessageInput from "./MessageInput/index.jsx";
 import ChatSidebar from "./sidebar/index.jsx";
 

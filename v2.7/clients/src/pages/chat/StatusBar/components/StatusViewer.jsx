@@ -11,7 +11,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { timeAgo, timeLeft, STATUS_CONFIG } from "../apiService/statusApi";
-import UserAvatar from "../../commonComponents/UserAvatar";
+import UserAvatar from "../../../../components/UserAvatar";
 import { getProfileImage } from "../../../../utils/getProfileImage";
 
 const AUTO_ADVANCE_MS = 5000;

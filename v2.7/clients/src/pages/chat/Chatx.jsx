@@ -9,6 +9,7 @@ import { useNotification } from "../../hooks/useNotification.js";
 import NoMessage from "../../components/NoMessage.jsx";
 import MessageInput from "./MessageInput/index.jsx";
 import ChatSidebar from "./sidebar/index.jsx";
+import ChatSection from "./ChatSection/index.jsx";
 
 export default function Chatx() {
   const { user } = useAuth();
@@ -313,48 +314,22 @@ export default function Chatx() {
         onSelectContact={handleSelectContact}
         onSelectGroup={handleSelectGroup}
       />
-
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        {!selected ? (
-          <NoMessage />
-        ) : (
-          <>
-            {isGroupSelected ? (
-              <GroupHeader
-                group={selected}
-                currentUserId={user.id}
-                onGroupUpdated={handleGroupUpdated}
-              />
-            ) : (
-              <ChatHeader contact={selected} isOnline={isOnline(selected.id)} />
-            )}
-
-            <MessageList
-              messages={messages}
-              currentUserId={user.id}
-              loadingMsgs={loadingMsgs}
-              firstUnreadIndex={firstUnreadIndex}
-              onMessageDeleted={handleMessageDeleted}
-              isGroup={isGroupSelected}
-              groupMembers={isGroupSelected ? selected.members : null}
-            />
-            <MessageInput
-              value={text}
-              onChange={setText}
-              onSend={sendMessage}
-              sending={sending}
-              placeholder={
-                isGroupSelected
-                  ? `Message ${selected.name}...`
-                  : `Message ${selected.username}...`
-              }
-              selectedId={selected.id}
-              isGroup={isGroupSelected}
-              onFileSent={handleFileSent}
-            />
-          </>
-        )}
-      </div>
+      <ChatSection
+        selected={selected}
+        isGroupSelected={isGroupSelected}
+        user={user}
+        messages={messages}
+        loadingMsgs={loadingMsgs}
+        firstUnreadIndex={firstUnreadIndex}
+        text={text}
+        sending={sending}
+        onTextChange={setText}
+        onSend={sendMessage}
+        onMessageDeleted={handleMessageDeleted}
+        onFileSent={handleFileSent}
+        onGroupUpdated={handleGroupUpdated}
+        isOnline={isOnline}
+      />
     </div>
   );
 }

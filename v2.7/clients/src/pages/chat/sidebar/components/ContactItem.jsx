@@ -3,7 +3,7 @@ import {
   formatMessageTime,
   truncateText,
 } from "../../../../utils/TimeFormater";
-import { getMessagePreview } from "../../../../utils/messagePreview";
+import { getMessagePreview } from "../utils/messagePreview";
 import { getProfileImage } from "../../../../utils/getProfileImage";
 import UserAvatar from "../../../../components/UserAvatar";
 

@@ -12,7 +12,7 @@ import { QUICK_EMOJIS } from "../../../data/emojiData";
 import FormattingToolbar from "./components/FormattingToolbar";
 import GifPicker from "./components/GifPicker";
 import EmojiPicker from "./components/EmojiPicker";
-import { useMessageInput } from "../../../hooks/useMessageInput";
+import { useMessageInput } from "./hooks/useMessageInput";
 function QuickBar({
   activeFormats,
   onFormat,

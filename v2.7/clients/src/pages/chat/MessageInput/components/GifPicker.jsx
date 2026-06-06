@@ -1,6 +1,6 @@
 import React from "react";
 import { Spin } from "antd";
-import useGifs from "../../../../hooks/useGifs";
+import useGifs from "../hooks/useGifs";
 
 export default function GifPicker({ onSelect, onClose }) {
   const { gifs, loading, error } = useGifs();

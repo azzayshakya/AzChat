@@ -1,8 +1,3 @@
-/**
- * useMessageInput.js
- * Encapsulates every piece of stateful logic for the MessageInput component so
- * the component itself stays a thin layout shell.
- */
 
 import { useRef, useState, useCallback } from "react";
 import { message as antMsg } from "antd";

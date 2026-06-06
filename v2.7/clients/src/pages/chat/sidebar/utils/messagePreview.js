@@ -1,4 +1,4 @@
-import { truncateText } from "./TimeFormater";
+import { truncateText } from "../../../../utils/TimeFormater";
 
 export function getMessagePreview(msg) {
   if (!msg) return null;

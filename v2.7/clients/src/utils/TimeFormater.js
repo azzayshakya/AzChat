@@ -1,16 +1,24 @@
-// utils/chatHelpers.js
-
 export const truncateText = (text = "", maxLength = 15) => {
+  /**
+   * truncateText("JavaScript Developer", 10)
+   * Output: "JavaScript..."
+   */
   if (typeof text !== "string") return "";
 
   if (text.length <= maxLength) {
     return text;
   }
-
   return text.slice(0, maxLength) + "...";
 };
 
 export const formatMessageTime = (dateString) => {
+  /**
+   * Input: 2026-06-06T09:59:40Z
+   * Output: "Just now"
+   *
+   * Input: 2026-06-06T09:55:00Z
+   * Output: "5 min ago"
+   */
   if (!dateString) return "";
 
   const now = new Date();

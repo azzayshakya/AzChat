@@ -24,7 +24,7 @@ import UserAvatar from "../../../components/UserAvatar.jsx";
 import CreateGroupModal from "./components/Creategroupmodal.jsx";
 import { getProfileImage } from "../../../utils/getProfileImage.js";
 import ContactItem from "./components/ContactItem.jsx";
-import StatusBar from "../StatusBar/StatusBar.jsx";
+import StatusBar from "../StatusBar/index.jsx";
 import { useStatus } from "../StatusBar/hooks/useStatus.js";
 
 export default function ChatSidebar({

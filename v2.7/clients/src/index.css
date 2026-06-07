@@ -4,7 +4,7 @@
 
   --secondary-color: #0f0c29;
   --secondary-color-dark: #0d0d1a;
-  --secondary-color-light: #c6c2e1;
+  --secondary-color-light: rgba(102, 126, 234, 0.14);
 
   --dark-bg: #0d0d1a;
   --dark-bg-light: #10101e;

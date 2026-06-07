@@ -2,7 +2,7 @@
 // import ChatHeader from "./components/ChatHeader";
 // import GroupHeader from "./components/GroupHeader";
 // import MessageList from "./components/MessageList";
-import MessageInput from "../MessageInput/index";
+import MessageInput from "../MessageInput/MessageInput";
 
 import NoMessage from "../../../components/NoMessage";
 import GroupHeader from "./components/groupHeader";

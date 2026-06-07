@@ -16,6 +16,9 @@ import {
   TeamOutlined,
   PlusOutlined,
   MessageOutlined,
+  InfoCircleOutlined,
+  StarOutlined,
+  BulbOutlined,
 } from "@ant-design/icons";
 import { features } from "../../../utils/features.js";
 import { api } from "../../../api.js";
@@ -26,8 +29,9 @@ import { getProfileImage } from "../../../utils/getProfileImage.js";
 import ContactItem from "./components/ContactItem.jsx";
 import StatusBar from "../StatusBar/index.jsx";
 import { useStatus } from "../StatusBar/hooks/useStatus.js";
+import FeaturesModal from "../components/AzChatFeaturesModal.jsx";
 
-export default function ChatSidebar({
+export default function SideBar({
   currentUser,
   contacts,
   setContacts,
@@ -47,7 +51,7 @@ export default function ChatSidebar({
 }) {
   const [tab, setTab] = useState("all");
   const [showCreateGroup, setShowCreateGroup] = useState(false);
-
+  const [showFeatures, setShowFeatures] = useState(false);
   const {
     statuses,
     myStatuses,
@@ -177,22 +181,15 @@ export default function ChatSidebar({
             </div>
           </div>
         </div>
-        {features.groupChat && (
-          <Button
-            icon={<PlusOutlined />}
-            size="small"
-            onClick={() => setShowCreateGroup(true)}
-            title="Create Group"
-            style={{
-              background: "#1a1a2e",
-              border: "1px solid #2a2a4a",
-              color: "#667eea",
-              borderRadius: 8,
-            }}
-          />
-        )}
+        <BulbOutlined
+          onClick={() => setShowFeatures(true)}
+          style={{
+            fontSize: 14,
+            color: "var(--text-dim)",
+            cursor: "pointer",
+          }}
+        />
       </div>
-
       {/* ── Status bar (above search) ───────────────────────────────────── */}
       <div style={{ flexShrink: 0 }}>
         <StatusBar
@@ -209,7 +206,6 @@ export default function ChatSidebar({
           onPost={handlePost}
         />
       </div>
-
       {features.groupChat && (
         <div
           style={{
@@ -256,7 +252,6 @@ export default function ChatSidebar({
           ))}
         </div>
       )}
-
       {(tab === "chats" || tab === "all") && (
         <div style={{ padding: "12px 12px 8px", flexShrink: 0 }}>
           <Input
@@ -281,7 +276,6 @@ export default function ChatSidebar({
           />
         </div>
       )}
-
       <div style={{ flex: 1, overflowY: "auto" }}>
         {tab === "all" ? (
           allItems.map((item) => {
@@ -493,97 +487,120 @@ export default function ChatSidebar({
             </Button>
           </Empty>
         ) : (
-          groups.map((group) => {
-            const isSelected =
-              selectedType === "group" && selectedId === group.id;
-            const myRole = group.members?.find(
-              (m) => m.id === currentUser.id
-            )?.role;
-            const canDelete = myRole === "owner";
-
-            const menuItems = canDelete
-              ? [
-                  {
-                    key: "delete",
-                    label: "Delete group",
-                    icon: <DeleteOutlined />,
-                    danger: true,
-                    onClick: (e) => handleDeleteGroup(group.id),
-                  },
-                ]
-              : [];
-
-            return (
-              <div
-                key={group.id}
+          <>
+            <div style={{ padding: "10px 15px 0" }}>
+              <Button
+                block
+                icon={<PlusOutlined />}
+                onClick={() => setShowCreateGroup(true)}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  // border: "2px blue solid",
-                  // gap: 10,
-                  // padding: "8px 10px",
-                  margin: "10px 15px",
-                  borderRadius: 11,
-                  cursor: "pointer",
-                  transition: "background 0.12s",
-                  background: isSelected
-                    ? "transparent"
-                    : "var(--theme-bg-light)",
-                  outline: isSelected
-                    ? "rgb(102 126 234 / 90%) solid 2px"
-                    : "none",
+                  background: "var(--primary-color)",
+                  border: "none",
+                  color: "#fff",
+                  borderRadius: 10,
+                  height: 40,
+                  fontWeight: 500,
                 }}
               >
+                Create Group
+              </Button>
+            </div>
+            {groups.map((group) => {
+              const isSelected =
+                selectedType === "group" && selectedId === group.id;
+              const myRole = group.members?.find(
+                (m) => m.id === currentUser.id
+              )?.role;
+              const canDelete = myRole === "owner";
+
+              const menuItems = canDelete
+                ? [
+                    {
+                      key: "delete",
+                      label: "Delete group",
+                      icon: <DeleteOutlined />,
+                      danger: true,
+                      onClick: (e) => handleDeleteGroup(group.id),
+                    },
+                  ]
+                : [];
+
+              return (
                 <div
-                  onClick={() => onSelectGroup(group)}
+                  key={group.id}
                   style={{
-                    flex: 1,
-                    padding: "12px 16px",
-                    // cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
-                    gap: 12,
-                    // background: isSelected ? "#1e1e3a" : "transparent",
-                    // borderLeft: isSelected
-                    //   ? "3px solid #764ba2"
-                    //   : "3px solid transparent",
-                    // transition: "all 0.15s",
+                    // border: "2px blue solid",
+                    // gap: 10,
+                    // padding: "8px 10px",
+                    margin: "10px 15px",
+                    borderRadius: 11,
+                    cursor: "pointer",
+                    transition: "background 0.12s",
+                    background: isSelected
+                      ? "transparent"
+                      : "var(--theme-bg-light)",
+                    outline: isSelected
+                      ? "rgb(102 126 234 / 90%) solid 2px"
+                      : "none",
                   }}
                 >
-                  <Avatar
-                    style={{ background: "#764ba2", flexShrink: 0 }}
-                    icon={<TeamOutlined />}
-                  />
-                  <div style={{ overflow: "hidden", flex: 1 }}>
-                    <div
-                      style={{ color: "#fff", fontWeight: 500, fontSize: 13 }}
-                    >
-                      {group.name}
-                    </div>
-                    <div style={{ color: "#666", fontSize: 11 }}>
-                      {group.members?.length || 0} members
+                  <div
+                    onClick={() => onSelectGroup(group)}
+                    style={{
+                      flex: 1,
+                      padding: "12px 16px",
+                      // cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      // background: isSelected ? "#1e1e3a" : "transparent",
+                      // borderLeft: isSelected
+                      //   ? "3px solid #764ba2"
+                      //   : "3px solid transparent",
+                      // transition: "all 0.15s",
+                    }}
+                  >
+                    <Avatar
+                      style={{ background: "#764ba2", flexShrink: 0 }}
+                      icon={<TeamOutlined />}
+                    />
+                    <div style={{ overflow: "hidden", flex: 1 }}>
+                      <div
+                        style={{ color: "#fff", fontWeight: 500, fontSize: 13 }}
+                      >
+                        {group.name}
+                      </div>
+                      <div style={{ color: "#666", fontSize: 11 }}>
+                        {group.members?.length || 0} members
+                      </div>
                     </div>
                   </div>
+                  {menuItems.length > 0 && (
+                    <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
+                      <EllipsisOutlined
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          color: "#555",
+                          padding: "0 10px",
+                          cursor: "pointer",
+                          fontSize: 16,
+                        }}
+                      />
+                    </Dropdown>
+                  )}
                 </div>
-                {menuItems.length > 0 && (
-                  <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
-                    <EllipsisOutlined
-                      onClick={(e) => e.stopPropagation()}
-                      style={{
-                        color: "#555",
-                        padding: "0 10px",
-                        cursor: "pointer",
-                        fontSize: 16,
-                      }}
-                    />
-                  </Dropdown>
-                )}
-              </div>
-            );
-          })
+              );
+            })}
+          </>
         )}
       </div>
 
+      <FeaturesModal
+        open={showFeatures}
+        onClose={() => setShowFeatures(false)}
+      />
       <CreateGroupModal
         open={showCreateGroup}
         onClose={() => setShowCreateGroup(false)}

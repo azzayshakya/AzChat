@@ -6,11 +6,11 @@ import MessageList from "./ChatSection/components/MessageList.jsx";
 import { features } from "../../utils/features.js";
 import { useNotification } from "../../hooks/useNotification.js";
 import NoMessage from "../../components/NoMessage.jsx";
-import MessageInput from "./MessageInput/index.jsx";
-import ChatSidebar from "./sidebar/index.jsx";
+import MessageInput from "./MessageInput/MessageInput.jsx";
+import ChatSidebar from "./sidebar/SideBar.jsx";
 import ChatSection from "./ChatSection/index.jsx";
 
-export default function Chatx() {
+export default function Chat() {
   const { user } = useAuth();
 
   const [contacts, setContacts] = useState([]);

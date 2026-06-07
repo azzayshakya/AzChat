@@ -12,6 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@ant-design/icons": "^6.2.5",
     "antd": "^5.12.0",
     "axios": "^1.6.2",
     "react": "^18.2.0",

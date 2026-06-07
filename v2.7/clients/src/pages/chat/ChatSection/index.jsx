@@ -7,6 +7,7 @@ import MessageInput from "../MessageInput/index";
 import NoMessage from "../../../components/NoMessage";
 import GroupHeader from "./components/groupHeader";
 import MessageList from "./components/MessageList";
+import ChatHeader from "./components/ChatHeader";
 
 export default function index({
   selected,

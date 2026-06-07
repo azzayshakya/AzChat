@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-06-06T07:08:55.380Z",
+      "lastSeen": "2026-06-07T05:57:52.745Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -167,102 +167,6 @@
     }
   ],
   "messages": [
-    {
-      "id": "00350abc-5dec-4cd9-8ffc-1e1b19dda9f0",
-      "chatId": "3f761a1d-112d-404f-be08-2351c1e08596_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "chatType": "direct",
-      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "receiverId": "3f761a1d-112d-404f-be08-2351c1e08596",
-      "groupId": null,
-      "text": null,
-      "file": {
-        "name": "funnyBoii.gif",
-        "mimetype": "image/gif",
-        "category": "image",
-        "size": 5747852,
-        "url": "/uploads/images/1779869548562-79560a1d33cb.gif"
-      },
-      "status": "seen",
-      "isRead": true,
-      "editedAt": null,
-      "deletedAt": null,
-      "deletedFor": null,
-      "deletedForUsers": [],
-      "seenAt": "2026-05-27T10:17:16.050Z",
-      "createdAt": "2026-05-27T08:12:28.567Z"
-    },
-    {
-      "id": "4a697c63-bc88-4890-ac04-4360bdec35b9",
-      "chatId": "3f761a1d-112d-404f-be08-2351c1e08596_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "chatType": "direct",
-      "senderId": "3f761a1d-112d-404f-be08-2351c1e08596",
-      "receiverId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "groupId": null,
-      "text": null,
-      "file": {
-        "name": "hyGuysAnimal.gif",
-        "mimetype": "image/gif",
-        "category": "image",
-        "size": 3565260,
-        "url": "/uploads/images/1779877048253-914fcd739f80.gif"
-      },
-      "status": "seen",
-      "isRead": true,
-      "editedAt": null,
-      "deletedAt": null,
-      "deletedFor": null,
-      "deletedForUsers": [],
-      "seenAt": "2026-05-27T12:21:13.955Z",
-      "createdAt": "2026-05-27T10:17:28.256Z"
-    },
-    {
-      "id": "6bba8524-6ffb-4ef9-8c72-7ef88b3aee69",
-      "chatId": "3f761a1d-112d-404f-be08-2351c1e08596_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "chatType": "direct",
-      "senderId": "3f761a1d-112d-404f-be08-2351c1e08596",
-      "receiverId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "groupId": null,
-      "text": null,
-      "file": {
-        "name": "brock lesnar wwe GIF.gif",
-        "mimetype": "image/gif",
-        "category": "image",
-        "size": 1009091,
-        "url": "/uploads/images/1779877057457-efc0d5f534d8.gif"
-      },
-      "status": "seen",
-      "isRead": true,
-      "editedAt": null,
-      "deletedAt": null,
-      "deletedFor": null,
-      "deletedForUsers": [],
-      "seenAt": "2026-05-27T12:21:13.955Z",
-      "createdAt": "2026-05-27T10:17:37.460Z"
-    },
-    {
-      "id": "bbff76bc-9e12-4018-ac18-5c929837462d",
-      "chatId": "3f761a1d-112d-404f-be08-2351c1e08596_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "chatType": "direct",
-      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "receiverId": "3f761a1d-112d-404f-be08-2351c1e08596",
-      "groupId": null,
-      "text": null,
-      "file": {
-        "name": "Dance Party Dancing GIF.gif",
-        "mimetype": "image/gif",
-        "category": "image",
-        "size": 2177688,
-        "url": "/uploads/images/1779884479971-b544b8b669d5.gif"
-      },
-      "status": "seen",
-      "isRead": true,
-      "editedAt": null,
-      "deletedAt": null,
-      "deletedFor": null,
-      "deletedForUsers": [],
-      "seenAt": "2026-06-02T08:52:55.428Z",
-      "createdAt": "2026-05-27T12:21:19.980Z"
-    },
     {
       "id": "3daeed9f-3a5d-4018-afa4-f61f7c28324e",
       "chatId": "94fed814-ac87-47ba-82af-4e5add5e005e_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
@@ -2137,33 +2041,5 @@
     }
   ],
   "userQueries": [],
-  "statuses": [
-    {
-      "id": "be03c720-fda3-40d0-9646-600abe88f45b",
-      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
-      "text": "testing",
-      "file": null,
-      "visibleTo": [
-        "3f761a1d-112d-404f-be08-2351c1e08596",
-        "94fed814-ac87-47ba-82af-4e5add5e005e",
-        "71057af1-9259-42be-b8fb-01272fc32c81",
-        "d119587d-8d0e-4eeb-b4bf-625595760886",
-        "72e7468e-c467-4747-bb48-1333a81478ce",
-        "5d11fead-5078-4d43-a151-c321e3cb6252"
-      ],
-      "backgroundColor": "#1a1540",
-      "textColor": "#a78bfa",
-      "viewers": [
-        {
-          "userId": "5d11fead-5078-4d43-a151-c321e3cb6252",
-          "username": "testing",
-          "name": "testing",
-          "viewedAt": "2026-06-05T13:31:25.151Z"
-        }
-      ],
-      "createdAt": "2026-06-05T13:31:18.497Z",
-      "privacy": "friends",
-      "expiresAt": "2026-06-06T13:31:18.496Z"
-    }
-  ]
+  "statuses": []
 }

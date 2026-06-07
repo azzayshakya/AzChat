@@ -14,7 +14,7 @@ import {
   CrownOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { api } from "../../../api.js";
+import { api } from "../../../../api";
 
 export default function GroupMembersModal({
   open,

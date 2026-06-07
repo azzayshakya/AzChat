@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-06-07T05:57:52.745Z",
+      "lastSeen": "2026-06-07T08:25:02.133Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -74,7 +74,7 @@
       "passwordHash": "$2a$10$0nonjyT2wpfAc6L3pWybxORd9UCfOpShMW0LE0SphkkrLg3KVIzR.",
       "role": "user",
       "isOnline": true,
-      "lastSeen": "2026-05-25T03:41:08.275Z",
+      "lastSeen": "2026-06-07T07:50:30.647Z",
       "createdAt": "2026-05-21T06:18:08.444Z"
     },
     {
@@ -164,6 +164,17 @@
       "isOnline": true,
       "lastSeen": "2026-06-05T13:31:21.201Z",
       "createdAt": "2026-06-05T13:29:31.639Z"
+    },
+    {
+      "id": "b4af17c8-9d97-495d-a734-253b3933380a",
+      "username": "ajju",
+      "name": "ajju",
+      "email": "ajju@gmail.com",
+      "passwordHash": "$2a$10$sZrY7AuOpI4whdpYcYa7IO4rLPGfPeoo9TZIwMfTeI4tbKVLQCAo2",
+      "role": "user",
+      "isOnline": false,
+      "lastSeen": "2026-06-07T07:58:34.931Z",
+      "createdAt": "2026-06-07T06:57:46.467Z"
     }
   ],
   "messages": [
@@ -1985,6 +1996,57 @@
       "deletedForUsers": [],
       "seenAt": null,
       "createdAt": "2026-06-06T06:25:00.787Z"
+    },
+    {
+      "id": "ed2834b4-6363-4833-8794-42f7dc3a1daf",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "🔥",
+      "file": null,
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": "2026-06-07T07:33:46.634Z",
+      "createdAt": "2026-06-07T07:33:22.458Z"
+    },
+    {
+      "id": "a6983e74-20a1-4d13-854e-8a359881f160",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "receiverId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "😍😍",
+      "file": null,
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": "2026-06-07T07:34:39.357Z",
+      "createdAt": "2026-06-07T07:34:13.712Z"
+    },
+    {
+      "id": "680a905e-a9bd-4086-ab69-59d243342ac5",
+      "chatId": "13e78680-65ca-4ed3-ab02-495ad60132a3_b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "chatType": "direct",
+      "senderId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "receiverId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "fdsfds",
+      "file": null,
+      "status": "seen",
+      "isRead": true,
+      "editedAt": null,
+      "deletedAt": null,
+      "deletedFor": null,
+      "deletedForUsers": [],
+      "seenAt": "2026-06-07T07:34:49.987Z",
+      "createdAt": "2026-06-07T07:34:41.866Z"
     }
   ],
   "groups": [
@@ -2041,5 +2103,202 @@
     }
   ],
   "userQueries": [],
-  "statuses": []
+  "statuses": [
+    {
+      "id": "ebca54ed-c72f-4bc9-922e-bf59bff12ee8",
+      "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+      "text": "more mothere fucks",
+      "file": null,
+      "visibleTo": [],
+      "backgroundColor": "#1a1540",
+      "textColor": "#a78bfa",
+      "viewers": [
+        {
+          "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+          "username": "ajayshakya",
+          "name": "ajayshakya",
+          "viewedAt": "2026-06-07T07:04:27.348Z"
+        }
+      ],
+      "createdAt": "2026-06-07T07:04:01.985Z",
+      "privacy": "public",
+      "expiresAt": "2026-06-08T07:04:01.985Z"
+    },
+    {
+      "id": "010e13b1-cb82-4bc7-adc2-72ea74f0bff3",
+      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "suiiiii",
+      "file": null,
+      "visibleTo": [],
+      "backgroundColor": "#1a1540",
+      "textColor": "#a78bfa",
+      "viewers": [
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "username": "amanshakya",
+          "name": "amanshakya",
+          "viewedAt": "2026-06-07T07:33:03.045Z"
+        }
+      ],
+      "createdAt": "2026-06-07T07:20:30.484Z",
+      "privacy": "public",
+      "expiresAt": "2026-06-08T07:20:30.484Z"
+    },
+    {
+      "id": "c5d7e767-3072-447a-ae41-970d300cc1a5",
+      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "new for testing",
+      "file": null,
+      "visibleTo": [
+        {
+          "userId": "94fed814-ac87-47ba-82af-4e5add5e005e",
+          "username": "hannibal",
+          "name": "hannibal"
+        },
+        {
+          "userId": "71057af1-9259-42be-b8fb-01272fc32c81",
+          "username": "lelouch",
+          "name": "lelouch"
+        },
+        {
+          "userId": "d119587d-8d0e-4eeb-b4bf-625595760886",
+          "username": "gauravmeena",
+          "name": "gauravmeena"
+        },
+        {
+          "userId": "3f761a1d-112d-404f-be08-2351c1e08596",
+          "username": "deepak",
+          "name": "deepak"
+        },
+        {
+          "userId": "72e7468e-c467-4747-bb48-1333a81478ce",
+          "username": "dev",
+          "name": "dev"
+        },
+        {
+          "userId": "5d11fead-5078-4d43-a151-c321e3cb6252",
+          "username": "testing",
+          "name": "testing"
+        }
+      ],
+      "backgroundColor": "#1a1540",
+      "textColor": "#a78bfa",
+      "viewers": [],
+      "createdAt": "2026-06-07T07:21:02.900Z",
+      "privacy": "friends",
+      "expiresAt": "2026-06-08T07:21:02.900Z"
+    },
+    {
+      "id": "97a7a42c-e73e-44dd-b4b4-eb445056831b",
+      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "newew stat",
+      "file": null,
+      "visibleTo": [
+        {
+          "userId": "94fed814-ac87-47ba-82af-4e5add5e005e",
+          "username": "hannibal",
+          "name": "hannibal"
+        },
+        {
+          "userId": "71057af1-9259-42be-b8fb-01272fc32c81",
+          "username": "lelouch",
+          "name": "lelouch"
+        },
+        {
+          "userId": "d119587d-8d0e-4eeb-b4bf-625595760886",
+          "username": "gauravmeena",
+          "name": "gauravmeena"
+        },
+        {
+          "userId": "3f761a1d-112d-404f-be08-2351c1e08596",
+          "username": "deepak",
+          "name": "deepak"
+        },
+        {
+          "userId": "72e7468e-c467-4747-bb48-1333a81478ce",
+          "username": "dev",
+          "name": "dev"
+        },
+        {
+          "userId": "5d11fead-5078-4d43-a151-c321e3cb6252",
+          "username": "testing",
+          "name": "testing"
+        },
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "username": "amanshakya",
+          "name": "amanshakya"
+        }
+      ],
+      "backgroundColor": "#1a1540",
+      "textColor": "#a78bfa",
+      "viewers": [
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "username": "amanshakya",
+          "name": "amanshakya",
+          "viewedAt": "2026-06-07T07:51:36.795Z"
+        }
+      ],
+      "createdAt": "2026-06-07T07:33:31.024Z",
+      "privacy": "friends",
+      "expiresAt": "2026-06-08T07:33:31.023Z"
+    },
+    {
+      "id": "a5996745-d6f7-4e2d-a28e-4940d4ac919f",
+      "userId": "b68a28ea-f6ea-4ff7-80a6-b7a58c4cf221",
+      "text": "babes",
+      "file": null,
+      "visibleTo": [
+        {
+          "userId": "94fed814-ac87-47ba-82af-4e5add5e005e",
+          "username": "hannibal",
+          "name": "hannibal"
+        },
+        {
+          "userId": "71057af1-9259-42be-b8fb-01272fc32c81",
+          "username": "lelouch",
+          "name": "lelouch"
+        },
+        {
+          "userId": "d119587d-8d0e-4eeb-b4bf-625595760886",
+          "username": "gauravmeena",
+          "name": "gauravmeena"
+        },
+        {
+          "userId": "3f761a1d-112d-404f-be08-2351c1e08596",
+          "username": "deepak",
+          "name": "deepak"
+        },
+        {
+          "userId": "72e7468e-c467-4747-bb48-1333a81478ce",
+          "username": "dev",
+          "name": "dev"
+        },
+        {
+          "userId": "5d11fead-5078-4d43-a151-c321e3cb6252",
+          "username": "testing",
+          "name": "testing"
+        },
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "username": "amanshakya",
+          "name": "amanshakya"
+        }
+      ],
+      "backgroundColor": "#1a1540",
+      "textColor": "#a78bfa",
+      "viewers": [
+        {
+          "userId": "13e78680-65ca-4ed3-ab02-495ad60132a3",
+          "username": "amanshakya",
+          "name": "amanshakya",
+          "viewedAt": "2026-06-07T07:51:37.491Z"
+        }
+      ],
+      "createdAt": "2026-06-07T07:34:22.736Z",
+      "privacy": "friends",
+      "expiresAt": "2026-06-08T07:34:22.735Z"
+    }
+  ]
 }

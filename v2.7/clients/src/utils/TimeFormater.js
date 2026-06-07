@@ -57,3 +57,12 @@ export const formatMessageTime = (dateString) => {
 
   return `${years} year ago`;
 };
+
+export function timeLeft(iso) {
+  if (!iso) return "";
+  const diff = new Date(iso).getTime() - Date.now();
+  if (diff <= 0) return "expired";
+  const h = Math.floor(diff / 3_600_000);
+  const m = Math.floor((diff % 3_600_000) / 60_000);
+  return h > 0 ? `${h}h ${m}m left` : `${m}m left`;
+}

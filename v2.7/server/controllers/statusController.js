@@ -1,8 +1,7 @@
-const crypto = require("crypto");
-const { readDB, writeDB } = require("../models/db");
+const crypto = require('crypto');
+const { readDB, writeDB } = require('../models/db');
 
-const MAX_STATUS_TEXT_LENGTH =
-  parseInt(process.env.MAX_STATUS_TEXT_LENGTH) || 280;
+const MAX_STATUS_TEXT_LENGTH = parseInt(process.env.MAX_STATUS_TEXT_LENGTH) || 280;
 const MAX_STATUSES_PER_USER = parseInt(process.env.MAX_STATUSES_PER_USER) || 10;
 const STATUS_EXPIRY_HOURS = parseInt(process.env.STATUS_EXPIRY_HOURS) || 24;
 
@@ -23,13 +22,11 @@ async function postStatus(req, res, next) {
   try {
     const currentUserId = req.user.userId;
     const { text, backgroundColor, textColor, privacy } = req.body;
-    console.log("azx", req.body);
+    console.log('azx', req.body);
     const file = req.file; // optional — handled by uploadMiddleware
 
     if (!text && !file) {
-      return res
-        .status(400)
-        .json({ error: "Status must have text or a media file" });
+      return res.status(400).json({ error: 'Status must have text or a media file' });
     }
 
     if (text && text.trim().length > MAX_STATUS_TEXT_LENGTH) {
@@ -44,7 +41,7 @@ async function postStatus(req, res, next) {
 
     // Enforce per-user limit (after expiry cleanup)
     const activeUserStatuses = db.statuses.filter(
-      (s) => s.userId === currentUserId && !isExpired(s.createdAt),
+      (s) => s.userId === currentUserId && !isExpired(s.createdAt)
     );
 
     if (activeUserStatuses.length >= MAX_STATUSES_PER_USER) {
@@ -56,20 +53,14 @@ async function postStatus(req, res, next) {
     // Handle optional file (image / video)
     let filePayload = null;
     if (file) {
-      const {
-        saveFileToDisk,
-        validateFile,
-        getFileCategory,
-      } = require("../utils/fileUtils");
+      const { saveFileToDisk, validateFile, getFileCategory } = require('../utils/fileUtils');
 
       const fileError = validateFile(file);
       if (fileError) return res.status(400).json({ error: fileError });
 
       const category = getFileCategory(file.mimetype);
-      if (!["image", "video"].includes(category)) {
-        return res
-          .status(400)
-          .json({ error: "Status media must be an image or video" });
+      if (!['image', 'video'].includes(category)) {
+        return res.status(400).json({ error: 'Status media must be an image or video' });
       }
 
       const saved = await saveFileToDisk(file);
@@ -82,16 +73,14 @@ async function postStatus(req, res, next) {
       };
     }
 
-    const expiresAt = new Date(
-      Date.now() + STATUS_EXPIRY_HOURS * 60 * 60 * 1000,
-    ).toISOString();
+    const expiresAt = new Date(Date.now() + STATUS_EXPIRY_HOURS * 60 * 60 * 1000).toISOString();
     let visibleTo = [];
 
-    if (privacy === "friends") {
+    if (privacy === 'friends') {
       const contacts = new Set();
 
       (db.messages || []).forEach((m) => {
-        if (m.chatType !== "direct") return;
+        if (m.chatType !== 'direct') return;
 
         // Skip deleted chats for the status owner
         if (m.deletedForUsers?.includes(currentUserId)) return;
@@ -105,7 +94,15 @@ async function postStatus(req, res, next) {
         }
       });
 
-      visibleTo = [...contacts];
+      visibleTo = [...contacts].map((userId) => {
+        const user = db.users.find((u) => u.id === userId);
+
+        return {
+          userId,
+          username: user?.username,
+          name: user?.name,
+        };
+      });
     }
     const status = {
       id: crypto.randomUUID(),
@@ -113,10 +110,8 @@ async function postStatus(req, res, next) {
       text: text?.trim() || null,
       file: filePayload,
       visibleTo,
-      backgroundColor:
-        backgroundColor || process.env.DEFAULT_STATUS_BG || "#1a1540",
-      textColor:
-        textColor || process.env.DEFAULT_STATUS_TEXT_COLOR || "#ffffff",
+      backgroundColor: backgroundColor || process.env.DEFAULT_STATUS_BG || '#1a1540',
+      textColor: textColor || process.env.DEFAULT_STATUS_TEXT_COLOR || '#ffffff',
       viewers: [], // [{ userId, viewedAt }]
       createdAt: new Date().toISOString(),
       privacy: privacy,
@@ -143,7 +138,7 @@ function getStatusFeed(req, res) {
   // Collect contact IDs (users current user has chatted with)
   const contactIds = new Set();
   (db.messages || []).forEach((m) => {
-    if (m.chatType !== "direct") return;
+    if (m.chatType !== 'direct') return;
     if (m.deletedForUsers?.includes(currentUserId)) return;
     if (m.senderId === currentUserId) contactIds.add(m.receiverId);
     if (m.receiverId === currentUserId) contactIds.add(m.senderId);
@@ -164,13 +159,14 @@ function getStatusFeed(req, res) {
       }
 
       // Public
-      if (s.privacy === "public") {
+      if (s.privacy === 'public') {
         return true;
       }
 
       // Friends
-      if (s.privacy === "friends") {
-        return s.visibleTo?.includes(currentUserId);
+      // Friends
+      if (s.privacy === 'friends') {
+        return s.visibleTo?.some((user) => user.userId === currentUserId);
       }
 
       return false;
@@ -195,8 +191,7 @@ function getStatusFeed(req, res) {
       }
 
       const alreadySeen = s.viewers.some((v) => v.userId === currentUserId);
-      if (!alreadySeen && s.userId !== currentUserId)
-        grouped[s.userId].allSeen = false;
+      if (!alreadySeen && s.userId !== currentUserId) grouped[s.userId].allSeen = false;
 
       grouped[s.userId].statuses.push({
         ...s,
@@ -204,10 +199,7 @@ function getStatusFeed(req, res) {
         seen: alreadySeen,
       });
 
-      if (
-        !grouped[s.userId].latestAt ||
-        s.createdAt > grouped[s.userId].latestAt
-      ) {
+      if (!grouped[s.userId].latestAt || s.createdAt > grouped[s.userId].latestAt) {
         grouped[s.userId].latestAt = s.createdAt;
       }
     });
@@ -217,7 +209,7 @@ function getStatusFeed(req, res) {
     if (a.allSeen !== b.allSeen) return a.allSeen ? 1 : -1;
     return new Date(b.latestAt) - new Date(a.latestAt);
   });
-
+  console.log('feed', feed);
   return res.json({ data: feed });
 }
 
@@ -243,15 +235,15 @@ function viewStatus(req, res) {
   const { statusId } = req.params;
   const db = readDB();
 
-  if (!db.statuses) return res.status(404).json({ error: "Status not found" });
+  if (!db.statuses) return res.status(404).json({ error: 'Status not found' });
 
   const idx = db.statuses.findIndex((s) => s.id === statusId);
-  if (idx === -1) return res.status(404).json({ error: "Status not found" });
+  if (idx === -1) return res.status(404).json({ error: 'Status not found' });
 
   const status = db.statuses[idx];
 
   if (isExpired(status.createdAt)) {
-    return res.status(410).json({ error: "This status has expired" });
+    return res.status(410).json({ error: 'This status has expired' });
   }
 
   // Don't record owner viewing own status
@@ -283,23 +275,21 @@ function getStatusViewers(req, res) {
   const { statusId } = req.params;
   const db = readDB();
 
-  if (!db.statuses) return res.status(404).json({ error: "Status not found" });
+  if (!db.statuses) return res.status(404).json({ error: 'Status not found' });
 
   const status = db.statuses.find((s) => s.id === statusId);
-  if (!status) return res.status(404).json({ error: "Status not found" });
+  if (!status) return res.status(404).json({ error: 'Status not found' });
 
   if (status.userId !== currentUserId) {
-    return res
-      .status(403)
-      .json({ error: "You can only see viewers of your own statuses" });
+    return res.status(403).json({ error: 'You can only see viewers of your own statuses' });
   }
 
   const viewers = status.viewers.map((v) => {
     const user = db.users.find((u) => u.id === v.userId);
     return {
       userId: v.userId,
-      username: user?.username || "Unknown",
-      name: user?.name || "Unknown",
+      username: user?.username || 'Unknown',
+      name: user?.name || 'Unknown',
       viewedAt: v.viewedAt,
     };
   });
@@ -314,22 +304,20 @@ function deleteStatus(req, res) {
   const { statusId } = req.params;
   const db = readDB();
 
-  if (!db.statuses) return res.status(404).json({ error: "Status not found" });
+  if (!db.statuses) return res.status(404).json({ error: 'Status not found' });
 
   const idx = db.statuses.findIndex((s) => s.id === statusId);
-  if (idx === -1) return res.status(404).json({ error: "Status not found" });
+  if (idx === -1) return res.status(404).json({ error: 'Status not found' });
 
   const status = db.statuses[idx];
 
   if (status.userId !== currentUserId) {
-    return res
-      .status(403)
-      .json({ error: "You can only delete your own statuses" });
+    return res.status(403).json({ error: 'You can only delete your own statuses' });
   }
 
   // Remove media file from disk if present
   if (status.file?.url) {
-    const { deleteFileFromDisk } = require("../utils/fileUtils");
+    const { deleteFileFromDisk } = require('../utils/fileUtils');
     deleteFileFromDisk(status.file.url);
   }
 
@@ -346,7 +334,7 @@ function cleanupExpiredStatuses(req, res) {
 
   if (!db.statuses) return res.json({ deleted: 0 });
 
-  const { deleteFileFromDisk } = require("../utils/fileUtils");
+  const { deleteFileFromDisk } = require('../utils/fileUtils');
 
   const before = db.statuses.length;
   const expired = db.statuses.filter((s) => isExpired(s.createdAt));

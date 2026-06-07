@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Spin } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Modal, Spin } from "antd";
+import { PlusOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import StatusUploader from "./components/StatusUploader.jsx";
 import UserAvatar from "../../../components/UserAvatar.jsx";
 import { getProfileImage } from "../../../utils/getProfileImage.js";
@@ -22,6 +22,8 @@ export default function StatusBar({
   const scrollRef = useRef(null);
   const [viewing, setViewing] = useState(null);
   const [showUploader, setShowUploader] = useState(false);
+
+  const [showInfo, setShowInfo] = useState(false);
   const myEntry =
     myStatuses.length > 0
       ? {
@@ -76,15 +78,32 @@ export default function StatusBar({
       >
         <div
           style={{
-            fontSize: 10,
-            color: "var(--text-dim)",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
             padding: "0 14px 8px",
-            fontWeight: 600,
           }}
         >
-          Status
+          <div
+            style={{
+              fontSize: 10,
+              color: "var(--text-dim)",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              fontWeight: 600,
+            }}
+          >
+            Status
+          </div>
+
+          <InfoCircleOutlined
+            onClick={() => setShowInfo(true)}
+            style={{
+              fontSize: 14,
+              color: "var(--text-dim)",
+              cursor: "pointer",
+            }}
+          />
         </div>
 
         {loading ? (
@@ -257,13 +276,118 @@ export default function StatusBar({
           </div>
         )}
       </div>
+      <Modal
+        open={showInfo}
+        onCancel={() => setShowInfo(false)}
+        footer={null}
+        width={650}
+        title="About Status"
+        styles={{
+          content: {
+            background: "var(--dark-bg-light)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 16,
+          },
+        }}
+      >
+        <div
+          style={{
+            color: "var(--text-muted)",
+            lineHeight: 1.7,
+            fontSize: 13,
+          }}
+        >
+          <h3 style={{ color: "white" }}>Professional Status Updates</h3>
 
+          <p>
+            Status is designed primarily for professional collaboration and
+            project communication inside AZ Chat.
+          </p>
+
+          <p>You can share updates such as:</p>
+
+          <ul>
+            <li>Current project progress</li>
+            <li>Task completion updates</li>
+            <li>Deployment information</li>
+            <li>Testing status</li>
+            <li>Bug fixes and releases</li>
+            <li>Team announcements</li>
+            <li>Availability and work updates</li>
+          </ul>
+
+          <h3 style={{ color: "white", marginTop: 20 }}>Privacy Options</h3>
+
+          <p>Every status can be shared using one of two privacy settings:</p>
+
+          <div
+            style={{
+              background: "rgba(102,126,234,0.12)",
+              padding: 12,
+              borderRadius: 8,
+              marginBottom: 10,
+            }}
+          >
+            <strong>🌍 Public</strong>
+            <br />
+            Your status will be visible to all AZ Chat users.
+          </div>
+
+          <div
+            style={{
+              background: "rgba(167,139,250,0.12)",
+              padding: 12,
+              borderRadius: 8,
+            }}
+          >
+            <strong>👥 Friends</strong>
+            <br />
+            Your status will be visible only to users who are in your chat
+            history at the time you post the status.
+          </div>
+
+          <h3 style={{ color: "white", marginTop: 20 }}>Status Audience</h3>
+
+          <p>
+            For friend-only statuses, the audience list is generated when the
+            status is posted. Anyone you have chatted with before posting
+            becomes part of the allowed audience for that status.
+          </p>
+
+          <h3 style={{ color: "white", marginTop: 20 }}>Viewer Information</h3>
+
+          <p>
+            After posting a status, click <strong>"See all"</strong> at the
+            bottom of your status viewer to access:
+          </p>
+
+          <ul>
+            <li>View count</li>
+            <li>List of users who viewed the status</li>
+            <li>Time when each user viewed the status</li>
+            <li>List of users who were allowed to view the status</li>
+          </ul>
+
+          <h3 style={{ color: "white", marginTop: 20 }}>
+            Status Expiry & Deletion
+          </h3>
+
+          <ul>
+            <li>Statuses automatically expire after 24 hours.</li>
+            <li>You can delete your status at any time.</li>
+            <li>Deleted statuses cannot be recovered.</li>
+          </ul>
+        </div>
+      </Modal>
       {viewing && (
         <StatusViewer
           entry={viewing.entry}
           startIndex={viewing.startIndex}
           currentUser={currentUser}
-          onClose={() => setViewing(null)}
+          onClose={() => {
+            setViewing(null);
+          }}
+          setViewing={setViewing}
           onDelete={onDelete}
           onReply={onReply}
           onView={onView}

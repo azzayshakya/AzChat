@@ -9,10 +9,13 @@ import {
   EyeOutlined,
   GlobalOutlined,
   UserOutlined,
+  UsergroupAddOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
-import { timeAgo, timeLeft, STATUS_CONFIG } from "../apiService/statusApi";
+import { STATUS_CONFIG } from "../apiService/statusApi";
 import UserAvatar from "../../../../components/UserAvatar";
 import { getProfileImage } from "../../../../utils/getProfileImage";
+import { formatMessageTime, timeLeft } from "../../../../utils/TimeFormater";
 
 const AUTO_ADVANCE_MS = 5000;
 
@@ -26,22 +29,26 @@ export default function StatusViewer({
   onView,
   deleting,
   replying,
+  setViewing,
 }) {
   const [idx, setIdx] = useState(startIndex);
-  const [replyText, setReplyText] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [showViewers, setShowViewers] = useState(false);
+  const [viewerTab, setViewerTab] = useState("viewed");
   const timerRef = useRef(null);
   const progressRef = useRef(null);
   const inputRef = useRef(null);
 
   const items = entry?.items ?? [];
   const item = items[idx];
+  const viewers = item?.viewers ?? [];
+  const allowedUsers = item?.visibleTo ?? [];
+  console.log("baby", item);
   const isMine = entry?.isMine || entry?.userId === currentUser?.id;
   const isAdmin = entry?.isAdmin;
-  console.log("azx", entry);
   // Mark viewed on each slide change
   useEffect(() => {
     if (!item?.id) return;
@@ -98,20 +105,11 @@ export default function StatusViewer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  const handleReply = async () => {
-    if (!replyText.trim() || replying) return;
-    const txt = replyText.trim();
-    setReplyText("");
-    await onReply?.(item.id, txt);
-    antMsg.success("Reply sent!");
-  };
-
   const handleDeleteConfirm = async () => {
     if (!deleteConfirm) return;
     await onDelete?.(deleteConfirm);
     setDeleteConfirm(null);
-    if (items.length <= 1) onClose();
-    else if (idx >= items.length - 1) setIdx(Math.max(0, idx - 1));
+    onClose();
   };
 
   if (!item) return null;
@@ -241,17 +239,11 @@ export default function StatusViewer({
               }}
             >
               <span style={{ fontSize: 10, color: "var(--text-dim)" }}>
-                {timeAgo(item.createdAt)}
+                {formatMessageTime(item.createdAt)}
               </span>
               <span style={{ fontSize: 10, color: "var(--text-dim)" }}>·</span>
               <span style={{ fontSize: 10, color: "var(--text-dim)" }}>
                 {timeLeft(item.expiresAt)}
-              </span>
-              <span style={{ fontSize: 10, color: "var(--text-dim)" }}>·</span>
-              <EyeOutlined style={{ fontSize: 10, color: "var(--text-dim)" }} />
-              {/* views is pre-computed in transformItem from viewers.length */}
-              <span style={{ fontSize: 10, color: "var(--text-dim)" }}>
-                {item.views ?? 0}
               </span>
             </div>
           </div>
@@ -358,140 +350,36 @@ export default function StatusViewer({
           )}
         </div>
 
-        {/* ── Replies ──────────────────────────────────────────────── */}
-        {item.replies?.length > 0 && (
-          <div
-            style={{
-              maxHeight: 110,
-              overflowY: "auto",
-              margin: "8px 14px 0",
-              padding: "8px 10px",
-              background: "rgba(255,255,255,0.03)",
-              borderRadius: 10,
-              border: "1px solid rgba(255,255,255,0.05)",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 10,
-                color: "var(--text-dim)",
-                marginBottom: 6,
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-              }}
-            >
-              Replies
-            </div>
-            {item.replies.map((r) => (
-              <div
-                key={r.id}
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  marginBottom: 6,
-                  alignItems: "flex-start",
-                }}
-              >
-                <UserAvatar
-                  image={getProfileImage(entry)}
-                  name={entry.username}
-                  size={44}
-                  avatarStyle={{ border: "2px solid var(--dark-bg-light)" }}
-                />
-                <div>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      color: "var(--text-highlight)",
-                    }}
-                  >
-                    {r.username}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      color: "var(--text-muted)",
-                      marginLeft: 6,
-                    }}
-                  >
-                    {r.text}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 9,
-                      color: "var(--text-dim)",
-                      marginLeft: 6,
-                    }}
-                  >
-                    {timeAgo(r.createdAt)}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── Reply input (hidden for own statuses) ─────────────────── */}
-        {/* {!isMine && (
+        {isMine && (
           <div
             style={{
               display: "flex",
-              gap: 8,
               alignItems: "center",
-              padding: "10px 14px 14px",
+              gap: 8,
+              padding: "10px 14px 12px",
+              borderTop: "1px solid rgba(255,255,255,0.06)",
+              cursor: item.viewers?.length > 0 ? "pointer" : "default",
             }}
+            onClick={() => item.viewers?.length >= 0 && setShowViewers(true)}
           >
-            <input
-              ref={inputRef}
-              value={replyText}
-              onChange={(e) =>
-                setReplyText(e.target.value.slice(0, STATUS_CONFIG.replyMaxLen))
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleReply();
-                e.stopPropagation();
-              }}
-              placeholder="Reply to this status…"
-              style={{
-                flex: 1,
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 10,
-                padding: "8px 12px",
-                color: "var(--text-white)",
-                fontSize: 12,
-                outline: "none",
-                fontFamily: "inherit",
-              }}
-            />
-            <button
-              onClick={handleReply}
-              disabled={!replyText.trim() || replying}
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 9,
-                background: replyText.trim()
-                  ? "var(--primary-color)"
-                  : "rgba(255,255,255,0.05)",
-                border: "none",
-                cursor: replyText.trim() ? "pointer" : "not-allowed",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "background 0.15s",
-                flexShrink: 0,
-              }}
-            >
-              {replying ? (
-                <Spin size="small" />
-              ) : (
-                <SendOutlined style={{ color: "#fff", fontSize: 14 }} />
-              )}
-            </button>
+            <EyeOutlined style={{ fontSize: 13, color: "var(--text-dim)" }} />
+            <span style={{ fontSize: 12, color: "var(--text-dim)" }}>
+              {item.viewers?.length ?? 0} view
+              {item.viewers?.length !== 1 ? "s" : ""}
+            </span>
+            {item.viewers?.length > 0 && (
+              <span
+                style={{
+                  fontSize: 11,
+                  color: "var(--primary-color)",
+                  marginLeft: "auto",
+                }}
+              >
+                See all ›
+              </span>
+            )}
           </div>
-        )} */}
+        )}
       </div>
 
       {/* ── Delete confirmation ───────────────────────────────────── */}
@@ -523,6 +411,194 @@ export default function StatusViewer({
           This status will be permanently removed. This action cannot be undone.
         </p>
       </Modal>
+      {/* ── Viewers list modal ───────────────────────────────────── */}
+      <Modal
+        open={showViewers}
+        onCancel={() => setShowViewers(false)}
+        footer={null}
+        zIndex={3100}
+        width={420}
+        title={
+          <span
+            style={{
+              color: "#e8e9f4",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              fontSize: 15,
+            }}
+          >
+            <UsergroupAddOutlined style={{ color: "#9b93f7" }} />
+            Status audience
+          </span>
+        }
+        styles={{
+          content: {
+            background: "#1a1730",
+            border: "0.5px solid rgba(255,255,255,0.1)",
+            borderRadius: 18,
+            padding: 0,
+          },
+          header: {
+            background: "transparent",
+            padding: "18px 20px 0",
+            borderBottom: "none",
+          },
+          body: { padding: 0 },
+          mask: { backdropFilter: "blur(6px)" },
+        }}
+      >
+        {/* Tabs */}
+        <div
+          style={{
+            display: "flex",
+            gap: 4,
+            margin: "16px 20px 0",
+            padding: 4,
+            background: "rgba(255,255,255,0.05)",
+            borderRadius: 10,
+          }}
+        >
+          {["viewed", "allowed"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setViewerTab(tab)}
+              style={{
+                flex: 1,
+                padding: "8px",
+                border:
+                  viewerTab === tab
+                    ? "0.5px solid rgba(155,147,247,0.25)"
+                    : "none",
+                borderRadius: 7,
+                fontSize: 12,
+                fontWeight: 500,
+                cursor: "pointer",
+                transition: "all 0.18s",
+                background:
+                  viewerTab === tab ? "rgba(155,147,247,0.18)" : "transparent",
+                color: viewerTab === tab ? "#c5bfff" : "#888",
+              }}
+            >
+              {tab === "viewed"
+                ? `Viewed (${viewers.length})`
+                : `Allowed (${allowedUsers.length})`}
+            </button>
+          ))}
+        </div>
+
+        <div
+          style={{
+            height: "0.5px",
+            background: "rgba(255,255,255,0.07)",
+            margin: "14px 0 0",
+          }}
+        />
+
+        <div
+          style={{
+            maxHeight: 300,
+            overflowY: "auto",
+            padding: "8px 12px 14px",
+          }}
+        >
+          {viewerTab === "viewed" ? (
+            viewers.length === 0 ? (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: 36,
+                  color: "#555",
+                  fontSize: 13,
+                }}
+              >
+                No views yet
+              </div>
+            ) : (
+              viewers.map((v) => (
+                <div
+                  key={v.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "9px 8px",
+                    borderRadius: 10,
+                  }}
+                >
+                  <UserAvatar
+                    image={v.profileImage}
+                    name={v.username}
+                    size={38}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: "#e0e1f0",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {v.username}
+                    </div>
+                    {v.viewedAt && (
+                      <div
+                        style={{ fontSize: 11, color: "#666", marginTop: 2 }}
+                      >
+                        {formatMessageTime(v.viewedAt)}
+                      </div>
+                    )}
+                  </div>
+                  <EyeOutlined style={{ fontSize: 13, color: "#444" }} />
+                </div>
+              ))
+            )
+          ) : allowedUsers.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: 36,
+                color: "#555",
+                fontSize: 13,
+              }}
+            >
+              Public status
+            </div>
+          ) : (
+            allowedUsers.map((u) => (
+              <div
+                key={u.userId}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "9px 8px",
+                  borderRadius: 10,
+                }}
+              >
+                <UserAvatar
+                  image={u.profileImage}
+                  name={u.username}
+                  size={38}
+                />
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{ fontSize: 13, color: "#e0e1f0", fontWeight: 500 }}
+                  >
+                    {u.name || u.username}
+                  </div>
+                  <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>
+                    Allowed to view
+                  </div>
+                </div>
+                <CheckOutlined style={{ fontSize: 13, color: "#4ecba8" }} />
+              </div>
+            ))
+          )}
+        </div>
+      </Modal>
+
+      {/* ── Viewers list modal ───────────────────────────────────── */}
     </div>
   );
 }

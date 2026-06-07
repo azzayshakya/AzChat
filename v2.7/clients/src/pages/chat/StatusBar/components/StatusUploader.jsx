@@ -24,7 +24,7 @@ export default function StatusUploader({ onClose, onPost, posting, myCount }) {
   const [text, setText] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [privacy, setPrivacy] = useState("public");
+  const [privacy, setPrivacy] = useState("friends");
   const [bgColor, setBgColor] = useState(BG_PRESETS[0].bg);
   const [textColor, setTextColor] = useState(BG_PRESETS[0].text);
   const fileRef = useRef(null);
@@ -312,8 +312,8 @@ export default function StatusUploader({ onClose, onPost, posting, myCount }) {
             }}
           >
             {[
-              { val: "public", icon: <GlobalOutlined />, label: "Public" },
               { val: "friends", icon: <UserOutlined />, label: "Friends" },
+              { val: "public", icon: <GlobalOutlined />, label: "Public" },
             ].map((opt) => (
               <button
                 key={opt.val}

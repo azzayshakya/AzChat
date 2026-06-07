@@ -294,7 +294,13 @@ function renderOOO(pairs) {
 // ── Styles ────────────────────────────────────────────────────────────────────
 
 const s = {
-  wrap: { display: "flex", flexDirection: "column", gap: 12 },
+  wrap: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 12,
+    // border: "2px red solid",
+    // margin: "3rem",
+  },
   titleRow: {
     display: "flex",
     alignItems: "baseline",

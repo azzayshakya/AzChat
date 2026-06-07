@@ -29,18 +29,7 @@ export default function SummaryCard({ summary, empCode, dateRange }) {
       icon: "🌗",
       color: RULES.STATUS_COLOR.HALF_DAY,
     },
-    {
-      label: "Absents",
-      value: summary.absent,
-      icon: "❌",
-      color: RULES.STATUS_COLOR.ABSENT,
-    },
-    {
-      label: "Week Offs",
-      value: summary.weekOff,
-      icon: "😴",
-      color: RULES.STATUS_COLOR.WEEK_OFF,
-    },
+
     {
       label: "Incomplete",
       value: summary.missing,
@@ -107,49 +96,6 @@ export default function SummaryCard({ summary, empCode, dateRange }) {
           big
         />
       </div>
-
-      {/* ── Quarterly breakdown ──────────────────────────────────────────── */}
-      {summary.quarters?.length > 0 && (
-        <div style={s.section}>
-          <p style={s.sectionTitle}>
-            📅 Quarterly Balance{" "}
-            <span style={s.sectionSub}>
-              (Negative must be cleared by quarter end)
-            </span>
-          </p>
-          <div style={s.quarterGrid}>
-            {summary.quarters.map((q) => {
-              const qNetColor = q.net >= 0 ? "#04ff58" : "#ff4d4f";
-              return (
-                <div key={q.key} style={s.quarterCard}>
-                  <div style={s.quarterLabel}>{q.label}</div>
-                  <div style={s.quarterRow}>
-                    <span style={{ color: "#04ff58", fontSize: 12 }}>
-                      +{toHHMM(q.positive)}
-                    </span>
-                    <span style={{ color: "var(--text-muted)", fontSize: 11 }}>
-                      positive
-                    </span>
-                  </div>
-                  <div style={s.quarterRow}>
-                    <span style={{ color: "#ff4d4f", fontSize: 12 }}>
-                      {toHHMM(q.negative)}
-                    </span>
-                    <span style={{ color: "var(--text-muted)", fontSize: 11 }}>
-                      negative
-                    </span>
-                  </div>
-                  <div style={{ ...s.quarterNet, color: qNetColor }}>
-                    {q.net >= 0 ? "+" : ""}
-                    {toHHMM(q.net)}
-                    <span style={s.quarterNetLabel}>net</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
       {/* ── Day count tiles ──────────────────────────────────────────────── */}
       <div style={s.tiles}>

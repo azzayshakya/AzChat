@@ -46,7 +46,6 @@ export default function StatusViewer({
   const item = items[idx];
   const viewers = item?.viewers ?? [];
   const allowedUsers = item?.visibleTo ?? [];
-  console.log("baby", item);
   const isMine = entry?.isMine || entry?.userId === currentUser?.id;
   const isAdmin = entry?.isAdmin;
   // Mark viewed on each slide change

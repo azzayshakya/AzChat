@@ -1,15 +1,3 @@
-/**
- * Attendance/index.jsx — Main Page
- *
- * Flow:
- *  1. User uploads .xls / .xlsx / .csv exported from biometric system
- *  2. File is parsed → raw punch rows grouped by employee → date
- *  3. User selects an employee from the sidebar
- *  4. Each day's punches are calculated via attendanceCalculator.js
- *     (rules come from attendanceRules.js)
- *  5. Summary cards + day-wise table with full breakdown are shown
- */
-
 import React, { useState, useMemo } from "react";
 
 import FileUpload from "./components/FileUpload.jsx";
@@ -24,16 +12,13 @@ import {
   calculateSummary,
 } from "./utils/attendanceCalculator.js";
 
-// ─────────────────────────────────────────────────────────────────────────────
-
 export default function Attendance() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [parsed, setParsed] = useState(null); // { employees, punchMap, dateRange }
+  const [parsed, setParsed] = useState(null);
   const [fileName, setFileName] = useState(null);
   const [selectedEmp, setSelectedEmp] = useState(null);
 
-  // ── Upload handler ──────────────────────────────────────────────────────────
   const handleFile = async (file) => {
     setLoading(true);
     setError(null);
@@ -59,7 +44,6 @@ export default function Attendance() {
     setError(null);
   };
 
-  // ── Derive day results for selected employee ────────────────────────────────
   const dayResults = useMemo(() => {
     if (!parsed || !selectedEmp) return [];
     const empMap = parsed.punchMap.get(selectedEmp);
@@ -151,14 +135,14 @@ export default function Attendance() {
             {/* Content */}
             <main style={s.main}>
               {selectedEmp ? (
-                <>
+                <div style={{ marginBottom: "6rem" }}>
                   <SummaryCard
                     summary={summary}
                     empCode={selectedEmp}
                     dateRange={parsed.dateRange}
                   />
                   <AttendanceTable dayResults={dayResults} />
-                </>
+                </div>
               ) : (
                 <div style={s.empty}>
                   <span style={{ fontSize: 44 }}>👈</span>

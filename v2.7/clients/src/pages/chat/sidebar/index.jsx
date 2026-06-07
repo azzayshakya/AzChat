@@ -131,7 +131,6 @@ export default function ChatSidebar({
         borderRight: "1px solid #1e1e3a",
         display: "flex",
         flexDirection: "column",
-        background: "#10101e",
         overflow: "hidden",
         minWidth: 0,
       }}
@@ -145,7 +144,7 @@ export default function ChatSidebar({
           justifyContent: "space-between",
           flexShrink: 0,
           // border: "2px red solid",
-          background: "rgba(102,126,234,0.14)",
+          background: "var(--theme-bg-light)",
           margin: "12px 15px 3px",
           borderRadius: 11,
         }}
@@ -312,7 +311,7 @@ export default function ChatSidebar({
                     cursor: "pointer",
                     background: selectedContact
                       ? "transparent"
-                      : "rgba(102,126,234,0.14)",
+                      : "var(--theme-bg-light)",
                     outline: selectedContact
                       ? "rgb(102 126 234 / 90%) solid 2px"
                       : "none",
@@ -361,7 +360,7 @@ export default function ChatSidebar({
                   cursor: "pointer",
                   background: isSelected
                     ? "transparent"
-                    : "rgba(102,126,234,0.14)",
+                    : "var(--theme-bg-light)",
                   outline: isSelected
                     ? "rgb(102 126 234 / 90%) solid 2px"
                     : "none",
@@ -437,7 +436,7 @@ export default function ChatSidebar({
                     alignItems: "center",
                     background: selectedContact
                       ? "transparent"
-                      : "rgba(102,126,234,0.14)",
+                      : "var(--theme-bg-light)",
                     outline: selectedContact
                       ? "rgb(102 126 234 / 90%) solid 2px"
                       : "none",
@@ -529,7 +528,7 @@ export default function ChatSidebar({
                   transition: "background 0.12s",
                   background: isSelected
                     ? "transparent"
-                    : "rgba(102,126,234,0.14)",
+                    : "var(--theme-bg-light)",
                   outline: isSelected
                     ? "rgb(102 126 234 / 90%) solid 2px"
                     : "none",

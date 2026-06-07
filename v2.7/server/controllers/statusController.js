@@ -209,7 +209,6 @@ function getStatusFeed(req, res) {
     if (a.allSeen !== b.allSeen) return a.allSeen ? 1 : -1;
     return new Date(b.latestAt) - new Date(a.latestAt);
   });
-  console.log('feed', feed);
   return res.json({ data: feed });
 }
 

@@ -175,7 +175,7 @@ const styles = {
   root: {
     borderTop: "1px solid #1e1e3a",
     background: "#494950",
-    background: "rgba(102,126,234,0.14)",
+    background: "var(--theme-bg-light)",
     margin: "12px 15px 3px",
     padding: "10px 5px",
     borderRadius: "11px",
@@ -203,12 +203,12 @@ const styles = {
   },
 
   emojiToggleBtn: {
-    background: "none",
+    background: "var(--primary-color)",
     border: "1px solid transparent",
     borderRadius: 6,
     cursor: "pointer",
     fontSize: 14,
-    color: "var(--primary-color)",
+    color: "",
     fontWeight: 700,
     letterSpacing: -1,
     padding: "3px 4px",

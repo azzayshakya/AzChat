@@ -14,7 +14,7 @@ export default function ChatHeader({ contact, isOnline }) {
         gap: 12,
         // background: "var(--dark-bg-light)",
         // border: "2px red solid",
-        background: "rgba(102,126,234,0.14)",
+        background: "var(--theme-bg-light)",
         margin: "12px 15px 3px",
         borderRadius: "11px",
       }}

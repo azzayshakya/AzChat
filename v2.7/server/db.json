@@ -8,7 +8,7 @@
       "passwordHash": "$2a$10$js74E.BT2vXt91GAq1UbhuaerX9XDwz1FZpiIEKnCAcyMbg..DoLO",
       "role": "admin",
       "isOnline": true,
-      "lastSeen": "2026-06-07T08:25:02.133Z",
+      "lastSeen": "2026-06-07T10:42:45.688Z",
       "createdAt": "2026-05-21T05:36:44.997Z"
     },
     {
@@ -74,7 +74,7 @@
       "passwordHash": "$2a$10$0nonjyT2wpfAc6L3pWybxORd9UCfOpShMW0LE0SphkkrLg3KVIzR.",
       "role": "user",
       "isOnline": true,
-      "lastSeen": "2026-06-07T07:50:30.647Z",
+      "lastSeen": "2026-06-07T10:14:52.736Z",
       "createdAt": "2026-05-21T06:18:08.444Z"
     },
     {
@@ -173,7 +173,7 @@
       "passwordHash": "$2a$10$sZrY7AuOpI4whdpYcYa7IO4rLPGfPeoo9TZIwMfTeI4tbKVLQCAo2",
       "role": "user",
       "isOnline": false,
-      "lastSeen": "2026-06-07T07:58:34.931Z",
+      "lastSeen": "2026-06-07T10:11:26.142Z",
       "createdAt": "2026-06-07T06:57:46.467Z"
     }
   ],

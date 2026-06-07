@@ -1,10 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Modal, Spin } from "antd";
-import { PlusOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  InfoCircleOutlined,
+  FileImageOutlined,
+} from "@ant-design/icons";
 import StatusUploader from "./components/StatusUploader.jsx";
 import UserAvatar from "../../../components/UserAvatar.jsx";
 import { getProfileImage } from "../../../utils/getProfileImage.js";
 import StatusViewer from "./components/StatusViewer.jsx";
+import AboutStatusModal from "../components/AboutStatusModel.jsx";
 
 export default function StatusBar({
   statuses,
@@ -71,7 +76,7 @@ export default function StatusBar({
           paddingTop: 10,
           // margin: "10px",
           border: "2px rgba(255,255,255,0.05) solid",
-          background: "rgba(102,126,234,0.14)",
+          background: "var(--theme-bg-light)",
           margin: "12px 15px",
           borderRadius: 11,
         }}
@@ -276,109 +281,7 @@ export default function StatusBar({
           </div>
         )}
       </div>
-      <Modal
-        open={showInfo}
-        onCancel={() => setShowInfo(false)}
-        footer={null}
-        width={650}
-        title="About Status"
-        styles={{
-          content: {
-            background: "var(--dark-bg-light)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            borderRadius: 16,
-          },
-        }}
-      >
-        <div
-          style={{
-            color: "var(--text-muted)",
-            lineHeight: 1.7,
-            fontSize: 13,
-          }}
-        >
-          <h3 style={{ color: "white" }}>Professional Status Updates</h3>
-
-          <p>
-            Status is designed primarily for professional collaboration and
-            project communication inside AZ Chat.
-          </p>
-
-          <p>You can share updates such as:</p>
-
-          <ul>
-            <li>Current project progress</li>
-            <li>Task completion updates</li>
-            <li>Deployment information</li>
-            <li>Testing status</li>
-            <li>Bug fixes and releases</li>
-            <li>Team announcements</li>
-            <li>Availability and work updates</li>
-          </ul>
-
-          <h3 style={{ color: "white", marginTop: 20 }}>Privacy Options</h3>
-
-          <p>Every status can be shared using one of two privacy settings:</p>
-
-          <div
-            style={{
-              background: "rgba(102,126,234,0.12)",
-              padding: 12,
-              borderRadius: 8,
-              marginBottom: 10,
-            }}
-          >
-            <strong>🌍 Public</strong>
-            <br />
-            Your status will be visible to all AZ Chat users.
-          </div>
-
-          <div
-            style={{
-              background: "rgba(167,139,250,0.12)",
-              padding: 12,
-              borderRadius: 8,
-            }}
-          >
-            <strong>👥 Friends</strong>
-            <br />
-            Your status will be visible only to users who are in your chat
-            history at the time you post the status.
-          </div>
-
-          <h3 style={{ color: "white", marginTop: 20 }}>Status Audience</h3>
-
-          <p>
-            For friend-only statuses, the audience list is generated when the
-            status is posted. Anyone you have chatted with before posting
-            becomes part of the allowed audience for that status.
-          </p>
-
-          <h3 style={{ color: "white", marginTop: 20 }}>Viewer Information</h3>
-
-          <p>
-            After posting a status, click <strong>"See all"</strong> at the
-            bottom of your status viewer to access:
-          </p>
-
-          <ul>
-            <li>View count</li>
-            <li>List of users who viewed the status</li>
-            <li>Time when each user viewed the status</li>
-            <li>List of users who were allowed to view the status</li>
-          </ul>
-
-          <h3 style={{ color: "white", marginTop: 20 }}>
-            Status Expiry & Deletion
-          </h3>
-
-          <ul>
-            <li>Statuses automatically expire after 24 hours.</li>
-            <li>You can delete your status at any time.</li>
-            <li>Deleted statuses cannot be recovered.</li>
-          </ul>
-        </div>
-      </Modal>
+      <AboutStatusModal open={showInfo} onClose={() => setShowInfo(false)} />
       {viewing && (
         <StatusViewer
           entry={viewing.entry}

@@ -1,12 +1,16 @@
-const crypto = require('crypto');
-const { readDB, writeDB } = require('../models/db');
+const crypto = require("crypto");
+let _io = null;
+function setIo(io) {
+  _io = io;
+}
+const { readDB, writeDB } = require("../models/db");
 const {
   validateFile,
   saveFileToDisk,
   deleteFileFromDisk,
   getFileCategory,
-} = require('../utils/fileUtils');
-const { isGroupMember } = require('../utils/groupUtils');
+} = require("../utils/fileUtils");
+const { isGroupMember } = require("../utils/groupUtils");
 
 // ─── Get direct messages ──────────────────────────────────────────────────────
 function getMessages(req, res) {
@@ -14,14 +18,14 @@ function getMessages(req, res) {
   const { otherUserId } = req.params;
   const db = readDB();
 
-  const chatId = [currentUserId, otherUserId].sort().join('_');
+  const chatId = [currentUserId, otherUserId].sort().join("_");
 
   const msgs = db.messages
     .filter(
       (m) =>
         m.chatId === chatId &&
-        m.chatType === 'direct' &&
-        !(m.deletedForUsers && m.deletedForUsers.includes(currentUserId))
+        m.chatType === "direct" &&
+        !(m.deletedForUsers && m.deletedForUsers.includes(currentUserId)),
     )
     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
@@ -35,15 +39,17 @@ function getGroupMessages(req, res) {
   const db = readDB();
 
   if (!isGroupMember(groupId, currentUserId)) {
-    return res.status(403).json({ error: 'You are not a member of this group' });
+    return res
+      .status(403)
+      .json({ error: "You are not a member of this group" });
   }
 
   const msgs = db.messages
     .filter(
       (m) =>
         m.chatId === groupId &&
-        m.chatType === 'group' &&
-        !(m.deletedForUsers && m.deletedForUsers.includes(currentUserId))
+        m.chatType === "group" &&
+        !(m.deletedForUsers && m.deletedForUsers.includes(currentUserId)),
     )
     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
@@ -57,8 +63,17 @@ function markRead(req, res) {
   const db = readDB();
 
   db.messages = db.messages.map((m) => {
-    if (m.senderId === fromUserId && m.receiverId === currentUserId && m.status !== 'seen') {
-      return { ...m, status: 'seen', isRead: true, seenAt: new Date().toISOString() };
+    if (
+      m.senderId === fromUserId &&
+      m.receiverId === currentUserId &&
+      m.status !== "seen"
+    ) {
+      return {
+        ...m,
+        status: "seen",
+        isRead: true,
+        seenAt: new Date().toISOString(),
+      };
     }
     return m;
   });
@@ -75,14 +90,17 @@ function deleteMessage(req, res) {
   const db = readDB();
 
   const msgIndex = db.messages.findIndex((m) => m.id === messageId);
-  if (msgIndex === -1) return res.status(404).json({ error: 'Message not found' });
+  if (msgIndex === -1)
+    return res.status(404).json({ error: "Message not found" });
 
   const msg = db.messages[msgIndex];
   if (msg.senderId !== currentUserId) {
-    return res.status(403).json({ error: 'You can only delete your own messages' });
+    return res
+      .status(403)
+      .json({ error: "You can only delete your own messages" });
   }
 
-  if (deleteFor === 'everyone') {
+  if (deleteFor === "everyone") {
     // Delete physical file from disk if exists
     if (msg.file?.url) deleteFileFromDisk(msg.file.url);
 
@@ -91,12 +109,13 @@ function deleteMessage(req, res) {
       text: null,
       file: null,
       deletedAt: new Date().toISOString(),
-      deletedFor: 'everyone',
+      deletedFor: "everyone",
     };
   } else {
     // Soft-delete for current user only — file stays on disk
     const deletedForUsers = msg.deletedForUsers || [];
-    if (!deletedForUsers.includes(currentUserId)) deletedForUsers.push(currentUserId);
+    if (!deletedForUsers.includes(currentUserId))
+      deletedForUsers.push(currentUserId);
     db.messages[msgIndex] = { ...msg, deletedForUsers };
   }
 
@@ -115,11 +134,15 @@ async function uploadFileMessage(req, res) {
     if (fileError) return res.status(400).json({ error: fileError });
 
     if (!receiverId && !groupId) {
-      return res.status(400).json({ error: 'receiverId or groupId is required' });
+      return res
+        .status(400)
+        .json({ error: "receiverId or groupId is required" });
     }
 
     if (groupId && !isGroupMember(groupId, currentUserId)) {
-      return res.status(403).json({ error: 'You are not a member of this group' });
+      return res
+        .status(403)
+        .json({ error: "You are not a member of this group" });
     }
 
     // Save to disk — returns { url, mimetype, size }
@@ -127,14 +150,16 @@ async function uploadFileMessage(req, res) {
     const category = getFileCategory(saved.mimetype);
 
     const isGroup = !!groupId;
-    const chatId = isGroup ? groupId : [currentUserId, receiverId].sort().join('_');
+    const chatId = isGroup
+      ? groupId
+      : [currentUserId, receiverId].sort().join("_");
 
     const db = readDB();
 
     const msg = {
       id: crypto.randomUUID(),
       chatId,
-      chatType: isGroup ? 'group' : 'direct',
+      chatType: isGroup ? "group" : "direct",
       senderId: currentUserId,
       receiverId: isGroup ? null : receiverId,
       groupId: isGroup ? groupId : null,
@@ -146,7 +171,7 @@ async function uploadFileMessage(req, res) {
         size: saved.size,
         url: saved.url, // e.g. /uploads/images/abc.webp  — NOT base64
       },
-      status: 'sent',
+      status: "sent",
       isRead: false,
       editedAt: null,
       deletedAt: null,
@@ -158,15 +183,23 @@ async function uploadFileMessage(req, res) {
 
     db.messages.push(msg);
     writeDB(db);
+    if (_io) {
+      if (isGroup) {
+        _io.to(`group:${groupId}`).emit("new_group_message", msg);
+      } else {
+        _io.to(receiverId).emit("new_message", msg);
+      }
+    }
 
     return res.status(201).json({ data: msg });
   } catch (error) {
-    console.error('[uploadFileMessage]', error);
-    return res.status(500).json({ error: 'Failed to process file' });
+    console.error("[uploadFileMessage]", error);
+    return res.status(500).json({ error: "Failed to process file" });
   }
 }
 
 module.exports = {
+  setIo,
   getMessages,
   getGroupMessages,
   markRead,

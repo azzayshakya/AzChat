@@ -15,6 +15,7 @@ const statusRoutes = require("./routes/statusRoutes");
 require("./utils/dbCleanup.js");
 
 const { socketHandler, getOnlineUsers } = require("./socket/socketHandler");
+const { setIo } = require("./controllers/messageController");
 // const requestLogger = require('./middleware/requestLogger.js');
 
 const app = express();
@@ -68,6 +69,7 @@ app.use((err, req, res, next) => {
 
 // ─── Socket ───────────────────────────────────────────────────────────────────
 socketHandler(io);
+setIo(io);
 
 const PORT = process.env.PORT || 7001;
 

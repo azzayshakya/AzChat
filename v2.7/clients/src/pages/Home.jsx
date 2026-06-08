@@ -46,7 +46,7 @@ export default function Home() {
           }}
         >
           <img
-            src="public/AzChatLogo.png"
+            src="/AzChatLogo.png"
             alt=""
             height={90}
             width={90}

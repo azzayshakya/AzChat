@@ -65,7 +65,7 @@ export const RULES = {
   LUNCH_RELAX_END: "13:30",
 
   // ── Week-off days (0=Sunday, 6=Saturday) ─────────────────────────────────
-  WEEK_OFF_DAYS: [0, 6],
+  WEEK_OFF_DAYS: [],
 
   // ── Status labels ─────────────────────────────────────────────────────────
   STATUS: {

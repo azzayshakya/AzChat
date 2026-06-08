@@ -46,7 +46,7 @@ export default function AboutDeveloper({ onContactClick }) {
             overflow: "hidden",
           }}
         >
-          <img src="public/developer_profile.jpg" width={85} height={85}></img>
+          <img src="/developer_profile.jpg" width={85} height={85}></img>
         </div>
 
         <div style={{ flex: 1, minWidth: 200 }}>

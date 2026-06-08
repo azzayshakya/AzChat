@@ -41,7 +41,7 @@ export default function Navbar() {
           }}
         >
           <img
-            src="public/AzChatLogo.png"
+            src="/AzChatLogo.png"
             alt=""
             height={36}
             width={36}

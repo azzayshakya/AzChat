@@ -32,7 +32,7 @@ import { useStatus } from "../StatusBar/hooks/useStatus.js";
 import FeaturesModal from "../components/AzChatFeaturesModal.jsx";
 import { USER_ROLES } from "../../../utils/Enum.js";
 
-export default function SideBar({
+export function SideBar({
   currentUser,
   contacts,
   setContacts,
@@ -384,15 +384,61 @@ export default function SideBar({
                   >
                     {item.name}
                   </div>
-
                   <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 6,
+                      marginTop: 2,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: 11.5,
+                        color: "var(--text-dim)",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        flex: 1,
+                      }}
+                    >
+                      {item.lastMessage?.text ||
+                        (item.lastMessage?.file
+                          ? "📎 File"
+                          : `${item.members?.length || 0} members`)}
+                    </span>
+
+                    {item.unreadCount > 0 && (
+                      <span
+                        style={{
+                          background: "var(--primary-color)",
+                          color: "#fff",
+                          borderRadius: 10,
+                          minWidth: 18,
+                          height: 18,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 10,
+                          fontWeight: 700,
+                          padding: "0 5px",
+                          flexShrink: 0,
+                          marginRight: "1rem",
+                        }}
+                      >
+                        {item.unreadCount > 99 ? "99+" : item.unreadCount}
+                      </span>
+                    )}
+                  </div>
+                  {/* <div
                     style={{
                       color: "#666",
                       fontSize: 11,
                     }}
                   >
                     Group • {item.members?.length || 0} members
-                  </div>
+                  </div> */}
                 </div>
               </div>
             );

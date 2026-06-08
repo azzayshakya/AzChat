@@ -7,8 +7,8 @@ import { features } from "../../utils/features.js";
 import { useNotification } from "../../hooks/useNotification.js";
 import NoMessage from "../../components/NoMessage.jsx";
 import MessageInput from "./MessageInput/MessageInput.jsx";
-import ChatSidebar from "./sidebar/SideBar.jsx";
 import ChatSection from "./ChatSection/index.jsx";
+import { SideBar } from "./Sidebar/SideBar.jsx";
 
 export default function Chat() {
   const { user } = useAuth();
@@ -103,13 +103,34 @@ export default function Chat() {
     });
 
     socket.on("new_group_message", (msg) => {
-      fetchGroups();
+      // ❌ remove fetchGroups() from here — it overwrites unreadCount
+
       if (msg.senderId !== user.id) {
         notify({
           title: "New Group Message",
           body: msg.text || "You received a file",
         });
       }
+
+      // ✅ update lastMessage + unreadCount purely in local state
+      setGroups((prev) =>
+        prev.map((g) => {
+          if (g.id !== msg.chatId) return g;
+          const isOpen =
+            selectedTypeRef.current === "group" &&
+            selectedRef.current?.id === msg.chatId;
+          return {
+            ...g,
+            lastMessage: msg,
+            lastActivityAt: msg.createdAt,
+            unreadCount:
+              isOpen || msg.senderId === user.id
+                ? g.unreadCount || 0
+                : (g.unreadCount || 0) + 1,
+          };
+        })
+      );
+
       setMessages((prev) => {
         const current = selectedRef.current;
         const type = selectedTypeRef.current;
@@ -214,6 +235,9 @@ export default function Chat() {
     }
   };
   const handleSelectGroup = async (group) => {
+    setGroups((prev) =>
+      prev.map((g) => (g.id === group.id ? { ...g, unreadCount: 0 } : g))
+    );
     setSelected(group);
     setSelectedType("group");
     setLoadingMsgs(true);
@@ -285,7 +309,13 @@ export default function Chat() {
 
   const isOnline = (id) => onlineUsers.includes(id);
   const isGroupSelected = selectedType === "group";
+  useEffect(() => {
+    const totalUnread =
+      contacts.reduce((sum, c) => sum + (c.unreadCount || 0), 0) +
+      groups.reduce((sum, g) => sum + (g.unreadCount || 0), 0);
 
+    document.title = totalUnread > 0 ? `(${totalUnread}) AZ Chat` : "AZ Chat";
+  }, [contacts, groups]);
   return (
     <div
       style={{
@@ -295,7 +325,7 @@ export default function Chat() {
         background: "var(--dark-bg)",
       }}
     >
-      <ChatSidebar
+      <SideBar
         currentUser={user}
         contacts={contacts}
         setContacts={setContacts}

@@ -169,6 +169,7 @@ const s = {
     display: "flex",
     flexDirection: "column",
     gap: 24,
+    background: "var(--page-gradient)",
   },
 
   pageHeader: {

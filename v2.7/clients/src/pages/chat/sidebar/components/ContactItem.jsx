@@ -6,6 +6,7 @@ import {
 import { getMessagePreview } from "../utils/messagePreview";
 import { getProfileImage } from "../../../../utils/getProfileImage";
 import UserAvatar from "../../../../components/UserAvatar";
+import { USER_ROLES } from "../../../../utils/Enum";
 
 export default function ContactItem({
   contact,
@@ -54,7 +55,13 @@ export default function ContactItem({
           }}
         >
           <span
-            className={contact.role === "admin" ? "admin_text_color_main" : ""}
+            className={
+              contact.role === USER_ROLES.ADMIN
+                ? "admin_text_color_main"
+                : contact.role === USER_ROLES.DEVELOPER
+                  ? "developer_text_color_main"
+                  : ""
+            }
             style={{
               fontSize: 13,
               fontWeight: hasUnread ? 600 : 500,
@@ -67,7 +74,9 @@ export default function ContactItem({
           >
             {contact.role === "admin"
               ? `${contact.username} (admin)`
-              : contact.username}
+              : contact.role === "developer"
+                ? `${contact.username} (developer)`
+                : `${contact.username} `}
           </span>
 
           {contact.lastMessage && (

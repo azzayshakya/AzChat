@@ -2,6 +2,7 @@ import React from "react";
 import { Avatar, Badge } from "antd";
 import UserAvatar from "../../../../components/UserAvatar";
 import { getProfileImage } from "../../../../utils/getProfileImage";
+import { USER_ROLES } from "../../../../utils/Enum";
 
 export default function ChatHeader({ contact, isOnline }) {
   return (
@@ -30,9 +31,19 @@ export default function ChatHeader({ contact, isOnline }) {
       <div>
         <div
           style={{ color: "#fff", fontWeight: 600, fontSize: "1rem" }}
-          className={contact.role === "admin" ? "admin_text_color_main" : ""}
+          className={
+            contact.role === USER_ROLES.ADMIN
+              ? "admin_text_color_main"
+              : contact.role === USER_ROLES.DEVELOPER
+                ? "developer_text_color_main"
+                : ""
+          }
         >
-          {contact.username}
+          {contact.role === "admin"
+            ? `${contact.username} (admin)`
+            : contact.role === "developer"
+              ? `${contact.username} (developer)`
+              : `${contact.username} `}
         </div>
         <div
           style={{

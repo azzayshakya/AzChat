@@ -13,7 +13,7 @@ const UserProfile = ({ user, logout }) => {
     <div
       style={{
         padding: "20px",
-        background: "var(--secondary-color-light)",
+        background: "var(--theme-bg-light)",
         borderRadius: "16px",
         border: "1px solid var(--card-hover-border)",
         minWidth: "240px",

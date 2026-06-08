@@ -30,6 +30,7 @@ import ContactItem from "./components/ContactItem.jsx";
 import StatusBar from "../StatusBar/index.jsx";
 import { useStatus } from "../StatusBar/hooks/useStatus.js";
 import FeaturesModal from "../components/AzChatFeaturesModal.jsx";
+import { USER_ROLES } from "../../../utils/Enum.js";
 
 export default function SideBar({
   currentUser,
@@ -162,7 +163,11 @@ export default function SideBar({
           <div>
             <div
               className={
-                currentUser.role === "admin" ? "admin_text_color_main" : ""
+                currentUser.role === USER_ROLES.ADMIN
+                  ? "admin_text_color_main"
+                  : currentUser.role === USER_ROLES.DEVELOPER
+                    ? "developer_text_color_main"
+                    : ""
               }
               style={{ color: "#fff", fontWeight: 600, fontSize: "1rem" }}
             >

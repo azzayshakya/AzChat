@@ -18,7 +18,7 @@ export const features = {
   typingIndicator: flag("VITE_FEATURE_TYPING_INDICATOR"),
   messageSeenStatus: flag("VITE_FEATURE_MESSAGE_SEEN_STATUS"),
 
-  // Extra
+  //  Extra
   gifs: flag("VITE_FEATURE_GIFS"),
   emoji: flag("VITE_FEATURE_EMOJI"),
   textFormatter: flag("VITE_FEATURE_TEXT_FORMATTER"),

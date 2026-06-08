@@ -180,7 +180,7 @@ const FEATURES = [
 const S = {
   page: {
     // minHeight: "100vh",
-    // background: "var(--main-bg-gradient)",
+    background: "var(--page-gradient)",
     // color: "var(--text-white)",
     // fontFamily:
     //   "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
@@ -544,9 +544,13 @@ export default function FeaturesPage() {
       {/* ── Header ── */}
       {/* ── Hero ── */}
       <div style={S.hero}>
-        <div style={S.heroTag}>What's inside</div>
-        <h1 style={S.heroH1}>Everything you need to connect & collaborate</h1>
-        <p style={S.heroP}>
+        <div style={S.heroTag} className="fade-up">
+          What's inside
+        </div>
+        <h1 style={S.heroH1} className="fade-up-2">
+          Everything you need to connect & collaborate
+        </h1>
+        <p style={S.heroP} className="fade-up-3">
           AzChat is a professional-grade, real-time chat platform — built for
           teams on local networks with smart messaging, presence, group rooms,
           and privacy-first status.

@@ -40,7 +40,7 @@ export default function AboutHero() {
           fontWeight: 800,
           lineHeight: 1.1,
           marginBottom: 20,
-          background: "var(--primary-color)",
+          background: "var(--brand-gradient)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
           backgroundClip: "text",

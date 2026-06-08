@@ -14,9 +14,7 @@ function searchUsers(req, res) {
 
   const results = db.users
     .filter(
-      (u) =>
-        u.id !== currentUserId &&
-        (u.username.includes(query) || u.name.toLowerCase().includes(query)),
+      (u) => u.username.includes(query) || u.name.toLowerCase().includes(query),
     )
     .map((u) => ({
       id: u.id,

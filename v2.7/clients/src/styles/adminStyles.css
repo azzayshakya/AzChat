@@ -1,7 +1,9 @@
 .admin_text_color_main {
   color: rgb(249, 84, 24) !important;
 }
-
+.developer_text_color_main {
+  color: rgb(89, 89, 223) !important;
+}
 /* ANIMATED ADMIN BORDER */
 /* 
 .animated-admin-border {
